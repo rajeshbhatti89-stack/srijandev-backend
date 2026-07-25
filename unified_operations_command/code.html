@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SrijanDev | Unified Operations Command</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Courier+Prime&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdad7",
+                    "on-tertiary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#5c0008",
+                    "on-secondary-container": "#00714d",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#90a8ff",
+                    "on-error-container": "#93000a",
+                    "surface-dim": "#cbdbf5",
+                    "secondary": "#006c49",
+                    "primary-container": "#1e3a8a",
+                    "on-tertiary-container": "#ff8a83",
+                    "primary": "#00236f",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-surface": "#0b1c30",
+                    "on-surface-variant": "#444651",
+                    "inverse-on-surface": "#eaf1ff",
+                    "surface-container-low": "#eff4ff",
+                    "secondary-container": "#6cf8bb",
+                    "tertiary-container": "#860011",
+                    "secondary-fixed": "#6ffbbe",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "surface-tint": "#4059aa",
+                    "tertiary-fixed-dim": "#ffb3ad",
+                    "surface-container-high": "#dce9ff",
+                    "outline": "#757682",
+                    "primary-fixed": "#dce1ff",
+                    "on-error": "#ffffff",
+                    "inverse-primary": "#b6c4ff",
+                    "secondary-fixed-dim": "#4edea3",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#002113",
+                    "on-background": "#0b1c30",
+                    "surface-bright": "#f8f9ff",
+                    "inverse-surface": "#213145",
+                    "outline-variant": "#c5c5d3",
+                    "on-secondary-fixed-variant": "#005236",
+                    "on-primary-fixed-variant": "#264191",
+                    "on-primary-fixed": "#00164e",
+                    "surface-container": "#e5eeff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#930013",
+                    "on-tertiary-fixed": "#410004",
+                    "surface": "#f8f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "unit": "4px",
+                    "margin-mobile": "16px",
+                    "control-height": "48px",
+                    "margin-desktop": "32px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "mono-data": ["Courier Prime"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "mono-data": ["13px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pulse-red {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .trail-line {
+            stroke-dasharray: 5;
+            animation: dash 10s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -100; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-white">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-screen w-[280px] bg-surface border-r border-outline-variant shadow-sm flex flex-col py-margin-desktop space-y-unit z-50">
+<div class="px-6 mb-8">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">SrijanDev</h1>
+<p class="text-xs text-on-surface-variant font-label-md tracking-wider">OPERATIONS &amp; MANAGEMENT PORTAL</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-primary bg-primary-container/10 border-r-4 border-primary transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-lg text-label-lg">Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">corporate_fare</span>
+<span class="font-label-lg text-label-lg">Organization</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">assignment</span>
+<span class="font-label-lg text-label-lg">Tasks</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">location_on</span>
+<span class="font-label-lg text-label-lg">Clients &amp; Sites</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-label-lg text-label-lg">Reports &amp; Analytics</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">calendar_month</span>
+<span class="font-label-lg text-label-lg">Duty Scheduling</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-lg text-label-lg">Settings</span>
+</a>
+</nav>
+<div class="px-6 pt-6 border-t border-outline-variant">
+<div class="flex items-center p-3 bg-surface-container rounded-lg">
+<div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden mr-3">
+<img alt="Alex Rivera" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvt3kQQ_qr8HlbYU1nkTHbA1NSzVs9-lalY_jjD45tFQUxfvcBq8gpsBDT0A8Iz5DvxjQkZC3n67FNqPbjOXNQKUSeMKSIYWNYhvRwMiLJNSBcaAp5efOVLniif3xxXqVBybwQ13BRtHprv2t58bKGPlNa4hUYVXJQ0cFe2Z4SHi2oKtGIUN-sSACFAMZb51OtSAekuuR05nznsxu-gO9F-g2rLYRYtf2NssV2wEppfj8RLvPgiTBhzWZu6Uhfi5GnhT41-17ZtNrU"/>
+</div>
+<div>
+<p class="font-label-lg text-on-surface">Alex Rivera</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Night Ops Lead</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Top App Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-280px)] h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center space-x-6">
+<div class="flex items-center bg-surface-container-low rounded-full px-4 py-2 w-96 border border-outline-variant">
+<span class="material-symbols-outlined text-outline mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-full placeholder:text-outline" placeholder="Search sites, guards, or alerts..." type="text"/>
+</div>
+<div class="flex items-center space-x-2 text-xs font-bold uppercase tracking-widest px-4 py-1.5 bg-secondary/10 text-secondary border border-secondary/20 rounded-full">
+<span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+                Operational Status: SYSTEM STABLE
+            </div>
+</div>
+<div class="flex items-center space-x-6">
+<button class="relative text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<button class="bg-secondary text-on-secondary px-6 py-2 rounded-lg font-label-lg hover:brightness-110 active:scale-95 transition-all flex items-center">
+<span class="material-symbols-outlined text-sm mr-2" style="font-variation-settings: 'FILL' 1;">timer</span>
+                Punch In
+            </button>
+<div class="w-8 h-8 rounded-full bg-primary-container overflow-hidden border border-outline-variant cursor-pointer">
+<img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvt3kQQ_qr8HlbYU1nkTHbA1NSzVs9-lalY_jjD45tFQUxfvcBq8gpsBDT0A8Iz5DvxjQkZC3n67FNqPbjOXNQKUSeMKSIYWNYhvRwMiLJNSBcaAp5efOVLniif3xxXqVBybwQ13BRtHprv2t58bKGPlNa4hUYVXJQ0cFe2Z4SHi2oKtGIUN-sSACFAMZb51OtSAekuuR05nznsxu-gO9F-g2rLYRYtf2NssV2wEppfj8RLvPgiTBhzWZu6Uhfi5GnhT41-17ZtNrU"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[280px] pt-16 min-h-screen p-margin-desktop bg-background space-y-gutter">
+<!-- Dashboard Title -->
+<div class="flex flex-col mb-4">
+<h2 class="font-headline-lg text-headline-lg text-primary">Unified Operations Command</h2>
+<div class="flex items-center text-on-surface-variant font-mono-data mt-1">
+<span class="material-symbols-outlined text-sm mr-1">schedule</span>
+                Live Feed: Tuesday, Oct 24 • 22:45:12
+            </div>
+</div>
+<!-- Summary Cards Row -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="bg-surface border border-outline-variant p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-6xl">location_city</span>
+</div>
+<span class="text-on-surface-variant font-label-md uppercase tracking-wider mb-2 block">Active Sites</span>
+<div class="flex items-baseline space-x-2">
+<span class="font-headline-lg text-headline-lg text-on-surface">42</span>
+<span class="text-secondary font-label-md">+2 from yesterday</span>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-6xl">shield</span>
+</div>
+<span class="text-on-surface-variant font-label-md uppercase tracking-wider mb-2 block">Guards on Duty</span>
+<div class="flex items-baseline space-x-2">
+<span class="font-headline-lg text-headline-lg text-on-surface">158</span>
+<span class="text-on-surface-variant font-label-md">of 162 rostered</span>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow border-l-4 border-l-error group relative overflow-hidden">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-6xl text-error">report_problem</span>
+</div>
+<span class="text-error font-bold font-label-md uppercase tracking-wider mb-2 block">Pending Exceptions</span>
+<div class="flex flex-col space-y-1">
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Critical Alerts</span>
+<span class="font-bold text-error">03</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Missed Checkpoints</span>
+<span class="font-bold text-on-surface">08</span>
+</div>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-6xl text-primary">analytics</span>
+</div>
+<span class="text-on-surface-variant font-label-md uppercase tracking-wider mb-2 block">Shift Completion %</span>
+<div class="flex items-baseline space-x-2">
+<span class="font-headline-lg text-headline-lg text-on-surface">88%</span>
+<div class="flex-1 h-2 bg-surface-container rounded-full ml-4 w-24 overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 88%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<div class="grid grid-cols-10 gap-gutter">
+<!-- Left Side: Table & Map (70%) -->
+<div class="col-span-7 space-y-gutter">
+<!-- Live Site Status Table -->
+<div class="bg-surface border border-outline-variant rounded-lg shadow-sm overflow-hidden flex flex-col">
+<div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low/50">
+<div class="flex items-center space-x-3">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Live Site Status</h3>
+<span class="px-2 py-0.5 bg-primary/10 text-[10px] font-bold text-primary rounded border border-primary/20 uppercase tracking-tighter">Real-time Tracking</span>
+</div>
+<button class="p-2 border border-outline-variant rounded hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="px-6 py-3 font-label-lg text-on-surface-variant uppercase text-[10px] tracking-widest">Site Name</th>
+<th class="px-6 py-3 font-label-lg text-on-surface-variant uppercase text-[10px] tracking-widest">Status</th>
+<th class="px-6 py-3 font-label-lg text-on-surface-variant uppercase text-[10px] tracking-widest">Shift Supervisor</th>
+<th class="px-6 py-3 font-label-lg text-on-surface-variant uppercase text-[10px] tracking-widest">Scan Compliance</th>
+<th class="px-6 py-3"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="font-label-lg text-on-surface text-sm">Global Logistics Hub</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Zone A • Industrial</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 bg-secondary-container/30 text-on-secondary-container rounded-full text-[10px] font-bold border border-secondary/20 flex items-center w-fit">
+<span class="w-1.5 h-1.5 bg-secondary rounded-full mr-2"></span> SECURE
+                                        </span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center">
+<img alt="Marcus Thorne" class="w-8 h-8 rounded-full border border-outline-variant mr-3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLqnbFlNNbHc1252OkEThNMHilQFDNb8wmzINyVNIt8j_rAs7JovxWVgPGgA6yvObMWUET3yIlaizfCJRbSH0rJHk6mmm-sO3sQ0Xj-flbb9kVAI5uSSWZq5twM8S9uODk-45AVXsE4_Kh-d1mqWaSaKFUlgvTFpD7xnq-104Ju_cGDFDlpTr3p0IkbgTg9OZJRv1kMG1iMZNQX1Uzv8WgkPVBtvdAQbJXy2lbMe02oT7GRzcQVH2lWZjdh_OTT8QNbpl8tzg7NN_n"/>
+<span class="text-on-surface text-sm">Marcus Thorne</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center space-x-2">
+<span class="font-mono-data text-on-surface text-xs font-bold">100%</span>
+<div class="flex space-x-0.5">
+<div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
+<div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
+<div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
+<div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:bg-primary/5 px-3 py-1 rounded transition-all text-xs font-bold flex items-center ml-auto">
+<span class="material-symbols-outlined text-sm mr-1">history</span> View Trail
+                                        </button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="font-label-lg text-on-surface text-sm">Apex Financial Tower</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Central District</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 bg-error-container/30 text-on-error-container rounded-full text-[10px] font-bold border border-error/20 flex items-center w-fit">
+<span class="w-1.5 h-1.5 bg-error rounded-full mr-2 pulse-red"></span> ALERT
+                                        </span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center">
+<img alt="Sarah Jenkins" class="w-8 h-8 rounded-full border border-outline-variant mr-3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbbcNVB7qhES-rhwjbjL0vc72UpHpEsMTt1h1enKEafmjruwhEJQ1vv32htveZNryCXTIQr5hXzb7mw5fH3w7iCWsh69fnLT-Lg8RYml81KQ-Bkdm7ldrFB59u2J_few8aVpdc7QokH-J4IlIWrF6DLzTDJiDdOAXEl_FS3KigHdmfnCyuHk8RwctVFyTjhSbV-DD_Po6Tis1_609Y94mrjffx6kzdVAk-wHBBl2yBEz8BA1249pxPxrZhNy_veT8vqnAG9WLKjU5_"/>
+<span class="text-on-surface text-sm">Sarah Jenkins</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center space-x-2">
+<span class="font-mono-data text-error text-xs font-bold">75%</span>
+<div class="flex space-x-0.5">
+<div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
+<div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
+<div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
+<div class="w-1.5 h-3 bg-outline-variant rounded-sm"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-error hover:bg-error/5 px-3 py-1 rounded transition-all text-xs font-bold flex items-center ml-auto">
+<span class="material-symbols-outlined text-sm mr-1">warning</span> View Trail
+                                        </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Intelligence Overlay: Trail Playback Map -->
+<div class="bg-surface border border-outline-variant rounded-lg shadow-sm h-[400px] overflow-hidden relative group">
+<div class="absolute top-0 left-0 right-0 p-4 z-20 flex justify-between items-start bg-gradient-to-b from-surface/90 to-transparent">
+<div class="flex items-center space-x-4">
+<h4 class="font-label-lg text-primary bg-surface/90 px-3 py-1.5 rounded shadow-sm border border-outline-variant flex items-center text-xs">
+<span class="material-symbols-outlined text-sm mr-2">timeline</span>
+                                Trail Playback: Active Sites Movement
+                            </h4>
+<div class="flex items-center bg-surface/90 px-3 py-1.5 rounded shadow-sm border border-outline-variant space-x-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors text-sm">fast_rewind</button>
+<button class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">pause_circle</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors text-sm">fast_forward</button>
+<span class="text-[10px] font-mono-data text-on-surface-variant">LIVE MONITORING</span>
+</div>
+</div>
+<div class="flex space-x-2">
+<div class="bg-surface/90 p-2 rounded border border-outline-variant shadow-lg flex items-center space-x-3">
+<div class="flex items-center">
+<span class="w-2 h-2 bg-secondary rounded-full mr-2"></span>
+<span class="text-[9px] font-bold uppercase tracking-tighter text-on-surface">Secure Site</span>
+</div>
+<div class="flex items-center">
+<span class="w-2 h-2 bg-error rounded-full mr-2 pulse-red"></span>
+<span class="text-[9px] font-bold uppercase tracking-tighter text-on-surface">Exception Zone</span>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute inset-0 z-0 bg-slate-200">
+<div alt="City Map" class="w-full h-full grayscale opacity-40 bg-[url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/-122.4194,37.7749,12/1200x400?access_token=your_token_here')] bg-cover"></div>
+<svg class="absolute inset-0 w-full h-full pointer-events-none" viewbox="0 0 1200 400">
+<path class="trail-line" d="M100,100 L300,150 L450,100 L600,250 L800,200 L950,300" fill="none" stroke="#00236f" stroke-width="2"></path>
+<circle cx="950" cy="300" fill="#00236f" r="4"></circle>
+<circle class="animate-ping" cx="950" cy="300" fill="#00236f" opacity="0.4" r="8"></circle>
+<circle cx="300" cy="150" fill="#006c49" r="3"></circle>
+<circle cx="600" cy="250" fill="#006c49" r="3"></circle>
+</svg>
+</div>
+<div class="absolute bottom-4 left-4 z-10">
+<div class="bg-primary/90 text-white px-3 py-1.5 rounded text-[10px] font-bold uppercase flex items-center shadow-lg">
+<span class="material-symbols-outlined text-xs mr-1">location_on</span>
+                            GPS Tracking Active
+                        </div>
+</div>
+</div>
+</div>
+<!-- Right Side: Alerts Sidebar (30%) -->
+<div class="col-span-3">
+<div class="bg-surface border border-outline-variant rounded-lg shadow-sm flex flex-col h-full sticky top-[80px]">
+<div class="p-4 border-b border-outline-variant flex justify-between items-center bg-error-container/5">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-error mr-2" style="font-variation-settings: 'FILL' 1;">emergency_home</span>
+<h3 class="font-label-lg text-on-surface font-bold">Critical Intelligence</h3>
+</div>
+<span class="bg-error text-white text-[9px] px-1.5 py-0.5 rounded font-bold uppercase animate-pulse">Live Feed</span>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-3 max-h-[calc(100vh-200px)]">
+<!-- Alert Item: Geofence Breach -->
+<div class="p-3 border border-error-container bg-error-container/10 rounded-lg transition-colors hover:bg-error-container/20">
+<div class="flex justify-between items-start mb-2">
+<span class="text-error font-bold text-[9px] uppercase tracking-widest">Geofence Breach</span>
+<span class="text-on-surface-variant font-mono-data text-[9px]">22:41:05</span>
+</div>
+<p class="text-on-surface font-bold text-xs mb-1">Apex Financial Tower - Zone D</p>
+<p class="text-on-surface-variant text-[11px] leading-relaxed mb-3">Guard [ID: 772] moved 15m outside assigned perimeter. Signal strength: High.</p>
+<div class="flex space-x-2">
+<button class="bg-error text-white text-[9px] px-3 py-1.5 rounded font-bold uppercase hover:brightness-110 transition-all flex-1">Locate</button>
+<button class="border border-outline-variant text-on-surface-variant text-[9px] px-3 py-1.5 rounded font-bold uppercase hover:bg-white transition-all flex-1">Override</button>
+</div>
+</div>
+<!-- Alert Item: SOS Signal -->
+<div class="p-3 border border-error bg-error/5 rounded-lg border-2">
+<div class="flex justify-between items-start mb-2">
+<span class="text-error font-black text-[9px] uppercase tracking-widest flex items-center">
+<span class="material-symbols-outlined text-xs mr-1 animate-ping">emergency</span> SOS SIGNAL
+                                </span>
+<span class="text-on-surface-variant font-mono-data text-[9px]">22:38:12</span>
+</div>
+<p class="text-on-surface font-bold text-xs mb-1">Riverside Data Center</p>
+<p class="text-on-surface-variant text-[11px] leading-relaxed mb-3">Panic button activated by Officer [ID: 991]. Audio feed enabled.</p>
+<button class="w-full bg-error text-white text-[10px] py-2 rounded font-black uppercase shadow-lg shadow-error/20 hover:scale-[1.02] active:scale-95 transition-all">Emergency Response</button>
+</div>
+<!-- Alert Item: Missed Checkpoint -->
+<div class="p-3 border border-outline-variant bg-surface-container-low rounded-lg hover:bg-surface-container transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="text-primary font-bold text-[9px] uppercase tracking-widest">Checkpoint Overdue</span>
+<span class="text-on-surface-variant font-mono-data text-[9px]">22:35:12</span>
+</div>
+<p class="text-on-surface font-bold text-xs mb-1">North Port - Station #04</p>
+<p class="text-on-surface-variant text-[11px] leading-relaxed mb-3">QR scan missed. 15 minutes overdue. Previous scan at Station #03 was normal.</p>
+<button class="bg-primary text-white text-[9px] px-3 py-1.5 rounded font-bold uppercase hover:brightness-110 transition-all w-full">Resolve / Comm</button>
+</div>
+<!-- Alert Item: System Status -->
+<div class="p-3 border border-outline-variant bg-surface-container-low/50 rounded-lg opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="text-on-surface-variant font-bold text-[9px] uppercase tracking-widest">Resolved Alert</span>
+<span class="text-on-surface-variant font-mono-data text-[9px]">21:55:00</span>
+</div>
+<p class="text-on-surface font-bold text-xs">Global Logistics Hub</p>
+<p class="text-[10px] text-secondary font-bold flex items-center mt-1">
+<span class="material-symbols-outlined text-xs mr-1">check_circle</span> SHIFT HANDOVER COMPLETE
+                            </p>
+</div>
+</div>
+<div class="p-3 border-t border-outline-variant bg-surface-container-low">
+<button class="w-full py-2 text-on-surface-variant text-[10px] font-bold uppercase hover:text-primary transition-colors flex items-center justify-center">
+                            Acknowledge All Alerts
+                            <span class="material-symbols-outlined text-sm ml-2">done_all</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function updateClock() {
+            const clockEl = document.querySelector('.font-mono-data');
+            if (clockEl) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const dateString = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+                clockEl.innerHTML = `<span class="material-symbols-outlined text-sm mr-1">schedule</span> Live Feed: ${dateString} • ${timeString}`;
+            }
+        }
+        setInterval(updateClock, 1000);
+    </script>
+</body></html>

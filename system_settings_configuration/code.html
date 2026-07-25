@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SrijanDev | Settings Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Courier+Prime&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#0b1c30",
+                        "surface-container-high": "#dce9ff",
+                        "tertiary-fixed": "#ffdad7",
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface-variant": "#d3e4fe",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#444651",
+                        "on-background": "#0b1c30",
+                        "tertiary": "#5c0008",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "outline": "#757682",
+                        "primary-fixed-dim": "#b6c4ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary-container": "#860011",
+                        "surface-tint": "#4059aa",
+                        "surface-dim": "#cbdbf5",
+                        "outline-variant": "#c5c5d3",
+                        "primary-container": "#1e3a8a",
+                        "on-primary-container": "#90a8ff",
+                        "inverse-surface": "#213145",
+                        "surface-container": "#e5eeff",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#ff8a83",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-secondary-container": "#00714d",
+                        "on-primary-fixed": "#00164e",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#6cf8bb",
+                        "on-error-container": "#93000a",
+                        "surface": "#f8f9ff",
+                        "on-tertiary-fixed": "#410004",
+                        "inverse-primary": "#b6c4ff",
+                        "primary": "#00236f",
+                        "background": "#f8f9ff",
+                        "primary-fixed": "#dce1ff",
+                        "surface-container-low": "#eff4ff",
+                        "on-secondary-fixed": "#002113",
+                        "on-primary-fixed-variant": "#264191",
+                        "on-error": "#ffffff",
+                        "secondary": "#006c49",
+                        "secondary-fixed": "#6ffbbe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "margin-desktop": "32px",
+                        "control-height": "48px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "mono-data": ["Courier Prime"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "mono-data": ["13px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f8f9ff;
+            color: #0b1c30;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .settings-content-grid {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 24px;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+    </style>
+</head>
+<body class="bg-surface">
+<!-- SideNavBar (from JSON) -->
+<aside class="fixed left-0 top-0 h-screen w-[280px] bg-surface border-r border-outline-variant flex flex-col py-32 space-y-4 shadow-sm z-50">
+<div class="px-8 mb-8">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">SrijanDev</h1>
+<p class="text-on-surface-variant text-label-md">OPERATIONS &amp; MANAGEMENT PORTAL</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-lg text-label-lg">Dashboard</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">corporate_fare</span>
+<span class="font-label-lg text-label-lg">Organization</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">assignment</span>
+<span class="font-label-lg text-label-lg">Tasks</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">location_on</span>
+<span class="font-label-lg text-label-lg">Clients &amp; Sites</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-label-lg text-label-lg">Reports &amp; Analytics</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">calendar_month</span>
+<span class="font-label-lg text-label-lg">Duty Scheduling</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded text-primary bg-primary-container/10 border-r-4 border-primary transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-lg text-label-lg">Settings</span>
+</a>
+</nav>
+<div class="px-8 mt-auto pt-8 border-t border-outline-variant">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg">Chief Admin</p>
+<p class="text-[10px] text-on-surface-variant">OPS HQ</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar (from JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-280px)] h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-32 z-40">
+<div class="flex items-center flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 text-body-md focus:ring-2 focus:ring-primary" placeholder="Search configuration..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">help_outline</span>
+</button>
+<button class="bg-secondary text-on-secondary px-6 py-2 rounded-full font-label-lg text-label-lg shadow-sm hover:brightness-110 active:scale-95 transition-all">
+                Punch In
+            </button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[280px] mt-16 p-8 min-h-screen">
+<div class="max-w-6xl mx-auto">
+<header class="mb-8">
+<h2 class="font-headline-lg text-headline-lg text-primary">Global Settings</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Configure mission-critical parameters and administrative controls for the SrijanDev ecosystem.</p>
+</header>
+<div class="settings-content-grid">
+<!-- Inner Sidebar Navigation -->
+<nav class="space-y-1">
+<button class="w-full text-left px-4 py-3 rounded-lg font-label-lg text-label-lg flex items-center bg-primary text-on-primary shadow-md active-tab-btn" id="tab-general" onclick="switchTab('general')">
+<span class="material-symbols-outlined mr-3">tune</span>
+                        General
+                    </button>
+<button class="w-full text-left px-4 py-3 rounded-lg font-label-lg text-label-lg flex items-center text-on-surface-variant hover:bg-surface-container transition-colors" id="tab-security" onclick="switchTab('security')">
+<span class="material-symbols-outlined mr-3">admin_panel_settings</span>
+                        Security &amp; Access
+                    </button>
+<button class="w-full text-left px-4 py-3 rounded-lg font-label-lg text-label-lg flex items-center text-on-surface-variant hover:bg-surface-container transition-colors" id="tab-forensic" onclick="switchTab('forensic')">
+<span class="material-symbols-outlined mr-3">animated_images</span>
+                        Forensic Parameters
+                    </button>
+<button class="w-full text-left px-4 py-3 rounded-lg font-label-lg text-label-lg flex items-center text-on-surface-variant hover:bg-surface-container transition-colors" id="tab-logs" onclick="switchTab('logs')">
+<span class="material-symbols-outlined mr-3">history_edu</span>
+                        System Logs
+                    </button>
+<button class="w-full text-left px-4 py-3 rounded-lg font-label-lg text-label-lg flex items-center text-on-surface-variant hover:bg-surface-container transition-colors" id="tab-branding" onclick="switchTab('branding')">
+<span class="material-symbols-outlined mr-3">palette</span>
+                        Branding
+                    </button>
+</nav>
+<!-- Configuration Panels -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-8 card-shadow overflow-hidden">
+<!-- General Section -->
+<section class="settings-section space-y-8" id="section-general">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary border-b border-outline-variant pb-2 mb-6">General Configuration</h3>
+<div class="grid grid-cols-2 gap-8">
+<div class="space-y-2">
+<label class="font-label-lg text-label-lg block text-on-surface">Portal Display Name</label>
+<input class="w-full border border-outline rounded p-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none" type="text" value="SrijanDev HQ"/>
+<p class="text-label-md text-on-surface-variant">The name visible to all personnel across the mobile and web interface.</p>
+</div>
+<div class="space-y-2">
+<label class="font-label-lg text-label-lg block text-on-surface">Global Timezone</label>
+<select class="w-full border border-outline rounded p-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+<option>(GMT-05:00) Eastern Time (US &amp; Canada)</option>
+<option>(GMT+00:00) London</option>
+<option>(GMT+08:00) Singapore</option>
+</select>
+<p class="text-label-md text-on-surface-variant">All system timestamps and patrol logs will anchor to this setting.</p>
+</div>
+</div>
+</div>
+<div class="p-6 bg-surface-container-low rounded-lg border border-outline-variant">
+<h4 class="font-label-lg text-label-lg text-primary mb-4 flex items-center">
+<span class="material-symbols-outlined mr-2">notifications_active</span>
+                                Notification Preferences
+                            </h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center p-3 border-b border-outline-variant/30">
+<div>
+<p class="font-label-lg text-label-lg">Critical Incident SMS</p>
+<p class="text-body-md text-on-surface-variant">Alert management via SMS for SOS triggers.</p>
+</div>
+<input checked="" class="w-12 h-6 bg-outline-variant rounded-full appearance-none checked:bg-secondary relative cursor-pointer transition-all after:content-[''] after:absolute after:top-1 after:left-1 after:w-4 after:h-4 after:bg-white after:rounded-full after:transition-all checked:after:translate-x-6" type="checkbox"/>
+</div>
+<div class="flex justify-between items-center p-3">
+<div>
+<p class="font-label-lg text-label-lg">Daily Briefing Email</p>
+<p class="text-body-md text-on-surface-variant">Summary of all shifts and exceptions sent at 06:00.</p>
+</div>
+<input checked="" class="w-12 h-6 bg-outline-variant rounded-full appearance-none checked:bg-secondary relative cursor-pointer transition-all after:content-[''] after:absolute after:top-1 after:left-1 after:w-4 after:h-4 after:bg-white after:rounded-full after:transition-all checked:after:translate-x-6" type="checkbox"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Security & Access Section (Hidden by default) -->
+<section class="settings-section hidden space-y-8" id="section-security">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary border-b border-outline-variant pb-2 mb-6">Access Control &amp; Integration</h3>
+<div class="grid grid-cols-3 gap-6">
+<div class="p-4 border border-outline-variant rounded-lg hover:bg-surface transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-primary text-4xl mb-2">groups</span>
+<h4 class="font-label-lg text-label-lg">Roles &amp; Permissions</h4>
+<p class="text-label-md text-on-surface-variant">Manage granular access levels for supervisors and guards.</p>
+</div>
+<div class="p-4 border border-outline-variant rounded-lg hover:bg-surface transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-primary text-4xl mb-2">api</span>
+<h4 class="font-label-lg text-label-lg">API Integrations</h4>
+<p class="text-label-md text-on-surface-variant">Configure webhooks and REST API tokens for external sync.</p>
+</div>
+<div class="p-4 border border-outline-variant rounded-lg hover:bg-surface transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-primary text-4xl mb-2">vpn_key</span>
+<h4 class="font-label-lg text-label-lg">MFA Policies</h4>
+<p class="text-label-md text-on-surface-variant">Enforce 2-factor authentication across the entire organization.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Forensic Parameters Section (Hidden by default) -->
+<section class="settings-section hidden space-y-8" id="section-forensic">
+<h3 class="font-headline-sm text-headline-sm text-primary border-b border-outline-variant pb-2 mb-6">Operational Sensitivity</h3>
+<div class="space-y-8">
+<div class="bg-surface p-6 rounded-lg border-l-4 border-primary">
+<h4 class="font-label-lg text-label-lg mb-2">Geofence Drift Tolerance</h4>
+<input class="w-full h-2 bg-outline-variant rounded-lg appearance-none cursor-pointer accent-primary" type="range"/>
+<div class="flex justify-between text-label-md text-on-surface-variant mt-2">
+<span>Precise (5m)</span>
+<span>Balanced (25m)</span>
+<span>High Drift (100m)</span>
+</div>
+<p class="mt-4 text-body-md italic text-on-surface-variant">Adjusting this reduces false-positive "Out of Bounds" alerts in high-interference urban areas.</p>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label-lg text-label-lg">Trail Retention Policy</label>
+<select class="w-full border border-outline rounded p-3 text-body-md focus:border-primary">
+<option>90 Days (Standard)</option>
+<option>180 Days (Legal Hold)</option>
+<option>1 Year (Archival)</option>
+<option>Indefinite</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="font-label-lg text-label-lg">Breadcrumb Frequency</label>
+<select class="w-full border border-outline rounded p-3 text-body-md focus:border-primary">
+<option>Every 30 Seconds</option>
+<option>Every 1 Minute</option>
+<option>Every 5 Minutes (Battery Save)</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- System Logs Section (Hidden by default) -->
+<section class="settings-section hidden space-y-6" id="section-logs">
+<div class="flex justify-between items-center border-b border-outline-variant pb-4">
+<h3 class="font-headline-sm text-headline-sm text-primary">Administrative Audit Trail</h3>
+<button class="text-primary font-label-lg text-label-lg flex items-center hover:underline">
+<span class="material-symbols-outlined mr-1 text-sm">download</span> Export CSV
+                            </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface text-label-md text-on-surface-variant uppercase tracking-wider">
+<tr>
+<th class="p-3">Timestamp</th>
+<th class="p-3">Administrator</th>
+<th class="p-3">Action</th>
+<th class="p-3">Target</th>
+<th class="p-3">Status</th>
+</tr>
+</thead>
+<tbody class="font-mono-data text-mono-data divide-y divide-outline-variant/30">
+<tr>
+<td class="p-3">2023-11-24 14:22:11</td>
+<td class="p-3">admin_john_doe</td>
+<td class="p-3 text-primary">PERMISSION_CHANGE</td>
+<td class="p-3">Role: Night_Shift</td>
+<td class="p-3 text-secondary font-bold">SUCCESS</td>
+</tr>
+<tr>
+<td class="p-3">2023-11-24 13:05:45</td>
+<td class="p-3">system_root</td>
+<td class="p-3 text-primary">RETENTION_UPDATE</td>
+<td class="p-3">Policy: Trail_90d</td>
+<td class="p-3 text-secondary font-bold">SUCCESS</td>
+</tr>
+<tr>
+<td class="p-3">2023-11-24 11:58:30</td>
+<td class="p-3">admin_sarah_w</td>
+<td class="p-3 text-error">LOGIN_FAILURE</td>
+<td class="p-3">IP: 192.168.1.45</td>
+<td class="p-3 text-error font-bold">FAILED</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Branding Section (Hidden by default) -->
+<section class="settings-section hidden space-y-8" id="section-branding">
+<h3 class="font-headline-sm text-headline-sm text-primary border-b border-outline-variant pb-2 mb-6">Portal Personalization</h3>
+<div class="grid grid-cols-2 gap-12">
+<div class="space-y-6">
+<div>
+<label class="font-label-lg text-label-lg block mb-4">Organization Logo</label>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-8 flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface transition-all cursor-pointer">
+<span class="material-symbols-outlined text-4xl mb-2">upload_file</span>
+<p class="font-label-lg text-label-lg">Drop logo here</p>
+<p class="text-label-md">PNG or SVG, max 2MB</p>
+</div>
+</div>
+<div class="space-y-4">
+<label class="font-label-lg text-label-lg block">Theme Accent Color</label>
+<div class="flex gap-3">
+<div class="w-10 h-10 rounded-full bg-[#00236f] ring-2 ring-offset-2 ring-primary cursor-pointer"></div>
+<div class="w-10 h-10 rounded-full bg-[#006c49] cursor-pointer"></div>
+<div class="w-10 h-10 rounded-full bg-[#5c0008] cursor-pointer"></div>
+<div class="w-10 h-10 rounded-full bg-[#334155] cursor-pointer"></div>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="bg-surface rounded-xl p-6 border border-outline-variant shadow-inner flex flex-col items-center justify-center relative overflow-hidden">
+<p class="text-label-md text-on-surface-variant absolute top-4 left-4">Live Preview</p>
+<div class="w-48 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-500">
+<span class="text-white font-bold tracking-widest uppercase text-xs">SrijanDev</span>
+</div>
+<p class="mt-4 text-label-md text-center text-on-surface-variant">How your brand appears on the login screen.</p>
+</div>
+</div>
+</section>
+<!-- Footer Actions -->
+<div class="mt-12 pt-8 border-t border-outline-variant flex justify-end space-x-4">
+<button class="px-6 py-2 border border-outline text-on-surface-variant font-label-lg text-label-lg rounded hover:bg-surface transition-all">Discard Changes</button>
+<button class="px-8 py-2 bg-primary text-on-primary font-label-lg text-label-lg rounded shadow-lg hover:brightness-110 active:scale-95 transition-all">Apply Configuration</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function switchTab(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.settings-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show active section
+            document.getElementById('section-' + sectionId).classList.remove('hidden');
+            
+            // Update Tab Styles
+            document.querySelectorAll('nav button').forEach(btn => {
+                if(btn.id.includes('tab-')) {
+                    btn.classList.remove('bg-primary', 'text-on-primary', 'shadow-md');
+                    btn.classList.add('text-on-surface-variant', 'hover:bg-surface-container');
+                }
+            });
+            
+            const activeBtn = document.getElementById('tab-' + sectionId);
+            activeBtn.classList.add('bg-primary', 'text-on-primary', 'shadow-md');
+            activeBtn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container');
+        }
+
+        // Simple animation logic for the preview logo
+        const logoPreview = document.querySelector('.transform');
+        if (logoPreview) {
+            setInterval(() => {
+                logoPreview.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    logoPreview.style.transform = 'scale(1)';
+                }, 1000);
+            }, 3000);
+        }
+    </script>
+</body></html>

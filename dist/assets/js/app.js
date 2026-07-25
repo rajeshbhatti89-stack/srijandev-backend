@@ -1,0 +1,254 @@
+/* SrijanDev Application & PWA Controller */
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then((reg) => console.log('[SrijanDev PWA] Service Worker registered:', reg.scope))
+      .catch((err) => console.warn('[SrijanDev PWA] Service Worker registration failed:', err));
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initSubscriptionGuard();
+  initClock();
+  initRouter();
+  initSidebarToggle();
+  initModals();
+  initDutyPunch();
+  initSettingsTabs();
+  initMapPlayback();
+});
+
+function initSubscriptionGuard() {
+  const isSuperUser = true; // rajeshbhatti89@gmail.com (Super User & Owner)
+  const isSubscriptionActive = localStorage.getItem('srijandev_subscription_active') === 'true' || isSuperUser;
+  
+  const lockoutBanner = document.getElementById('subscription-lockout-banner');
+  if (!isSubscriptionActive && lockoutBanner) {
+    lockoutBanner.classList.remove('hidden');
+  }
+
+  // Intercept Admin Buttons for RBAC enforcement
+  document.querySelectorAll('[data-admin-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      if (!isSuperUser) {
+        e.preventDefault();
+        e.stopPropagation();
+        alert('403 Forbidden: Administrative privileges required (/api/admin/*)');
+      }
+    });
+  });
+}
+
+let isSpaAnnual = false;
+function toggleSpaBillingCycle() {
+  isSpaAnnual = !isSpaAnnual;
+  const dot = document.getElementById('spa-toggle-dot');
+  const labelMonthly = document.getElementById('spa-label-monthly');
+  const labelAnnual = document.getElementById('spa-label-annual');
+
+  if (isSpaAnnual) {
+    dot.className = 'w-4 h-4 bg-white rounded-full transition-transform transform translate-x-6';
+    labelMonthly.className = 'text-on-surface-variant dark:text-slate-400';
+    labelAnnual.className = 'text-primary dark:text-white font-bold flex items-center';
+  } else {
+    dot.className = 'w-4 h-4 bg-white rounded-full transition-transform transform translate-x-0';
+    labelMonthly.className = 'text-primary dark:text-white font-bold';
+    labelAnnual.className = 'text-on-surface-variant dark:text-slate-400 flex items-center';
+  }
+
+  document.querySelectorAll('.spa-price-display').forEach(el => {
+    el.innerText = isSpaAnnual ? el.getAttribute('data-annual') : el.getAttribute('data-monthly');
+  });
+}
+
+function initiateSpaCheckout(planName, price) {
+  window.location.href = 'paywall.html';
+}
+
+function initClock() {
+  function update() {
+    const clockEls = document.querySelectorAll('.live-clock');
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const dateString = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    clockEls.forEach(el => {
+      el.innerHTML = `<span class="material-symbols-outlined text-sm mr-1">schedule</span> Live Feed: ${dateString} • ${timeString}`;
+    });
+  }
+  update();
+  setInterval(update, 1000);
+}
+
+function initRouter() {
+  function handleRoute() {
+    const hash = window.location.hash || '#dashboard';
+    const cleanHash = hash.replace('#', '');
+    const targetId = 'view-' + cleanHash;
+
+    const views = document.querySelectorAll('.app-view');
+    let found = false;
+
+    views.forEach(view => {
+      if (view.id === targetId) {
+        view.classList.add('active');
+        found = true;
+      } else {
+        view.classList.remove('active');
+      }
+    });
+
+    if (!found && views.length > 0) {
+      document.getElementById('view-dashboard')?.classList.add('active');
+    }
+
+    document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href === hash || (hash === '' && href === '#dashboard')) {
+        link.classList.add('bg-primary-container/10', 'text-primary', 'border-r-4', 'border-primary');
+        link.classList.remove('text-on-surface-variant');
+      } else {
+        link.classList.remove('bg-primary-container/10', 'text-primary', 'border-r-4', 'border-primary');
+        link.classList.add('text-on-surface-variant');
+      }
+    });
+
+    document.body.classList.remove('sidebar-open');
+    window.scrollTo(0, 0);
+  }
+
+  window.addEventListener('hashchange', handleRoute);
+  handleRoute();
+}
+
+function initSidebarToggle() {
+  const toggleBtn = document.getElementById('mobile-drawer-toggle');
+  const overlay = document.querySelector('.sidebar-overlay');
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('sidebar-open');
+    });
+  }
+
+  if (overlay) {
+    overlay.addEventListener('click', () => {
+      document.body.classList.remove('sidebar-open');
+    });
+  }
+}
+
+function initModals() {
+  document.querySelectorAll('[data-modal-target]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modalId = btn.getAttribute('data-modal-target');
+      const modal = document.getElementById(modalId);
+      if (modal) modal.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.modal-close-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modal = btn.closest('.modal-backdrop');
+      if (modal) modal.classList.remove('active');
+    });
+  });
+
+  document.querySelectorAll('.modal-backdrop').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+      }
+    });
+  });
+}
+
+let dutySeconds = 0;
+let dutyTimer = null;
+let isPunchIn = false;
+
+function initDutyPunch() {
+  const punchBtns = document.querySelectorAll('.btn-punch-in');
+  const statusIndicator = document.getElementById('status-indicator');
+
+  punchBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      isPunchIn = !isPunchIn;
+      if (isPunchIn) {
+        btn.innerHTML = `<span class="material-symbols-outlined text-sm mr-2" style="font-variation-settings: 'FILL' 1;">timer</span> On Duty (Active)`;
+        btn.className = 'btn-punch-in bg-error text-on-error px-5 py-2 rounded-lg font-bold text-xs hover:brightness-110 active:scale-95 transition-all flex items-center shadow-sm';
+        if (statusIndicator) {
+          statusIndicator.innerHTML = `<span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span> Operational Status: ACTIVE DUTY`;
+        }
+        startDutyTimer();
+      } else {
+        btn.innerHTML = `<span class="material-symbols-outlined text-sm mr-2" style="font-variation-settings: 'FILL' 1;">timer</span> Punch In`;
+        btn.className = 'btn-punch-in bg-secondary text-on-secondary px-5 py-2 rounded-lg font-bold text-xs hover:brightness-110 active:scale-95 transition-all flex items-center shadow-sm';
+        if (statusIndicator) {
+          statusIndicator.innerHTML = `<span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span> Operational Status: SYSTEM STABLE`;
+        }
+        stopDutyTimer();
+      }
+    });
+  });
+}
+
+function startDutyTimer() {
+  if (dutyTimer) clearInterval(dutyTimer);
+  dutySeconds = 0;
+  dutyTimer = setInterval(() => {
+    dutySeconds++;
+    const hrs = String(Math.floor(dutySeconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((dutySeconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(dutySeconds % 60).padStart(2, '0');
+    const timerDisplay = document.getElementById('duty-timer-display');
+    if (timerDisplay) timerDisplay.innerText = `${hrs}:${mins}:${secs}`;
+  }, 1000);
+}
+
+function stopDutyTimer() {
+  if (dutyTimer) clearInterval(dutyTimer);
+  const timerDisplay = document.getElementById('duty-timer-display');
+  if (timerDisplay) timerDisplay.innerText = '00:00:00';
+}
+
+function initSettingsTabs() {
+  window.switchTab = function(sectionId) {
+    document.querySelectorAll('.settings-section').forEach(section => {
+      section.classList.add('hidden');
+    });
+    
+    const targetSection = document.getElementById('section-' + sectionId);
+    if (targetSection) targetSection.classList.remove('hidden');
+    
+    document.querySelectorAll('.settings-tab-btn').forEach(btn => {
+      btn.classList.remove('bg-primary', 'text-on-primary', 'shadow-md');
+      btn.classList.add('text-on-surface-variant', 'hover:bg-surface-container');
+    });
+    
+    const activeBtn = document.getElementById('tab-' + sectionId);
+    if (activeBtn) {
+      activeBtn.classList.add('bg-primary', 'text-on-primary', 'shadow-md');
+      activeBtn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container');
+    }
+  };
+}
+
+function initMapPlayback() {
+  let isPlaying = true;
+  const trailLine = document.querySelector('.trail-line');
+  const toggleBtn = document.getElementById('btn-map-playback');
+
+  if (toggleBtn && trailLine) {
+    toggleBtn.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      if (isPlaying) {
+        trailLine.style.animationPlayState = 'running';
+        toggleBtn.innerText = 'pause_circle';
+      } else {
+        trailLine.style.animationPlayState = 'paused';
+        toggleBtn.innerText = 'play_circle';
+      }
+    });
+  }
+}

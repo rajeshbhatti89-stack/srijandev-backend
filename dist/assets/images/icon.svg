@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00164e"/>
+      <stop offset="100%" stop-color="#00236f"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6cf8bb"/>
+      <stop offset="100%" stop-color="#006c49"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)"/>
+  <g filter="url(#shadow)" transform="translate(106, 86)">
+    <!-- Shield Outer -->
+    <path d="M150 0 L290 50 C290 200 210 290 150 330 C90 290 10 200 10 50 Z" fill="url(#shieldGrad)" stroke="#ffffff" stroke-width="8"/>
+    <!-- Inner Emblem -->
+    <path d="M150 35 L260 75 C260 190 190 260 150 295 C110 260 40 190 40 75 Z" fill="#00236f"/>
+    <!-- SrijanDev Star -->
+    <path d="M150 80 L165 135 L220 150 L165 165 L150 220 L135 165 L80 150 L135 135 Z" fill="#6cf8bb"/>
+  </g>
+</svg>

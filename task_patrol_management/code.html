@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SrijanDev - Tasks &amp; Patrol Protocols</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Courier+Prime&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#0b1c30",
+                    "surface-container-high": "#dce9ff",
+                    "tertiary-fixed": "#ffdad7",
+                    "secondary-fixed-dim": "#4edea3",
+                    "surface-variant": "#d3e4fe",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#444651",
+                    "on-background": "#0b1c30",
+                    "tertiary": "#5c0008",
+                    "on-tertiary-fixed-variant": "#930013",
+                    "outline": "#757682",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#f8f9ff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "tertiary-container": "#860011",
+                    "surface-tint": "#4059aa",
+                    "surface-dim": "#cbdbf5",
+                    "outline-variant": "#c5c5d3",
+                    "primary-container": "#1e3a8a",
+                    "on-primary-container": "#90a8ff",
+                    "inverse-surface": "#213145",
+                    "surface-container": "#e5eeff",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#ffb3ad",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#ff8a83",
+                    "on-secondary-fixed-variant": "#005236",
+                    "on-secondary-container": "#00714d",
+                    "on-primary-fixed": "#00164e",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#6cf8bb",
+                    "on-error-container": "#93000a",
+                    "surface": "#f8f9ff",
+                    "on-tertiary-fixed": "#410004",
+                    "inverse-primary": "#b6c4ff",
+                    "primary": "#00236f",
+                    "background": "#f8f9ff",
+                    "primary-fixed": "#dce1ff",
+                    "surface-container-low": "#eff4ff",
+                    "on-secondary-fixed": "#002113",
+                    "on-primary-fixed-variant": "#264191",
+                    "on-error": "#ffffff",
+                    "secondary": "#006c49",
+                    "secondary-fixed": "#6ffbbe"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "gutter": "16px",
+                    "margin-desktop": "32px",
+                    "control-height": "48px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "label-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "mono-data": ["Courier Prime"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "mono-data": ["13px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c5c5d3;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden h-screen flex">
+<!-- SideNavBar (JSON Derived) -->
+<aside class="fixed left-0 top-0 h-screen w-[280px] bg-surface border-r border-outline-variant flex flex-col py-margin-desktop space-y-unit shadow-sm z-50">
+<div class="px-6 mb-8">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">SrijanDev</h1>
+<p class="text-xs text-on-surface-variant font-medium uppercase tracking-wider">OPERATIONS &amp; MANAGEMENT PORTAL</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center px-4 py-3 font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center px-4 py-3 font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">corporate_fare</span> Organization
+            </a>
+<a class="flex items-center px-4 py-3 font-label-lg text-label-lg text-primary bg-primary-container/10 border-r-4 border-primary active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3" style="font-variation-settings: 'FILL' 1;">assignment</span> Tasks
+            </a>
+<a class="flex items-center px-4 py-3 font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">location_on</span> Clients &amp; Sites
+            </a>
+<a class="flex items-center px-4 py-3 font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span> Reports &amp; Analytics
+            </a>
+<a class="flex items-center px-4 py-3 font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">calendar_month</span> Duty Scheduling
+            </a>
+<div class="pt-10">
+<a class="flex items-center px-4 py-3 font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">settings</span> Settings
+                </a>
+</div>
+</nav>
+<div class="px-6 py-4 flex items-center border-t border-outline-variant">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center mr-3 border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a security operations manager in a clean, high-contrast office environment. The subject wears a charcoal suit, looking authoritative and focused. The background features blurred digital monitors with security maps and data analytics, emphasizing a high-tech command center aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS4t1sVBut7Q2I7BiRB9B5T0ImABnQAemQa9zxdmxcGi-T81ZyZSJqZwkjy1nsNGrsOsLryKdGHxsfmairjWWujM1-6rUVyGx6JqUbKsGyWUnZ20hQeC_JqmRa8wB2XTQzWFMOnYeGEvxGFQTCZZfkHKme8LIpM3pVvGmT6Bsab1QT2FPit9SdovTc5d6hd3jbjd3YSjIoekmdak7THR4OcE2wBwtvVeBFSzLLkoG6yz-BYypeUJHd9E7ghb_1hWX88ODFe0dvFd-x"/>
+</div>
+<div>
+<p class="font-label-lg text-on-surface">M. Sterling</p>
+<p class="text-xs text-on-surface-variant">Operations Lead</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[280px] w-[calc(100%-280px)] h-screen flex flex-col overflow-hidden">
+<!-- TopNavBar (JSON Derived) -->
+<header class="flex justify-between items-center px-margin-desktop h-16 w-full bg-surface border-b border-outline-variant z-40">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-lg border border-outline-variant w-1/3">
+<span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-body-md text-on-surface" placeholder="Search tasks, sites, or personnel..." type="text"/>
+</div>
+<div class="flex items-center space-x-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<button class="bg-secondary text-on-secondary px-6 h-control-height rounded font-label-lg flex items-center transition-all hover:brightness-110 active:scale-95">
+<span class="material-symbols-outlined mr-2">timer</span> Punch In
+                </button>
+</div>
+</header>
+<!-- Content Scroll Area -->
+<div class="flex-1 overflow-y-auto p-margin-desktop space-y-6">
+<!-- Page Header & Global Actions -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">Task Management</h2>
+<p class="text-on-surface-variant font-body-md mt-1">Real-time oversight of field operations and patrol protocols.</p>
+</div>
+<div class="flex space-x-3">
+<button class="border-2 border-primary text-primary px-5 py-2 rounded font-label-lg hover:bg-primary/5 transition-all flex items-center">
+<span class="material-symbols-outlined mr-2">campaign</span> Broadcast Instruction
+                    </button>
+<button class="bg-primary text-on-primary px-5 py-2 rounded font-label-lg hover:brightness-125 transition-all flex items-center shadow-md">
+<span class="material-symbols-outlined mr-2">add</span> Create New Task
+                    </button>
+</div>
+</div>
+<!-- Dashboard Filtering & Stats -->
+<div class="flex items-center justify-between bg-surface-container-low p-4 rounded-xl border border-outline-variant">
+<div class="flex space-x-6">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold text-on-surface-variant tracking-widest mb-1">Status View</span>
+<div class="flex bg-white p-1 rounded-lg border border-outline-variant">
+<button class="px-4 py-1.5 bg-primary-container text-white rounded text-xs font-bold transition-all">All Tasks</button>
+<button class="px-4 py-1.5 text-on-surface-variant text-xs font-bold hover:bg-surface-container transition-all">Active</button>
+<button class="px-4 py-1.5 text-on-surface-variant text-xs font-bold hover:bg-surface-container transition-all">Pending</button>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold text-on-surface-variant tracking-widest mb-1">Priority</span>
+<select class="bg-white border border-outline-variant text-xs font-bold py-2 rounded-lg focus:ring-primary focus:border-primary">
+<option>All Priorities</option>
+<option>Critical Only</option>
+<option>Medium</option>
+</select>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold text-on-surface-variant tracking-widest mb-1">Assigned Personnel</span>
+<select class="bg-white border border-outline-variant text-xs font-bold py-2 rounded-lg focus:ring-primary focus:border-primary">
+<option>All Staff</option>
+<option>Armed Response</option>
+<option>Night Watch</option>
+</select>
+</div>
+</div>
+<div class="flex space-x-8 pr-4">
+<div class="text-right">
+<p class="text-xs text-on-surface-variant font-medium">Compliance Rate</p>
+<p class="font-headline-sm text-secondary font-bold">98.4%</p>
+</div>
+<div class="text-right">
+<p class="text-xs text-on-surface-variant font-medium">Overdue Alerts</p>
+<p class="font-headline-sm text-error font-bold">02</p>
+</div>
+</div>
+</div>
+<!-- Main Layout Bento -->
+<div class="bento-grid h-auto">
+<!-- Task Board Column (Active) -->
+<div class="col-span-8 space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="font-label-lg text-on-surface flex items-center">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2 status-pulse"></span>
+                            Live Task Monitor
+                        </h3>
+<span class="text-xs font-mono-data text-on-surface-variant">Last Update: 14:02:31</span>
+</div>
+<!-- Task Item 1: High Priority -->
+<div class="bg-white p-5 rounded-xl border-l-4 border-l-error border border-outline-variant shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="bg-error-container text-on-error-container px-2 py-0.5 rounded text-[10px] font-bold uppercase">Critical</span>
+<span class="text-xs font-mono-data text-outline">ID: TSK-00492</span>
+</div>
+<h4 class="font-headline-sm text-on-surface mb-1">Unscheduled Perimeter Breach Inspection</h4>
+<p class="text-sm text-on-surface-variant">North Wing - Zone 4 Fence Line</p>
+</div>
+<div class="text-right">
+<span class="bg-surface-container-highest text-primary px-3 py-1 rounded-full text-xs font-bold border border-outline-variant">In Progress</span>
+<p class="text-xs mt-2 font-medium text-on-surface-variant">Assigned: Officer J. Russo</p>
+</div>
+</div>
+<div class="mt-4 flex items-center space-x-4">
+<div class="flex-1">
+<div class="flex justify-between text-[10px] font-bold text-on-surface-variant mb-1">
+<span>TASK PROGRESS</span>
+<span>65%</span>
+</div>
+<div class="h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full" style="width: 65%"></div>
+</div>
+</div>
+<div class="flex items-center text-secondary font-label-lg">
+<span class="material-symbols-outlined text-sm mr-1">location_searching</span>
+<span class="text-[11px] uppercase tracking-tighter">Geofence Verified</span>
+</div>
+</div>
+</div>
+<!-- Task Item 2: Medium Priority -->
+<div class="bg-white p-5 rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="bg-primary-container/10 text-primary px-2 py-0.5 rounded text-[10px] font-bold uppercase">Standard</span>
+<span class="text-xs font-mono-data text-outline">ID: TSK-00488</span>
+</div>
+<h4 class="font-headline-sm text-on-surface mb-1">Routine Mechanical Room Check</h4>
+<p class="text-sm text-on-surface-variant">Main Lobby - Site B</p>
+</div>
+<div class="text-right">
+<span class="bg-tertiary-container/10 text-tertiary px-3 py-1 rounded-full text-xs font-bold border border-tertiary-container/20">Pending</span>
+<p class="text-xs mt-2 font-medium text-on-surface-variant">Assigned: Officer L. Chen</p>
+</div>
+</div>
+<div class="mt-4 flex items-center space-x-4">
+<div class="flex-1">
+<div class="flex justify-between text-[10px] font-bold text-on-surface-variant mb-1">
+<span>TASK PROGRESS</span>
+<span>0%</span>
+</div>
+<div class="h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-outline-variant rounded-full" style="width: 0%"></div>
+</div>
+</div>
+<div class="flex items-center text-on-surface-variant font-label-lg opacity-50">
+<span class="material-symbols-outlined text-sm mr-1">location_searching</span>
+<span class="text-[11px] uppercase tracking-tighter">Waiting for Entry</span>
+</div>
+</div>
+</div>
+<!-- Task Item 3: Completed/Verified -->
+<div class="bg-surface-container-low/50 p-5 rounded-xl border border-outline-variant transition-shadow opacity-80">
+<div class="flex justify-between items-start">
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="bg-secondary-container/40 text-secondary px-2 py-0.5 rounded text-[10px] font-bold uppercase">Complete</span>
+<span class="text-xs font-mono-data text-outline">ID: TSK-00485</span>
+</div>
+<h4 class="font-headline-sm text-on-surface mb-1">Parking Garage Alpha Lighting Audit</h4>
+<p class="text-sm text-on-surface-variant">West Deck - Floor 2 &amp; 3</p>
+</div>
+<div class="text-right">
+<span class="bg-secondary text-on-secondary px-3 py-1 rounded-full text-xs font-bold flex items-center">
+<span class="material-symbols-outlined text-xs mr-1" style="font-variation-settings: 'FILL' 1;">check_circle</span> Verified
+                                </span>
+<p class="text-xs mt-2 font-medium text-on-surface-variant">Completed: 13:45 PM</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Protocol Management & Maps -->
+<div class="col-span-4 space-y-6">
+<!-- Patrol Protocols (NFC/QR) -->
+<div class="bg-surface p-6 rounded-xl border border-outline-variant shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-lg text-primary uppercase tracking-wider">Patrol Protocols</h3>
+<button class="text-primary hover:underline text-xs font-bold">Edit All</button>
+</div>
+<div class="space-y-3">
+<!-- Site A Protocol -->
+<div class="p-3 bg-white border border-outline-variant rounded-lg">
+<div class="flex justify-between items-center mb-2">
+<p class="font-bold text-xs">Logistics Hub - Site A</p>
+<span class="text-[10px] text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">6 Checkpoints</span>
+</div>
+<div class="flex gap-2">
+<div class="flex-1 flex items-center justify-center py-2 bg-surface-container-low rounded border border-dashed border-outline-variant">
+<span class="material-symbols-outlined text-sm mr-1">nfc</span>
+<span class="text-[10px] font-bold">NFC Tags</span>
+</div>
+<div class="flex-1 flex items-center justify-center py-2 bg-surface-container-low rounded border border-dashed border-outline-variant">
+<span class="material-symbols-outlined text-sm mr-1">qr_code_2</span>
+<span class="text-[10px] font-bold">QR Visual</span>
+</div>
+</div>
+</div>
+<!-- Site B Protocol -->
+<div class="p-3 bg-white border border-outline-variant rounded-lg">
+<div class="flex justify-between items-center mb-2">
+<p class="font-bold text-xs">Financial Center - Site B</p>
+<span class="text-[10px] text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">12 Checkpoints</span>
+</div>
+<div class="w-full py-2 bg-primary-container/5 rounded border border-dashed border-primary/20 text-center">
+<span class="material-symbols-outlined text-sm mr-1 text-primary">nfc</span>
+<span class="text-[10px] font-bold text-primary">Mandatory NFC - Biometric Auth</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-4 py-3 bg-surface-container-high text-primary font-bold text-xs rounded border border-outline-variant hover:bg-surface-container-highest transition-colors">
+                            + Define New Protocol
+                        </button>
+</div>
+<!-- Geofence Tracking Snapshot -->
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+<div class="p-4 border-b border-outline-variant bg-surface">
+<h3 class="font-label-lg text-on-surface flex items-center">
+<span class="material-symbols-outlined text-primary mr-2">map</span>
+                                Personnel Live-Track
+                            </h3>
+</div>
+<div class="relative h-64 w-full bg-slate-200">
+<!-- Placeholder for Map Interaction -->
+<div class="w-full h-full bg-cover bg-center" data-alt="A sophisticated digital mapping interface showing a top-down tactical view of a commercial complex. Glowing green dots represent active security personnel moving through designated paths. Red semi-transparent circular overlays indicate active geofences around critical infrastructure. The color palette is dark navy and glowing cyan, suggesting a high-tech surveillance platform." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBVzXXVMbtGJMNokCGGm4YN6YYyFkA0SYW02-Kh7wQuAyroW9Nz9Gzo4pS76sVc6PirgCZxMT6aVz2gfpaDLwtFW5kNb-FqGeAabh080F60Gl7X_fvAG1hURmgrqhoeKVEfdMD76O5yCkv-7fVJoiXd3d_KI2M_lUBot7hH2rcnMr9Nf2MYJmJni5skXCq4T3iEBAnLbKhP6eg9AZciR-SXOgTQtztdCmFTTa6RfR0UJ_pxsS-wE-Tljar-HjUCG2hQ5JuKxjuqsNBn')">
+<div class="absolute inset-0 bg-primary/10 pointer-events-none"></div>
+<!-- UI Overlays on map -->
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-2 rounded shadow-lg border border-outline-variant">
+<p class="text-[10px] font-bold text-on-surface-variant">ACTIVE UNITS</p>
+<p class="font-headline-sm text-primary">12 / 14</p>
+</div>
+<div class="absolute bottom-4 right-4 bg-primary text-white p-2 rounded-full shadow-xl">
+<span class="material-symbols-outlined">my_location</span>
+</div>
+</div>
+</div>
+<div class="p-4 bg-surface">
+<div class="flex items-center justify-between text-xs font-medium">
+<span class="text-on-surface-variant">Last Geofence Alert:</span>
+<span class="text-secondary">None (All units within bounds)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Task Log / History (Simplified table view for scanning) -->
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden">
+<div class="px-6 py-4 bg-surface border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-label-lg text-on-surface">Recent Task Logs</h3>
+<div class="flex space-x-2">
+<button class="p-1.5 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-lg">download</span></button>
+<button class="p-1.5 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-lg">print</span></button>
+</div>
+</div>
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-6 py-3 font-label-lg text-[11px] text-on-surface-variant uppercase tracking-widest">Timestamp</th>
+<th class="px-6 py-3 font-label-lg text-[11px] text-on-surface-variant uppercase tracking-widest">Personnel</th>
+<th class="px-6 py-3 font-label-lg text-[11px] text-on-surface-variant uppercase tracking-widest">Task Details</th>
+<th class="px-6 py-3 font-label-lg text-[11px] text-on-surface-variant uppercase tracking-widest">Method</th>
+<th class="px-6 py-3 font-label-lg text-[11px] text-on-surface-variant uppercase tracking-widest">Outcome</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 font-mono-data text-xs">14:05:22</td>
+<td class="px-6 py-4 font-bold text-xs">Officer J. Russo</td>
+<td class="px-6 py-4 text-xs">Perimeter Check - Node 4</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-[10px] bg-surface-container px-2 py-1 rounded w-fit">
+<span class="material-symbols-outlined text-xs mr-1">nfc</span> NFC Scan
+                                </span>
+</td>
+<td class="px-6 py-4 text-xs font-bold text-secondary">SUCCESS</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 font-mono-data text-xs">13:58:11</td>
+<td class="px-6 py-4 font-bold text-xs">Officer L. Chen</td>
+<td class="px-6 py-4 text-xs">Maintenance Access Log</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-[10px] bg-surface-container px-2 py-1 rounded w-fit">
+<span class="material-symbols-outlined text-xs mr-1">photo_camera</span> Photo Upload
+                                </span>
+</td>
+<td class="px-6 py-4 text-xs font-bold text-secondary">VERIFIED</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4 font-mono-data text-xs">13:42:00</td>
+<td class="px-6 py-4 font-bold text-xs">Officer M. Kante</td>
+<td class="px-6 py-4 text-xs">Gate A Closure</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-[10px] bg-surface-container px-2 py-1 rounded w-fit">
+<span class="material-symbols-outlined text-xs mr-1">qr_code_2</span> QR Code
+                                </span>
+</td>
+<td class="px-6 py-4 text-xs font-bold text-secondary">SUCCESS</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (JSON Logic: Suppress on Details, but keep on Dashboard/Tasks for Create action) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50 group">
+<span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform">add</span>
+<div class="absolute right-16 bg-on-surface text-white px-3 py-1.5 rounded text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+            Quick Broadcast
+        </div>
+</button>
+<script>
+        // Micro-interactions for live status simulation
+        setInterval(() => {
+            const timeElements = document.querySelectorAll('.font-mono-data');
+            const now = new Date();
+            const timeString = now.toTimeString().split(' ')[0];
+            // Only update the "Last Update" text to simulate real-time feel
+            const lastUpdate = document.querySelector('.font-mono-data.text-on-surface-variant');
+            if(lastUpdate) lastUpdate.innerText = `Last Update: ${timeString}`;
+        }, 1000);
+
+        // Simple filtering toggle logic simulation
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if(this.parentElement.classList.contains('bg-white')) {
+                    this.parentElement.querySelectorAll('button').forEach(b => {
+                        b.classList.remove('bg-primary-container', 'text-white');
+                        b.classList.add('text-on-surface-variant');
+                    });
+                    this.classList.add('bg-primary-container', 'text-white');
+                    this.classList.remove('text-on-surface-variant');
+                }
+            });
+        });
+    </script>
+</body></html>

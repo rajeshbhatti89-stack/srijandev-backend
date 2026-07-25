@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Organization Management | SrijanDev</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Courier+Prime&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#0b1c30",
+                    "surface-container-high": "#dce9ff",
+                    "tertiary-fixed": "#ffdad7",
+                    "secondary-fixed-dim": "#4edea3",
+                    "surface-variant": "#d3e4fe",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#444651",
+                    "on-background": "#0b1c30",
+                    "tertiary": "#5c0008",
+                    "on-tertiary-fixed-variant": "#930013",
+                    "outline": "#757682",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#f8f9ff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "tertiary-container": "#860011",
+                    "surface-tint": "#4059aa",
+                    "surface-dim": "#cbdbf5",
+                    "outline-variant": "#c5c5d3",
+                    "primary-container": "#1e3a8a",
+                    "on-primary-container": "#90a8ff",
+                    "inverse-surface": "#213145",
+                    "surface-container": "#e5eeff",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#ffb3ad",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#ff8a83",
+                    "on-secondary-fixed-variant": "#005236",
+                    "on-secondary-container": "#00714d",
+                    "on-primary-fixed": "#00164e",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#6cf8bb",
+                    "on-error-container": "#93000a",
+                    "surface": "#f8f9ff",
+                    "on-tertiary-fixed": "#410004",
+                    "inverse-primary": "#b6c4ff",
+                    "primary": "#00236f",
+                    "background": "#f8f9ff",
+                    "primary-fixed": "#dce1ff",
+                    "surface-container-low": "#eff4ff",
+                    "on-secondary-fixed": "#002113",
+                    "on-primary-fixed-variant": "#264191",
+                    "on-error": "#ffffff",
+                    "secondary": "#006c49",
+                    "secondary-fixed": "#6ffbbe"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "gutter": "16px",
+                    "margin-desktop": "32px",
+                    "control-height": "48px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "label-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "mono-data": ["Courier Prime"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "mono-data": ["13px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-screen w-[280px] bg-surface border-r border-outline-variant shadow-sm flex flex-col py-margin-desktop space-y-unit z-50">
+<div class="px-gutter mb-8">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">SrijanDev</h1>
+<p class="text-on-surface-variant font-label-md">OPERATIONS &amp; MANAGEMENT PORTAL</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-gutter py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-lg">Dashboard</span>
+</a>
+<a class="flex items-center px-gutter py-3 text-primary bg-primary-container/10 border-r-4 border-primary transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">corporate_fare</span>
+<span class="font-label-lg">Organization</span>
+</a>
+<a class="flex items-center px-gutter py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">assignment</span>
+<span class="font-label-lg">Tasks</span>
+</a>
+<a class="flex items-center px-gutter py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">location_on</span>
+<span class="font-label-lg">Clients &amp; Sites</span>
+</a>
+<a class="flex items-center px-gutter py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-label-lg">Reports &amp; Analytics</span>
+</a>
+<a class="flex items-center px-gutter py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">calendar_month</span>
+<span class="font-label-lg">Duty Scheduling</span>
+</a>
+<a class="flex items-center px-gutter py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-label-lg">Settings</span>
+</a>
+</nav>
+<div class="px-gutter mt-auto pt-4 border-t border-outline-variant">
+<div class="flex items-center space-x-3">
+<img class="w-10 h-10 rounded-full bg-surface-container" data-alt="Close up professional portrait of a security manager in a crisp white shirt and navy tie, looking confident and focused. The background is a blurred high-tech control room with soft blue and grey tones, conveying a sense of authority and professional excellence in a corporate security environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPGdoEn3A5jARf-1Hz7ndKFXWuQIg1PGFlHYks9fgoS7mJx0Ne1_gjNsS3Ei4nwJvu9O85wbs2HNsZ80_AiW2eDHScBxr4ukl0VTrf4868utrbYmD7pWSh3TW1q7L5-Fi4k3TLOX8MDxNFLgCUyddQGcmmLr6fMKxiTsY1qQqq7v7Kyi203fKXrcpZaYkuRn9ScNl2udLAOrjzN7MMVp3JxLN5Z8rpIArqpiOfPFUxxUuOgoQnnr1mVLaeqfZK2Id1Gx5bhM4t4qqR"/>
+<div>
+<p class="font-label-lg text-on-surface">Marcus Vance</p>
+<p class="text-xs text-on-surface-variant">Regional Director</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-280px)] h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center bg-surface-container-low rounded-lg px-3 py-1.5 w-96 border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full p-0" placeholder="Search units, personnel, or tags..." type="text"/>
+</div>
+<div class="flex items-center space-x-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<button class="bg-secondary text-on-secondary px-6 h-10 rounded-lg font-label-lg hover:brightness-110 active:scale-95 transition-all">
+                Punch In
+            </button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[280px] pt-24 px-margin-desktop pb-margin-desktop h-screen overflow-y-auto">
+<!-- Header Actions -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Organization</h2>
+<p class="text-on-surface-variant">Manage jurisdictional boundaries and command structures.</p>
+</div>
+<div class="flex space-x-3">
+<button class="flex items-center space-x-2 border border-primary text-primary px-4 py-2 rounded-lg font-label-lg hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-[20px]">add_business</span>
+<span>Add Unit</span>
+</button>
+<button class="flex items-center space-x-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-lg shadow-sm hover:brightness-110 transition-colors">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+<span>Onboard Personnel</span>
+</button>
+</div>
+</div>
+<!-- Metrics Row -->
+<div class="grid grid-cols-4 gap-gutter mb-8">
+<div class="bg-surface-container-lowest border border-outline-variant p-5 rounded-xl shadow-sm">
+<p class="text-on-surface-variant font-label-md mb-1 uppercase tracking-wider">Total Personnel</p>
+<div class="flex justify-between items-end">
+<span class="font-headline-md text-headline-md text-on-surface">1,284</span>
+<span class="text-secondary font-label-lg flex items-center">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span> 12%
+                    </span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-5 rounded-xl shadow-sm">
+<p class="text-on-surface-variant font-label-md mb-1 uppercase tracking-wider">Active Deployments</p>
+<div class="flex justify-between items-end">
+<span class="font-headline-md text-headline-md text-on-surface">412</span>
+<span class="flex items-center text-secondary">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2 status-pulse"></span>
+<span class="text-xs font-mono-data">LIVE NOW</span>
+</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-5 rounded-xl shadow-sm">
+<p class="text-on-surface-variant font-label-md mb-1 uppercase tracking-wider">Training Compliance</p>
+<div class="flex justify-between items-end">
+<span class="font-headline-md text-headline-md text-on-surface">94.2%</span>
+<div class="w-24 bg-surface-container-high h-2 rounded-full mb-2">
+<div class="bg-secondary h-full rounded-full w-[94%]"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-5 rounded-xl shadow-sm">
+<p class="text-on-surface-variant font-label-md mb-1 uppercase tracking-wider">Open Incidents</p>
+<div class="flex justify-between items-end">
+<span class="font-headline-md text-headline-md text-tertiary-container">08</span>
+<span class="text-error font-label-md">Requires Action</span>
+</div>
+</div>
+</div>
+<div class="bento-grid">
+<!-- Unit Hierarchy (4 Columns) -->
+<section class="col-span-4 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<h3 class="font-label-lg text-primary uppercase tracking-tight">Command Directory</h3>
+<span class="material-symbols-outlined text-on-surface-variant">filter_list</span>
+</div>
+<div class="p-4 space-y-4 overflow-y-auto">
+<!-- North Command -->
+<div class="group">
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-high cursor-pointer transition-colors">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-primary mr-2">keyboard_arrow_down</span>
+<span class="font-label-lg">North Command</span>
+</div>
+<span class="font-mono-data text-xs px-2 py-0.5 bg-primary-container text-on-primary-container rounded">HQ</span>
+</div>
+<div class="ml-6 mt-1 space-y-1 border-l-2 border-outline-variant/30">
+<div class="flex items-center justify-between p-2 pl-4 rounded-lg hover:bg-surface-container-high cursor-pointer">
+<span class="text-sm">Sector Alpha-1</span>
+<span class="text-xs text-on-surface-variant">12 Guards</span>
+</div>
+<div class="flex items-center justify-between p-2 pl-4 rounded-lg hover:bg-surface-container-high cursor-pointer">
+<span class="text-sm">Sector Alpha-2</span>
+<span class="text-xs text-on-surface-variant">8 Guards</span>
+</div>
+</div>
+</div>
+<!-- South Logistics -->
+<div class="group">
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-high cursor-pointer transition-colors">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-primary mr-2">keyboard_arrow_right</span>
+<span class="font-label-lg">South Logistics</span>
+</div>
+<span class="font-mono-data text-xs px-2 py-0.5 bg-surface-container-high text-on-surface-variant rounded">DEPOT</span>
+</div>
+</div>
+<!-- West Coastal -->
+<div class="group">
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-high cursor-pointer transition-colors">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-primary mr-2">keyboard_arrow_right</span>
+<span class="font-label-lg">West Coastal</span>
+</div>
+<span class="font-mono-data text-xs px-2 py-0.5 bg-surface-container-high text-on-surface-variant rounded">UNIT</span>
+</div>
+</div>
+<!-- Central Dispatch -->
+<div class="group">
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-high cursor-pointer transition-colors">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-primary mr-2">keyboard_arrow_right</span>
+<span class="font-label-lg">Central Dispatch</span>
+</div>
+<span class="font-mono-data text-xs px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded">HUB</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Personnel Management (8 Columns) -->
+<section class="col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<div class="flex space-x-6">
+<button class="font-label-lg text-primary border-b-2 border-primary pb-1">All Personnel</button>
+<button class="font-label-lg text-on-surface-variant hover:text-on-surface transition-colors pb-1">Supervisors</button>
+<button class="font-label-lg text-on-surface-variant hover:text-on-surface transition-colors pb-1">Guards</button>
+<button class="font-label-lg text-on-surface-variant hover:text-on-surface transition-colors pb-1">Dispatchers</button>
+</div>
+<div class="flex space-x-2">
+<button class="p-1 hover:bg-surface-container transition-colors rounded">
+<span class="material-symbols-outlined">download</span>
+</button>
+<button class="p-1 hover:bg-surface-container transition-colors rounded">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="px-6 py-3 font-label-md text-on-surface-variant uppercase">Name &amp; ID</th>
+<th class="px-6 py-3 font-label-md text-on-surface-variant uppercase">Role</th>
+<th class="px-6 py-3 font-label-md text-on-surface-variant uppercase">Assignment</th>
+<th class="px-6 py-3 font-label-md text-on-surface-variant uppercase">Status</th>
+<th class="px-6 py-3 font-label-md text-on-surface-variant uppercase text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/40">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-xs mr-3">JD</div>
+<div>
+<p class="font-label-lg">Julianna Drake</p>
+<p class="text-xs font-mono-data text-on-surface-variant">ID: SP-7721</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm px-2 py-1 bg-surface-container-high rounded text-on-surface">Supervisor</span>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm">North Command</p>
+<p class="text-xs text-on-surface-variant">Main HQ</p>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-secondary font-label-md">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2"></span>
+                                    On Duty
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary font-label-md hover:underline">View File</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-bold text-xs mr-3">RK</div>
+<div>
+<p class="font-label-lg">Robert Kovic</p>
+<p class="text-xs font-mono-data text-on-surface-variant">ID: SP-9902</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm px-2 py-1 bg-surface-container-high rounded text-on-surface">Armed Guard</span>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm">Sector Alpha-1</p>
+<p class="text-xs text-on-surface-variant">Perimeter A</p>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-secondary font-label-md">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2"></span>
+                                    On Duty
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary font-label-md hover:underline">View File</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-surface-dim text-on-surface-variant flex items-center justify-center font-bold text-xs mr-3">MS</div>
+<div>
+<p class="font-label-lg">Michael Sterling</p>
+<p class="text-xs font-mono-data text-on-surface-variant">ID: SP-4410</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm px-2 py-1 bg-surface-container-high rounded text-on-surface">Dispatcher</span>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm">Central Dispatch</p>
+<p class="text-xs text-on-surface-variant">Unassigned</p>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-on-surface-variant font-label-md">
+<span class="w-2 h-2 rounded-full bg-outline mr-2"></span>
+                                    Off Duty
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary font-label-md hover:underline">View File</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center font-bold text-xs mr-3">EL</div>
+<div>
+<p class="font-label-lg">Elena Lu</p>
+<p class="text-xs font-mono-data text-on-surface-variant">ID: SP-8812</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm px-2 py-1 bg-surface-container-high rounded text-on-surface">Armed Guard</span>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm">Sector Alpha-2</p>
+<p class="text-xs text-on-surface-variant">Post 4</p>
+</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-tertiary-container font-label-md">
+<span class="w-2 h-2 rounded-full bg-error mr-2 status-pulse"></span>
+                                    Alerted
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary font-label-md hover:underline">View File</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="mt-auto p-4 border-t border-outline-variant bg-surface-container-low flex justify-between items-center">
+<p class="text-xs text-on-surface-variant">Showing 1-4 of 1,284 personnel</p>
+<div class="flex space-x-1">
+<button class="px-3 py-1 border border-outline-variant rounded hover:bg-surface transition-colors text-xs">Prev</button>
+<button class="px-3 py-1 bg-primary text-on-primary rounded text-xs">1</button>
+<button class="px-3 py-1 border border-outline-variant rounded hover:bg-surface transition-colors text-xs">2</button>
+<button class="px-3 py-1 border border-outline-variant rounded hover:bg-surface transition-colors text-xs">3</button>
+<button class="px-3 py-1 border border-outline-variant rounded hover:bg-surface transition-colors text-xs">Next</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Recent Organizational Activity -->
+<div class="mt-8">
+<h3 class="font-label-lg text-primary uppercase tracking-tight mb-4">Command Logs</h3>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-2">
+<div class="flex items-center p-3 hover:bg-surface-container-low rounded-lg transition-colors border-b border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary mr-4">person_add</span>
+<div class="flex-1">
+<p class="text-sm font-label-lg">Personnel Onboarded: Robert Kovic</p>
+<p class="text-xs text-on-surface-variant">Added to South Logistics by Admin Vance</p>
+</div>
+<span class="font-mono-data text-xs text-on-surface-variant">2 mins ago</span>
+</div>
+<div class="flex items-center p-3 hover:bg-surface-container-low rounded-lg transition-colors border-b border-outline-variant/20">
+<span class="material-symbols-outlined text-primary mr-4">domain</span>
+<div class="flex-1">
+<p class="text-sm font-label-lg">Unit Updated: North Command HQ</p>
+<p class="text-xs text-on-surface-variant">Capacity increased to 25 active posts</p>
+</div>
+<span class="font-mono-data text-xs text-on-surface-variant">1 hour ago</span>
+</div>
+<div class="flex items-center p-3 hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined text-error mr-4">warning</span>
+<div class="flex-1">
+<p class="text-sm font-label-lg">Compliance Alert: Sector Alpha-1</p>
+<p class="text-xs text-on-surface-variant">2 personnel training certification expiring in 5 days</p>
+</div>
+<span class="font-mono-data text-xs text-on-surface-variant">3 hours ago</span>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB for Quick Actions (Suppressed on deep settings, but active for this dashboard context) -->
+<button class="fixed bottom-margin-desktop right-margin-desktop w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center group">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+<div class="absolute right-16 bg-on-surface text-surface px-3 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Quick Command
+        </div>
+</button>
+<script>
+        // Simple micro-interaction for active nav states if clicked
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                // In a real app, this would route. For this demo, we just show selection.
+                document.querySelectorAll('nav a').forEach(l => {
+                    l.classList.remove('text-primary', 'bg-primary-container/10', 'border-r-4', 'border-primary');
+                    l.classList.add('text-on-surface-variant');
+                });
+                link.classList.add('text-primary', 'bg-primary-container/10', 'border-r-4', 'border-primary');
+                link.classList.remove('text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>
