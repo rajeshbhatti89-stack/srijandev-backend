@@ -1032,34 +1032,31 @@
         </h3>
         <button class="modal-close-btn text-on-surface-variant hover:text-on-surface">
           <span class="material-symbols-outlined text-lg">close</span>
-        </button>
-      </div>
-
-      <div class="space-y-3 text-xs">
+                <div class="space-y-3 text-xs">
         <div class="flex items-center space-x-3 p-3 bg-surface-container-low rounded-xl border border-outline-variant">
-          <div id="modal-profile-initials" class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-base">RB</div>
+          <div id="modal-profile-initials" class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-base">U</div>
           <div>
-            <h4 id="modal-profile-name" class="font-bold text-sm text-on-surface">Rajesh Bhatti</h4>
-            <p id="modal-profile-role" class="text-on-surface-variant text-[11px]">SUPERADMIN • SrijanDev</p>
+            <h4 id="modal-profile-name" class="font-bold text-sm text-on-surface">Authenticated User</h4>
+            <p id="modal-profile-role" class="text-on-surface-variant text-[11px]">ACTIVE SESSION</p>
           </div>
         </div>
 
         <div class="space-y-2">
           <div class="flex justify-between py-1.5 border-b border-outline-variant">
             <span class="text-on-surface-variant">Email / Account</span>
-            <span id="modal-profile-email" class="font-bold text-on-surface">rajeshbhatti89@gmail.com</span>
+            <span id="modal-profile-email" class="font-bold text-on-surface">User Session</span>
           </div>
           <div class="flex justify-between py-1.5 border-b border-outline-variant">
             <span class="text-on-surface-variant">Organization / Client</span>
-            <span id="modal-profile-company" class="font-bold text-primary">SrijanDev Apex Operations</span>
+            <span id="modal-profile-company" class="font-bold text-primary">SrijanDev Operations</span>
           </div>
           <div class="flex justify-between py-1.5 border-b border-outline-variant">
             <span class="text-on-surface-variant">System Role</span>
-            <span id="modal-profile-system-role" class="font-bold text-emerald-700">SUPERADMIN</span>
+            <span id="modal-profile-system-role" class="font-bold text-emerald-700">CLIENT</span>
           </div>
           <div class="flex justify-between py-1.5">
             <span class="text-on-surface-variant">Session Status</span>
-            <span class="font-bold text-emerald-600 flex items-center"><span class="w-2 h-2 bg-emerald-500 rounded-full mr-1.5"></span> Active 24/7 Session</span>
+            <span class="font-bold text-emerald-600 flex items-center"><span class="w-2 h-2 bg-emerald-500 rounded-full mr-1.5"></span> Active Session</span>
           </div>
         </div>
       </div>
@@ -1070,39 +1067,51 @@
       </div>
     </div>
   </div>
-  <!-- Floating Live AI Support Bot Widget -->
-  <div id="ai-support-bot-container" class="fixed bottom-6 right-6 z-50">
-    <button id="ai-bot-toggle-btn" onclick="toggleSupportBot()" class="w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all border-2 border-white/20">
-      <span class="material-symbols-outlined text-2xl">smart_toy</span>
-    </button>
+  <!-- Floating Live Support Widgets: WhatsApp + AI Support Bot Widget -->
+  <div id="ai-support-bot-container" class="fixed bottom-6 right-6 z-50 flex items-center space-x-3">
+    <!-- WhatsApp Support Button -->
+    <a href="https://wa.me/919999999999?text=Hello%20SrijanDev%20Support%2C%20I%20need%20assistance" target="_blank" rel="noopener" class="w-14 h-14 bg-emerald-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all border-2 border-white/20" title="Contact WhatsApp Support">
+      <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24">
+        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l.159.255-1.032 3.766 3.864-1.013.252.149z"/>
+      </svg>
+    </a>
 
-    <div id="ai-bot-card" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-surface border border-outline-variant rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-      <div class="p-4 bg-primary text-white flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-          <span class="material-symbols-outlined text-emerald-400">robot_2</span>
-          <div>
-            <h4 class="font-bold text-sm leading-none">SrijanDev AI Assistant</h4>
-            <p class="text-[10px] text-emerald-300 mt-0.5">Autonomous Support &amp; Diagnostics</p>
+    <!-- AI Bot Toggle Button -->
+    <div class="relative">
+      <button id="ai-bot-toggle-btn" onclick="toggleSupportBot()" class="w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all border-2 border-white/20" title="SrijanDev AI Assistant">
+        <span class="material-symbols-outlined text-2xl">smart_toy</span>
+      </button>
+
+      <div id="ai-bot-card" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-surface border border-outline-variant rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+        <div class="p-4 bg-primary text-white flex justify-between items-center">
+          <div class="flex items-center space-x-2">
+            <span class="material-symbols-outlined text-emerald-400">robot_2</span>
+            <div>
+              <h4 class="font-bold text-sm leading-none">SrijanDev AI Assistant</h4>
+              <p class="text-[10px] text-emerald-300 mt-0.5">Autonomous Support &amp; Diagnostics</p>
+            </div>
+          </div>
+          <button onclick="toggleSupportBot()" class="text-white/80 hover:text-white">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+
+        <div id="ai-bot-messages" class="p-4 h-64 overflow-y-auto space-y-3 bg-surface-container-lowest text-xs">
+          <div class="p-3 bg-primary/10 border border-primary/20 rounded-xl text-on-surface">
+            <p class="font-bold text-primary mb-1">👋 Hello! How can I assist you today?</p>
+            <p class="text-on-surface-variant text-[11px]">Ask me about Excel uploads, APK pairing, guard check-ins, or system diagnostics.</p>
           </div>
         </div>
-        <button onclick="toggleSupportBot()" class="text-white/80 hover:text-white">
-          <span class="material-symbols-outlined text-sm">close</span>
-        </button>
-      </div>
 
-      <div id="ai-bot-messages" class="p-4 h-64 overflow-y-auto space-y-3 bg-surface-container-lowest text-xs">
-        <div class="p-3 bg-primary/10 border border-primary/20 rounded-xl text-on-surface">
-          <p class="font-bold text-primary mb-1">👋 Hello! How can I assist you today?</p>
-          <p class="text-on-surface-variant text-[11px]">Ask me about Excel uploads, APK pairing, guard check-ins, or system diagnostics.</p>
+        <div class="p-3 border-t border-outline-variant bg-surface flex items-center space-x-2">
+          <input id="ai-bot-input" type="text" placeholder="Ask AI Support..." class="flex-1 bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2 text-xs outline-none focus:border-primary" onkeypress="if(event.key==='Enter') sendSupportMessage()" />
+          <button onclick="sendSupportMessage()" class="bg-primary text-white p-2 rounded-lg hover:bg-primary-container transition-colors">
+            <span class="material-symbols-outlined text-sm">send</span>
+          </button>
         </div>
       </div>
-
-      <div class="p-3 border-t border-outline-variant bg-surface flex items-center space-x-2">
-        <input id="ai-bot-input" type="text" placeholder="Ask AI Support..." class="flex-1 bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2 text-xs outline-none focus:border-primary" onkeypress="if(event.key==='Enter') sendSupportMessage()" />
-        <button onclick="sendSupportMessage()" class="bg-primary text-white p-2 rounded-lg hover:bg-primary-container transition-colors">
-          <span class="material-symbols-outlined text-sm">send</span>
-        </button>
-      </div>
+    </div>
+  </div>     </div>
     </div>
   </div>
 
