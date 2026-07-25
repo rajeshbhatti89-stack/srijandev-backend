@@ -162,56 +162,66 @@ async function initUserProfile() {
   const mSysRole = document.getElementById('modal-profile-system-role');
   const mInitials = document.getElementById('modal-profile-initials');
 
+  function renderUserData(u) {
+    if (!u) return;
+    const fullName = u.name || u.email || u.identifier || 'Rajesh Bhatti';
+    const userRole = (u.role || 'SUPERADMIN').toUpperCase();
+    const userEmail = u.email || u.identifier || 'rajeshbhatti89@gmail.com';
+    const companyName = u.company || u.company_name || 'SrijanDev';
+
+    const parts = fullName.trim().split(' ');
+    const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+
+    if (nameEl) nameEl.innerText = fullName;
+    if (roleEl) roleEl.innerText = userRole + ' • ' + companyName;
+    if (initialsEl) initialsEl.innerText = initials;
+
+    if (mName) mName.innerText = fullName;
+    if (mRole) mRole.innerText = userRole + ' • ' + companyName;
+    if (mEmail) mEmail.innerText = userEmail;
+    if (mCompany) mCompany.innerText = companyName;
+    if (mSysRole) mSysRole.innerText = userRole;
+    if (mInitials) mInitials.innerText = initials;
+
+    const isOwnerOrAdmin = (userRole === 'SUPERADMIN' || userRole === 'OWNER' || userEmail === 'rajeshbhatti89@gmail.com');
+
+    if (badgeEl) {
+      if (isOwnerOrAdmin) badgeEl.classList.remove('hidden');
+      else badgeEl.classList.add('hidden');
+    }
+
+    if (ownerNav) {
+      if (isOwnerOrAdmin) {
+        ownerNav.classList.remove('hidden');
+        ownerNav.style.display = 'flex';
+      } else {
+        ownerNav.classList.add('hidden');
+        ownerNav.style.display = 'none';
+      }
+    }
+  }
+
+  // 1. Try local storage cache first
+  try {
+    const cachedUser = localStorage.getItem('srijandev_user');
+    if (cachedUser) {
+      renderUserData(JSON.parse(cachedUser));
+    }
+  } catch (e) {}
+
+  // 2. Fetch live session from API
   try {
     let res = await fetch('/api/user/profile').catch(() => fetch('https://srijandev-backend.onrender.com/api/user/profile'));
     const data = await res.json();
     if (data && data.user) {
-      const u = data.user;
-      const fullName = u.name || u.email || 'Rajesh Bhatti';
-      const userRole = (u.role || 'SUPERADMIN').toUpperCase();
-      const userEmail = u.email || u.identifier || 'rajeshbhatti89@gmail.com';
-      const companyName = u.company || 'SrijanDev';
-
-      const parts = fullName.trim().split(' ');
-      const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
-
-      if (nameEl) nameEl.innerText = fullName;
-      if (roleEl) roleEl.innerText = userRole + ' • ' + companyName;
-      if (initialsEl) initialsEl.innerText = initials;
-
-      if (mName) mName.innerText = fullName;
-      if (mRole) mRole.innerText = userRole + ' • ' + companyName;
-      if (mEmail) mEmail.innerText = userEmail;
-      if (mCompany) mCompany.innerText = companyName;
-      if (mSysRole) mSysRole.innerText = userRole;
-      if (mInitials) mInitials.innerText = initials;
-
-      const isOwnerOrAdmin = (userRole === 'SUPERADMIN' || userRole === 'OWNER' || userEmail === 'rajeshbhatti89@gmail.com');
-
-      if (badgeEl) {
-        if (isOwnerOrAdmin) badgeEl.classList.remove('hidden');
-        else badgeEl.classList.add('hidden');
-      }
-
-      if (ownerNav) {
-        if (isOwnerOrAdmin) {
-          ownerNav.classList.remove('hidden');
-          ownerNav.style.display = 'flex';
-        } else {
-          ownerNav.classList.add('hidden');
-          ownerNav.style.display = 'none';
-        }
-      }
+      renderUserData(data.user);
+      localStorage.setItem('srijandev_user', JSON.stringify(data.user));
+    } else {
+      renderUserData({ name: 'Rajesh Bhatti', email: 'rajeshbhatti89@gmail.com', role: 'SUPERADMIN', company: 'SrijanDev' });
     }
   } catch (err) {
-    console.warn('[SrijanDev Profile] Profile notice:', err);
-    if (nameEl) nameEl.innerText = 'Rajesh Bhatti';
-    if (roleEl) roleEl.innerText = 'SUPERADMIN • SrijanDev';
-    if (initialsEl) initialsEl.innerText = 'RB';
-    if (ownerNav) {
-      ownerNav.classList.remove('hidden');
-      ownerNav.style.display = 'flex';
-    }
+    console.warn('[SrijanDev Profile] Fallback active:', err);
+    renderUserData({ name: 'Rajesh Bhatti', email: 'rajeshbhatti89@gmail.com', role: 'SUPERADMIN', company: 'SrijanDev' });
   }
 }
 
@@ -236,25 +246,23 @@ function initSubscriptionGuard() {
   });
 }
 
-let isSpaAnnual = false;
-function toggleSpaBillingCycle() {
-  isSpaAnnual = !isSpaAnnual;
-  const dot = document.getElementById('spa-toggle-dot');
-  const labelMonthly = document.getElementById('spa-label-monthly');
-  const labelAnnual = document.getElementById('spa-label-annual');
+function initPricingToggle() {
+  const toggle = document.getElementById('pricing-billing-toggle');
+  if (!toggle) return;
 
-  if (isSpaAnnual) {
-    dot.className = 'w-4 h-4 bg-white rounded-full transition-transform transform translate-x-6';
-    labelMonthly.className = 'text-on-surface-variant dark:text-slate-400';
-    labelAnnual.className = 'text-primary dark:text-white font-bold flex items-center';
-  } else {
-    dot.className = 'w-4 h-4 bg-white rounded-full transition-transform transform translate-x-0';
-    labelMonthly.className = 'text-primary dark:text-white font-bold';
-    labelAnnual.className = 'text-on-surface-variant dark:text-slate-400 flex items-center';
-  }
+  toggle.addEventListener('change', (e) => {
+    window.isSpaAnnual = e.target.checked;
+    updateSpaPrices();
+  });
+}
+
+function updateSpaPrices() {
+  document.querySelectorAll('.spa-billing-period').forEach(el => {
+    el.innerText = window.isSpaAnnual ? '/year' : '/month';
+  });
 
   document.querySelectorAll('.spa-price-display').forEach(el => {
-    el.innerText = isSpaAnnual ? el.getAttribute('data-annual') : el.getAttribute('data-monthly');
+    el.innerText = window.isSpaAnnual ? el.getAttribute('data-annual') : el.getAttribute('data-monthly');
   });
 }
 
@@ -278,29 +286,31 @@ function initClock() {
 
 function initRouter() {
   function handleRoute() {
-    const hash = window.location.hash || '#dashboard';
-    const cleanHash = hash.replace('#', '');
-    const targetId = 'view-' + cleanHash;
+    const rawHash = window.location.hash || '#dashboard';
+    const cleanHash = rawHash.replace('#', '') || 'dashboard';
+    let targetId = 'view-' + cleanHash;
 
     const views = document.querySelectorAll('.app-view');
-    let found = false;
+    let targetView = document.getElementById(targetId);
+
+    if (!targetView) {
+      targetId = 'view-dashboard';
+      targetView = document.getElementById('view-dashboard');
+    }
 
     views.forEach(view => {
-      if (view.id === targetId) {
+      if (view === targetView) {
         view.classList.add('active');
-        found = true;
+        view.style.display = 'block';
       } else {
         view.classList.remove('active');
+        view.style.display = 'none';
       }
     });
 
-    if (!found && views.length > 0) {
-      document.getElementById('view-dashboard')?.classList.add('active');
-    }
-
     document.querySelectorAll('.sidebar-nav-link').forEach(link => {
       const href = link.getAttribute('href');
-      if (href === hash || (hash === '' && href === '#dashboard')) {
+      if (href === rawHash || (cleanHash === 'dashboard' && (href === '#dashboard' || href === '#'))) {
         link.classList.add('bg-primary-container/10', 'text-primary', 'border-r-4', 'border-primary');
         link.classList.remove('text-on-surface-variant');
       } else {

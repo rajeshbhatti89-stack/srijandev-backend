@@ -8,12 +8,16 @@
     ],
     "rewrites": [
       {
-        "source": "/",
+        "source": "/auth",
         "destination": "/auth.html"
       },
       {
-        "source": "/auth",
+        "source": "/login",
         "destination": "/auth.html"
+      },
+      {
+        "source": "/owner",
+        "destination": "/owner.html"
       },
       {
         "source": "**",
@@ -22,11 +26,11 @@
     ],
     "headers": [
       {
-        "source": "**/*.@(js|css|png|jpg|jpeg|gif|svg|webp|json)",
+        "source": "**/*.@(js|css|png|jpg|jpeg|gif|svg|webp|json|html)",
         "headers": [
           {
             "key": "Cache-Control",
-            "value": "max-age=31536000"
+            "value": "no-cache, no-store, must-revalidate"
           }
         ]
       },
