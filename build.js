@@ -383,46 +383,53 @@ main.main-content {
 }
 
 /* 1. Main Dashboard Wrapper Fix */
-.dashboard-grid-layout {
-  display: grid;
-  grid-template-columns: 1fr 340px; /* Left main area (flexible), Right sidebar (fixed) */
-  gap: 20px;
-  align-items: start;
-  box-sizing: border-box;
-  width: 100%;
+.dashboard-content, .main-dashboard-content, .dashboard-grid-layout {
+  display: grid !important;
+  grid-template-columns: 1fr 340px !important; /* Left main area (flexible), Right sidebar (fixed) */
+  gap: 20px !important;
+  align-items: start !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  position: relative !important;
 }
 
 /* 2. Left Primary Column Structure */
 .primary-dashboard-area {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  min-width: 0; /* Prevents flex children from overflowing */
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  min-width: 0 !important; /* Prevents flex children from overflowing */
+  position: relative !important;
+  width: 100% !important;
 }
 
 /* 3. Right Sidebar Alignment */
-.right-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 100%;
+.right-sidebar, .right-intelligence-sidebar {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 15px !important;
+  width: 100% !important;
+  position: relative !important;
 }
 
 /* 4. Stats & Cards Grid (Quick Excel Sync + Activity Cards) */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 15px;
-  width: 100%;
+.stats-grid, .stats-cards-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  gap: 15px !important;
+  width: 100% !important;
+  position: relative !important;
 }
 
-/* 5. Fix Overlapping Cards */
-.card, .upload-box, .status-card {
+/* 5. Fix Overlapping Cards - Force All Cards to Relative Document Flow */
+.card, .upload-box, .status-card, .excel-sync-card, .welcome-card, div[class*="bg-surface"] {
   position: relative !important; /* Ensure absolute positioning is removed */
   top: auto !important;
   left: auto !important;
-  width: 100%;
-  box-sizing: border-box;
+  right: auto !important;
+  bottom: auto !important;
+  float: none !important;
+  box-sizing: border-box !important;
 }
 
 /* --- REFINED APP CONTAINER LAYOUT ARCHITECTURE --- */
@@ -550,6 +557,7 @@ if ('serviceWorker' in navigator) {
 document.addEventListener('DOMContentLoaded', () => {
   initSubscriptionGuard();
   initUserProfile();
+  initNotificationsSystem();
   initClock();
   initRouter();
   initSidebarToggle();
@@ -558,6 +566,47 @@ document.addEventListener('DOMContentLoaded', () => {
   initSettingsTabs();
   initMapPlayback();
 });
+
+async function initNotificationsSystem() {
+  const panel = document.getElementById('notification-panel');
+  if (!panel) return;
+
+  try {
+    const res = await fetch('/api/notifications');
+    const data = await res.json();
+    const clientNotifications = (data && data.notifications) ? data.notifications : [];
+
+    if (clientNotifications.length === 0) {
+      panel.innerHTML = '<div class="welcome-card" style="padding: 20px; background: #eff6ff; border-radius: 8px; border: 1px solid #bfdbfe;">' +
+            '<h3 style="color: #1e40af; margin-top: 0; font-weight: bold; font-size: 15px;">🎉 Welcome to Your Portal!</h3>' +
+            '<p style="color: #1e3a8a; font-size: 12px; margin-top: 6px; line-height: 1.4;">Your operational workspace is ready. You can now upload your employee roster via Excel or connect your field team\'s APK.</p>' +
+            '<button onclick="startPortalTour()" style="background: #2563eb; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 12px; font-size: 12px; transition: 0.2s;">' +
+                '🚀 Take a Quick Product Tour' +
+            '</button>' +
+        '</div>';
+    } else {
+      let html = '';
+      clientNotifications.forEach(n => {
+        const time = new Date(n.timestamp || Date.now()).toLocaleTimeString();
+        html += '<div class="p-3 border border-outline-variant bg-surface-container-low rounded-lg shadow-sm">' +
+            '<div class="flex justify-between items-start mb-1">' +
+              '<span class="text-primary font-bold text-[9px] uppercase tracking-wider">' + (n.status || 'FIELD OPERATION') + '</span>' +
+              '<span class="text-on-surface-variant font-mono text-[9px]">' + time + '</span>' +
+            '</div>' +
+            '<p class="text-on-surface font-bold text-xs mb-1">' + (n.emp_name || 'Personnel') + ' (' + (n.department || 'Field Ops') + ')</p>' +
+            '<p class="text-on-surface-variant text-[11px] mb-2 leading-tight">Field status updated via Mobile APK.</p>' +
+          '</div>';
+      });
+      panel.innerHTML = html;
+    }
+  } catch (err) {
+    console.warn('[SrijanDev Notifications] API notice:', err);
+  }
+}
+
+window.startPortalTour = function() {
+  alert("🎉 Welcome to SrijanDev Operations Portal Tour!\\n\\n1. Use 'Quick Excel Roster Upload' to import personnel.\\n2. Access SaaS Pricing & Plans via top menu.\\n3. Connect field guards using the Mobile APK app.");
+};
 
 async function initUserProfile() {
   try {

@@ -11,6 +11,7 @@ if ('serviceWorker' in navigator) {
 document.addEventListener('DOMContentLoaded', () => {
   initSubscriptionGuard();
   initUserProfile();
+  initNotificationsSystem();
   initClock();
   initRouter();
   initSidebarToggle();
@@ -19,6 +20,47 @@ document.addEventListener('DOMContentLoaded', () => {
   initSettingsTabs();
   initMapPlayback();
 });
+
+async function initNotificationsSystem() {
+  const panel = document.getElementById('notification-panel');
+  if (!panel) return;
+
+  try {
+    const res = await fetch('/api/notifications');
+    const data = await res.json();
+    const clientNotifications = (data && data.notifications) ? data.notifications : [];
+
+    if (clientNotifications.length === 0) {
+      panel.innerHTML = '<div class="welcome-card" style="padding: 20px; background: #eff6ff; border-radius: 8px; border: 1px solid #bfdbfe;">' +
+            '<h3 style="color: #1e40af; margin-top: 0; font-weight: bold; font-size: 15px;">🎉 Welcome to Your Portal!</h3>' +
+            '<p style="color: #1e3a8a; font-size: 12px; margin-top: 6px; line-height: 1.4;">Your operational workspace is ready. You can now upload your employee roster via Excel or connect your field team's APK.</p>' +
+            '<button onclick="startPortalTour()" style="background: #2563eb; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 12px; font-size: 12px; transition: 0.2s;">' +
+                '🚀 Take a Quick Product Tour' +
+            '</button>' +
+        '</div>';
+    } else {
+      let html = '';
+      clientNotifications.forEach(n => {
+        const time = new Date(n.timestamp || Date.now()).toLocaleTimeString();
+        html += '<div class="p-3 border border-outline-variant bg-surface-container-low rounded-lg shadow-sm">' +
+            '<div class="flex justify-between items-start mb-1">' +
+              '<span class="text-primary font-bold text-[9px] uppercase tracking-wider">' + (n.status || 'FIELD OPERATION') + '</span>' +
+              '<span class="text-on-surface-variant font-mono text-[9px]">' + time + '</span>' +
+            '</div>' +
+            '<p class="text-on-surface font-bold text-xs mb-1">' + (n.emp_name || 'Personnel') + ' (' + (n.department || 'Field Ops') + ')</p>' +
+            '<p class="text-on-surface-variant text-[11px] mb-2 leading-tight">Field status updated via Mobile APK.</p>' +
+          '</div>';
+      });
+      panel.innerHTML = html;
+    }
+  } catch (err) {
+    console.warn('[SrijanDev Notifications] API notice:', err);
+  }
+}
+
+window.startPortalTour = function() {
+  alert("🎉 Welcome to SrijanDev Operations Portal Tour!\n\n1. Use 'Quick Excel Roster Upload' to import personnel.\n2. Access SaaS Pricing & Plans via top menu.\n3. Connect field guards using the Mobile APK app.");
+};
 
 async function initUserProfile() {
   try {

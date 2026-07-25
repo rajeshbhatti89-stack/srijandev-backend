@@ -268,6 +268,19 @@ app.get('/api/client-branding', (req, res) => {
     });
 });
 
+// 5. CLIENT-ISOLATED NOTIFICATIONS & FIELD ALERTS API (/api/notifications)
+app.get('/api/notifications', (req, res) => {
+    const clientId = req.session.user ? req.session.user.client_id : (req.query.client_id || 1);
+    db.all(`SELECT f.id, f.status, f.timestamp, e.name as emp_name, e.department, e.phone 
+            FROM field_operations f 
+            LEFT JOIN employees e ON f.emp_id = e.id 
+            WHERE f.client_id = ? 
+            ORDER BY f.timestamp DESC LIMIT 10`, [clientId], (err, rows) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+        res.json({ success: true, count: (rows || []).length, notifications: rows || [] });
+    });
+});
+
 // 5. EXCEL UPLOAD ENDPOINT
 app.post('/upload-excel', isAuthenticated, upload.single('excel_file'), (req, res) => {
     if (!req.file) return res.send("Please select an Excel file.");

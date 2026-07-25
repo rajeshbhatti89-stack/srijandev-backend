@@ -204,8 +204,10 @@
             <span class="material-symbols-outlined text-sm mr-1">timeline</span> Map Trail Playback
           </button>
         </div>
+      </div>
+
       <!-- EXCEL UPLOAD & LIVE ROSTER CARD (MAIN DASHBOARD INTEGRATED) -->
-      <div class="bg-surface border border-outline-variant p-5 rounded-2xl shadow-sm space-y-4">
+      <div class="excel-sync-card bg-surface border border-outline-variant p-5 rounded-2xl shadow-sm space-y-4">
         <div class="flex justify-between items-center border-b border-outline-variant/40 pb-3">
           <div class="flex items-center space-x-2">
             <span class="material-symbols-outlined text-primary text-2xl">upload_file</span>
@@ -417,40 +419,17 @@
               <span class="bg-error text-white text-[9px] px-1.5 py-0.5 rounded font-bold uppercase animate-pulse">Live</span>
             </div>
 
-            <div class="p-3 space-y-3">
-              <div class="p-3 border border-error-container bg-error-container/10 rounded-lg">
-                <div class="flex justify-between items-start mb-1">
-                  <span class="text-error font-bold text-[9px] uppercase tracking-wider">Geofence Breach</span>
-                  <span class="text-on-surface-variant font-mono text-[9px]">22:41:05</span>
-                </div>
-                <p class="text-on-surface font-bold text-xs mb-1">Apex Financial Tower - Zone D</p>
-                <p class="text-on-surface-variant text-[11px] mb-2 leading-tight">Guard [ID: 772] moved 15m outside assigned perimeter.</p>
-                <div class="flex space-x-2">
-                  <button class="bg-error text-white text-[9px] px-2.5 py-1 rounded font-bold uppercase hover:brightness-110 flex-1" data-modal-target="modal-sos">Locate</button>
-                  <button class="border border-outline-variant text-on-surface-variant text-[9px] px-2.5 py-1 rounded font-bold uppercase hover:bg-white flex-1">Override</button>
-                </div>
-              </div>
-
-              <div class="p-3 border-2 border-error bg-error/5 rounded-lg">
-                <div class="flex justify-between items-start mb-1">
-                  <span class="text-error font-black text-[9px] uppercase tracking-wider flex items-center">
-                    <span class="material-symbols-outlined text-xs mr-1 animate-ping">emergency</span> SOS SIGNAL
-                  </span>
-                  <span class="text-on-surface-variant font-mono text-[9px]">22:38:12</span>
-                </div>
-                <p class="text-on-surface font-bold text-xs mb-1">Riverside Data Center</p>
-                <p class="text-on-surface-variant text-[11px] mb-2 leading-tight">Panic button activated by Officer [ID: 991].</p>
-                <button class="w-full bg-error text-white text-[9px] py-1.5 rounded font-black uppercase shadow hover:scale-[1.02] transition-transform" data-modal-target="modal-sos">Emergency Response</button>
-              </div>
-
-              <div class="p-3 border border-outline-variant bg-surface-container-low rounded-lg">
-                <div class="flex justify-between items-start mb-1">
-                  <span class="text-primary font-bold text-[9px] uppercase tracking-wider">Checkpoint Overdue</span>
-                  <span class="text-on-surface-variant font-mono text-[9px]">22:35:12</span>
-                </div>
-                <p class="text-on-surface font-bold text-xs mb-1">North Port - Station #04</p>
-                <p class="text-on-surface-variant text-[11px] mb-2 leading-tight">QR scan missed. 15 minutes overdue.</p>
-                <button class="bg-primary text-white text-[9px] px-2.5 py-1 rounded font-bold uppercase hover:brightness-110 w-full">Resolve / Comm</button>
+            <div id="notification-panel" class="p-3 space-y-3">
+              <div class="welcome-card p-5 bg-blue-50 border border-blue-200 rounded-xl space-y-3 shadow-sm">
+                <h3 class="text-blue-900 font-extrabold text-sm flex items-center">
+                  <span class="mr-1.5 text-base">🎉</span> Welcome to Your Portal!
+                </h3>
+                <p class="text-blue-800 text-xs leading-relaxed">
+                  Your operational workspace is ready. You can now upload your employee roster via Excel or connect your field team's APK app to receive real-time alerts.
+                </p>
+                <button onclick="startPortalTour()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2.5 px-4 rounded-lg shadow transition-all flex items-center justify-center space-x-1 active:scale-95">
+                  <span>🚀 Start Tour Guide</span>
+                </button>
               </div>
             </div>
           </div>
