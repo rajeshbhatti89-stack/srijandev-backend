@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSubscriptionGuard();
   initUserProfile();
   initNotificationsSystem();
+  initDashboardMetrics();
   initClock();
   initRouter();
   initSidebarToggle();
@@ -20,6 +21,54 @@ document.addEventListener('DOMContentLoaded', () => {
   initSettingsTabs();
   initMapPlayback();
 });
+
+async function initDashboardMetrics() {
+  try {
+    const res = await fetch('/api/dashboard-metrics');
+    const data = await res.json();
+    if (data && data.success) {
+      const activeSitesEl = document.getElementById('metric-active-sites');
+      const guardsDutyEl = document.getElementById('metric-guards-duty');
+      const totalRosteredEl = document.getElementById('metric-total-rostered');
+      const criticalAlertsEl = document.getElementById('metric-critical-alerts');
+      const missedCheckpointsEl = document.getElementById('metric-missed-checkpoints');
+      const shiftCompEl = document.getElementById('metric-shift-completion');
+      const shiftBarEl = document.getElementById('metric-shift-bar');
+      const tableBody = document.getElementById('live-site-status-body');
+
+      if (activeSitesEl) activeSitesEl.innerText = data.active_sites || 0;
+      if (guardsDutyEl) guardsDutyEl.innerText = data.guards_on_duty || 0;
+      if (totalRosteredEl) totalRosteredEl.innerText = 'of ' + (data.total_rostered || 0) + ' rostered';
+      if (criticalAlertsEl) criticalAlertsEl.innerText = String(data.critical_alerts || 0).padStart(2, '0');
+      if (missedCheckpointsEl) missedCheckpointsEl.innerText = String(data.missed_checkpoints || 0).padStart(2, '0');
+      if (shiftCompEl) shiftCompEl.innerText = (data.shift_completion || 0) + '%';
+      if (shiftBarEl) shiftBarEl.style.width = (data.shift_completion || 0) + '%';
+
+      if (tableBody) {
+        if (data.sites && data.sites.length > 0) {
+          let html = '';
+          data.sites.forEach(s => {
+            html += '<tr class="hover:bg-surface-container-low transition-colors">' +
+                '<td class="px-5 py-3.5"><div class="font-semibold text-on-surface text-sm">' + (s.department || 'Field Unit') + '</div></td>' +
+                '<td class="px-5 py-3.5"><span class="px-2 py-0.5 bg-secondary-container/30 text-on-secondary-container rounded-full text-[10px] font-bold">' + (s.status || 'ACTIVE') + '</span></td>' +
+                '<td class="px-5 py-3.5 text-xs text-on-surface font-medium">' + (s.name || 'Guard') + '</td>' +
+                '<td class="px-5 py-3.5"><span class="font-mono text-xs font-bold">100%</span></td>' +
+                '<td class="px-5 py-3.5 text-right"><button class="text-primary text-xs font-bold">View Trail</button></td>' +
+              '</tr>';
+          });
+          tableBody.innerHTML = html;
+        } else {
+          tableBody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-on-surface-variant text-xs font-medium">' +
+            '<span class="material-symbols-outlined text-3xl mb-1 text-outline block">badge</span>' +
+            'No active site roster data. Upload an Excel spreadsheet to sync your personnel.' +
+          '</td></tr>';
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[SrijanDev Metrics] API fetch notice:', err);
+  }
+}
 
 async function initNotificationsSystem() {
   const panel = document.getElementById('notification-panel');

@@ -245,16 +245,16 @@
         <div class="bg-surface border border-outline-variant p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
           <span class="text-on-surface-variant text-[11px] font-bold uppercase tracking-wider mb-1 block">Active Sites</span>
           <div class="flex items-baseline space-x-2">
-            <span class="text-3xl font-bold text-on-surface">42</span>
-            <span class="text-secondary text-xs font-semibold">+2 from yesterday</span>
+            <span id="metric-active-sites" class="text-3xl font-bold text-on-surface">0</span>
+            <span class="text-secondary text-xs font-semibold">Active Locations</span>
           </div>
         </div>
 
         <div class="bg-surface border border-outline-variant p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
           <span class="text-on-surface-variant text-[11px] font-bold uppercase tracking-wider mb-1 block">Guards on Duty</span>
           <div class="flex items-baseline space-x-2">
-            <span class="text-3xl font-bold text-on-surface">158</span>
-            <span class="text-on-surface-variant text-xs">of 162 rostered</span>
+            <span id="metric-guards-duty" class="text-3xl font-bold text-on-surface">0</span>
+            <span id="metric-total-rostered" class="text-on-surface-variant text-xs">of 0 rostered</span>
           </div>
         </div>
 
@@ -262,20 +262,20 @@
           <span class="text-error font-bold text-[11px] uppercase tracking-wider mb-1 block">Pending Exceptions</span>
           <div class="flex justify-between items-center text-xs">
             <span class="text-on-surface-variant">Critical Alerts</span>
-            <span class="font-bold text-error">03</span>
+            <span id="metric-critical-alerts" class="font-bold text-error">00</span>
           </div>
           <div class="flex justify-between items-center text-xs mt-1">
             <span class="text-on-surface-variant">Missed Checkpoints</span>
-            <span class="font-bold text-on-surface">08</span>
+            <span id="metric-missed-checkpoints" class="font-bold text-on-surface">00</span>
           </div>
         </div>
 
         <div class="bg-surface border border-outline-variant p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
           <span class="text-on-surface-variant text-[11px] font-bold uppercase tracking-wider mb-1 block">Shift Completion %</span>
           <div class="flex items-baseline space-x-2">
-            <span class="text-3xl font-bold text-on-surface">88%</span>
+            <span id="metric-shift-completion" class="text-3xl font-bold text-on-surface">0%</span>
             <div class="flex-1 h-2 bg-surface-container rounded-full ml-2 overflow-hidden">
-              <div class="h-full bg-primary rounded-full" style="width: 88%"></div>
+              <div id="metric-shift-bar" class="h-full bg-primary rounded-full" style="width: 0%"></div>
             </div>
           </div>
         </div>
@@ -308,61 +308,16 @@
                     <th class="px-5 py-3"></th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-outline-variant">
-                  <tr class="hover:bg-surface-container-low transition-colors">
-                    <td class="px-5 py-3.5">
-                      <div class="font-semibold text-on-surface text-sm">Global Logistics Hub</div>
-                      <div class="text-[10px] text-on-surface-variant uppercase">Zone A • Industrial</div>
-                    </td>
-                    <td class="px-5 py-3.5">
-                      <span class="px-2 py-0.5 bg-secondary-container/30 text-on-secondary-container rounded-full text-[10px] font-bold border border-secondary/20 inline-flex items-center">
-                        <span class="w-1.5 h-1.5 bg-secondary rounded-full mr-1.5"></span> SECURE
-                      </span>
-                    </td>
-                    <td class="px-5 py-3.5 text-xs text-on-surface font-medium">Marcus Thorne</td>
-                    <td class="px-5 py-3.5">
-                      <div class="flex items-center space-x-1.5">
-                        <span class="font-mono text-xs font-bold text-on-surface">100%</span>
-                        <div class="flex space-x-0.5">
-                          <div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
-                          <div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
-                          <div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="px-5 py-3.5 text-right">
-                      <button class="text-primary hover:bg-primary/5 px-2.5 py-1 rounded text-xs font-bold flex items-center ml-auto" data-modal-target="modal-trail">
-                        <span class="material-symbols-outlined text-sm mr-1">history</span> View Trail
-                      </button>
+                <tbody id="live-site-status-body" class="divide-y divide-outline-variant">
+                  <tr>
+                    <td colspan="5" class="px-5 py-8 text-center text-on-surface-variant text-xs font-medium">
+                      <span class="material-symbols-outlined text-3xl mb-1 text-outline block">badge</span>
+                      No active site roster data. Upload an Excel spreadsheet to sync your personnel.
                     </td>
                   </tr>
-                  <tr class="hover:bg-surface-container-low transition-colors">
-                    <td class="px-5 py-3.5">
-                      <div class="font-semibold text-on-surface text-sm">Apex Financial Tower</div>
-                      <div class="text-[10px] text-on-surface-variant uppercase">Central District</div>
-                    </td>
-                    <td class="px-5 py-3.5">
-                      <span class="px-2 py-0.5 bg-error-container/30 text-on-error-container rounded-full text-[10px] font-bold border border-error/20 inline-flex items-center">
-                        <span class="w-1.5 h-1.5 bg-error rounded-full mr-1.5 pulse-red"></span> ALERT
-                      </span>
-                    </td>
-                    <td class="px-5 py-3.5 text-xs text-on-surface font-medium">Sarah Jenkins</td>
-                    <td class="px-5 py-3.5">
-                      <div class="flex items-center space-x-1.5">
-                        <span class="font-mono text-xs font-bold text-error">75%</span>
-                        <div class="flex space-x-0.5">
-                          <div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
-                          <div class="w-1.5 h-3 bg-secondary rounded-sm"></div>
-                          <div class="w-1.5 h-3 bg-outline-variant rounded-sm"></div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="px-5 py-3.5 text-right">
-                      <button class="text-error hover:bg-error/5 px-2.5 py-1 rounded text-xs font-bold flex items-center ml-auto" data-modal-target="modal-sos">
-                        <span class="material-symbols-outlined text-sm mr-1">warning</span> View Alert
-                      </button>
-                    </td>
-                  </tr>
+                </tbody>
+              </table>
+            </div>
                 </tbody>
               </table>
             </div>

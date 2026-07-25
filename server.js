@@ -281,6 +281,36 @@ app.get('/api/notifications', (req, res) => {
     });
 });
 
+// 6. CLIENT DASHBOARD METRICS API (/api/dashboard-metrics)
+app.get('/api/dashboard-metrics', (req, res) => {
+    const clientId = req.session.user ? req.session.user.client_id : (req.query.client_id || 1);
+    
+    db.get(`SELECT COUNT(*) as total_employees FROM employees WHERE client_id = ?`, [clientId], (err, empRow) => {
+        const totalEmp = (empRow && empRow.total_employees) ? empRow.total_employees : 0;
+        
+        db.get(`SELECT COUNT(DISTINCT department) as total_sites FROM employees WHERE client_id = ?`, [clientId], (err2, siteRow) => {
+            const totalSites = (siteRow && siteRow.total_sites) ? siteRow.total_sites : 0;
+            
+            db.get(`SELECT COUNT(*) as active_ops FROM field_operations WHERE client_id = ? AND status = 'CHECKED_IN'`, [clientId], (err3, opRow) => {
+                const activeGuards = (opRow && opRow.active_ops) ? opRow.active_ops : 0;
+                
+                db.all(`SELECT e.name, e.department, f.status FROM employees e LEFT JOIN field_operations f ON e.id = f.emp_id WHERE e.client_id = ? LIMIT 5`, [clientId], (err4, siteRows) => {
+                    res.json({
+                        success: true,
+                        active_sites: totalSites,
+                        guards_on_duty: activeGuards,
+                        total_rostered: totalEmp,
+                        critical_alerts: 0,
+                        missed_checkpoints: 0,
+                        shift_completion: totalEmp > 0 ? Math.round((activeGuards / totalEmp) * 100) : 0,
+                        sites: siteRows || []
+                    });
+                });
+            });
+        });
+    });
+});
+
 // 5. EXCEL UPLOAD ENDPOINT
 app.post('/upload-excel', isAuthenticated, upload.single('excel_file'), (req, res) => {
     if (!req.file) return res.send("Please select an Excel file.");
