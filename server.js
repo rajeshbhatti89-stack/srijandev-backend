@@ -5,6 +5,7 @@ const sqlite3 = require('sqlite3').verbose();
 const multer = require('multer');
 const xlsx = require('xlsx');
 const compression = require('compression');
+const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const cluster = require('cluster');
@@ -36,16 +37,20 @@ function runWorkerServer() {
     }
     const upload = multer({ dest: 'uploads/' });
 
-    // --- HIGH PERFORMANCE MIDDLEWARE ---
+    // --- HIGH PERFORMANCE & SECURITY MIDDLEWARE ---
+    app.use(cors({
+        origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : true,
+        credentials: true
+    }));
     app.use(compression({ level: 6 })); // Gzip compression reduces payload by 80%
     app.use(express.urlencoded({ extended: true, limit: '50mb' }));
     app.use(express.json({ limit: '50mb' }));
     
     app.use(session({
-        secret: 'super_secret_security_key_123',
+        secret: process.env.SESSION_SECRET || 'srijandev_production_super_secret_security_key_2026',
         resave: false,
         saveUninitialized: false,
-        cookie: { maxAge: 24 * 60 * 60 * 1000, httpOnly: true }
+        cookie: { maxAge: 24 * 60 * 60 * 1000, httpOnly: true, secure: process.env.NODE_ENV === 'production' ? false : false }
     }));
 
     // Serve Static Frontend Assets

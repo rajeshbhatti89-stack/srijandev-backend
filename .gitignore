@@ -7,4 +7,8 @@ app_data.db
 app_data.db-shm
 app_data.db-wal
 .DS_Store
+.env
+.env.local
+.env.*.local
+
 
