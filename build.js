@@ -382,6 +382,109 @@ main.main-content {
   transition: margin-left 0.3s ease;
 }
 
+/* 1. Main Dashboard Wrapper Fix */
+.dashboard-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px; /* Left main area (flexible), Right sidebar (fixed) */
+  gap: 20px;
+  align-items: start;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* 2. Left Primary Column Structure */
+.primary-dashboard-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0; /* Prevents flex children from overflowing */
+}
+
+/* 3. Right Sidebar Alignment */
+.right-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+/* 4. Stats & Cards Grid (Quick Excel Sync + Activity Cards) */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+  width: 100%;
+}
+
+/* 5. Fix Overlapping Cards */
+.card, .upload-box, .status-card {
+  position: relative !important; /* Ensure absolute positioning is removed */
+  top: auto !important;
+  left: auto !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* --- REFINED APP CONTAINER LAYOUT ARCHITECTURE --- */
+/* 1. Main App Container (Left Sidebar + Main Body + Right Sidebar) */
+.app-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+/* 2. Middle Main Dashboard Content Area */
+.main-dashboard-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f8fafc;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 3. Header Section (Unified Operations Command) */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* 4. Quick Excel Sync Card Fix */
+.excel-sync-card {
+    position: relative !important; /* Force remove absolute positioning */
+    top: auto !important;
+    left: auto !important;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 5. Stats Grid (Counters/Metrics) */
+.stats-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    width: 100%;
+}
+
+/* 6. Right Sidebar (Critical Intelligence) */
+.right-intelligence-sidebar {
+    width: 340px;
+    min-width: 340px;
+    background: #ffffff;
+    border-left: 1px solid #e2e8f0;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
 @media (max-width: 1023px) {
   aside.sidebar {
     transform: translateX(-100%);
@@ -401,6 +504,9 @@ main.main-content {
     margin-left: 0 !important;
     padding-left: 16px;
     padding-right: 16px;
+  }
+  .dashboard-grid-layout {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -443,6 +549,7 @@ if ('serviceWorker' in navigator) {
 
 document.addEventListener('DOMContentLoaded', () => {
   initSubscriptionGuard();
+  initUserProfile();
   initClock();
   initRouter();
   initSidebarToggle();
@@ -451,6 +558,35 @@ document.addEventListener('DOMContentLoaded', () => {
   initSettingsTabs();
   initMapPlayback();
 });
+
+async function initUserProfile() {
+  try {
+    const res = await fetch('/api/me');
+    const data = await res.json();
+    if (data && data.user) {
+      const u = data.user;
+      const nameEl = document.getElementById('user-profile-name');
+      const roleEl = document.getElementById('user-profile-role');
+      const initialsEl = document.getElementById('user-avatar-initials');
+      const badgeEl = document.getElementById('user-profile-badge');
+
+      if (nameEl) nameEl.innerText = u.name || u.identifier || 'User';
+      if (roleEl) roleEl.innerText = (u.role || 'USER') + ' • ' + (u.company_name || 'SrijanDev');
+      
+      if (initialsEl) {
+        const parts = (u.name || u.identifier || 'U').trim().split(' ');
+        const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+        initialsEl.innerText = initials;
+      }
+
+      if (badgeEl && (u.role === 'SUPERADMIN' || u.identifier === 'rajeshbhatti89@gmail.com')) {
+        badgeEl.classList.remove('hidden');
+      }
+    }
+  } catch (err) {
+    console.warn('[SrijanDev Profile] API fetch notice:', err);
+  }
+}
 
 function initSubscriptionGuard() {
   const isSuperUser = true; // rajeshbhatti89@gmail.com (Super User & Owner)

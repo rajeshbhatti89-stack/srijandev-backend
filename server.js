@@ -4,22 +4,18 @@ const bcrypt = require('bcryptjs');
 const sqlite3 = require('sqlite3').verbose();
 const multer = require('multer');
 const xlsx = require('xlsx');
-const nodemailer = require('nodemailer');
-const cron = require('node-cron');
 const path = require('path');
 const fs = require('fs');
 
 const app = express();
 
-// Ensure uploads directory exists
 if (!fs.existsSync('uploads')) {
     fs.mkdirSync('uploads');
 }
 const upload = multer({ dest: 'uploads/' });
 
-// --- MIDDLEWARE SETUP ---
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // Essential for APK JSON requests
+app.use(express.json());
 app.use(session({
     secret: 'super_secret_security_key_123',
     resave: false,
@@ -29,32 +25,35 @@ app.use(session({
 // Serve Static Frontend Assets (dist/ index & PWA files)
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// --- DATABASE SETUP (SQLite) ---
+// --- DATABASE SETUP ---
 const db = new sqlite3.Database('./app_data.db', (err) => {
     if (err) console.error("Database connection error:", err);
     else console.log("Connected to SQLite Database.");
 });
 
 db.serialize(() => {
-    // Clients
+    // Clients Table (With Domain Alias and Logo URL)
     db.run(`CREATE TABLE IF NOT EXISTS clients (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         company_name TEXT UNIQUE,
+        domain_alias TEXT UNIQUE, -- e.g. clienta.com or clienta
+        logo_url TEXT,
         admin_email TEXT
     )`);
 
-    // System Users (Admins, Supervisors, Security)
+    // Users Table
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         client_id INTEGER,
         name TEXT,
-        identifier TEXT UNIQUE, -- Email or Phone Number
+        identifier TEXT UNIQUE,
         password TEXT,
-        role TEXT, -- 'SUPERADMIN', 'CLIENT_ADMIN', 'SUPERVISOR', 'SECURITY'
+        role TEXT,
+        profile_pic TEXT DEFAULT 'https://via.placeholder.com/40',
         FOREIGN KEY(client_id) REFERENCES clients(id)
     )`);
 
-    // Employee Data (Uploaded via Excel from Main UI)
+    // Employees Table
     db.run(`CREATE TABLE IF NOT EXISTS employees (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         client_id INTEGER,
@@ -65,65 +64,140 @@ db.serialize(() => {
         FOREIGN KEY(client_id) REFERENCES clients(id)
     )`);
 
-    // Field Operations Data (From Mobile APK)
+    // Field Operations Table
     db.run(`CREATE TABLE IF NOT EXISTS field_operations (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         client_id INTEGER,
         emp_id INTEGER,
-        status TEXT, -- 'CHECKED_IN', 'CHECKED_OUT'
+        status TEXT,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Demo Data
+    // Initial Demo Client & Users
     const hashedPassword = bcrypt.hashSync("123456", 10);
-    db.run(`INSERT OR IGNORE INTO clients (id, company_name, admin_email) VALUES (1, 'Apex Industrial Services', 'clientadmin@apex.com')`);
+    db.run(`INSERT OR IGNORE INTO clients (id, company_name, domain_alias, logo_url, admin_email) VALUES 
+        (1, 'SrijanDev Apex Operations', 'srijandev', 'https://studio-4290867741-a4ad9.web.app/assets/images/icon.svg', 'rajeshbhatti89@gmail.com')`);
+    
     db.run(`INSERT OR IGNORE INTO users (id, client_id, name, identifier, password, role) VALUES 
-        (1, 1, 'Client Admin', 'clientadmin@apex.com', '${hashedPassword}', 'CLIENT_ADMIN'),
-        (2, 1, 'Site Supervisor', '9876543210', '${hashedPassword}', 'SUPERVISOR')`);
+        (1, 1, 'Rajesh Bhatti', 'rajeshbhatti89@gmail.com', '${hashedPassword}', 'SUPERADMIN'),
+        (2, 1, 'Client Admin', 'clientadmin@apex.com', '${hashedPassword}', 'CLIENT_ADMIN'),
+        (3, 1, 'Site Supervisor', '9876543210', '${hashedPassword}', 'SUPERVISOR')`);
 });
 
-// --- AUTHENTICATION MIDDLEWARE ---
+// Middleware to Check Session
 function isAuthenticated(req, res, next) {
     if (req.session.user) return next();
     res.redirect('/login');
 }
 
 // ==========================================
-// 🌐 WEB PORTAL (Main UI Dashboard)
+// 🏢 WHITE-LABEL & CLIENT REGISTRATION API
 // ==========================================
 
-// Login Page
+// 1. CLIENT REGISTRATION PAGE (Creates New Client + Alias + Logo)
+app.get('/register-client', (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>SrijanDev | Register Client Portal</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        <body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
+            <div class="max-w-md w-full bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 space-y-6">
+                <div class="text-center space-y-1">
+                    <h2 class="text-2xl font-black text-emerald-400">Register Client Portal</h2>
+                    <p class="text-xs text-slate-400">White-Label Security Operations Multi-Tenancy</p>
+                </div>
+                <form action="/register-client" method="POST" class="space-y-3 text-xs">
+                    <div>
+                        <label class="block font-semibold mb-1">Company / Organization Name</label>
+                        <input type="text" name="company_name" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-emerald-500 text-white" placeholder="e.g. Apex Industrial Security" required />
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Domain / Subdomain Alias</label>
+                        <input type="text" name="domain_alias" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-emerald-500 text-white" placeholder="e.g. apex (access via apex.srijandev.in)" required />
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Brand Logo Image URL</label>
+                        <input type="text" name="logo_url" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-emerald-500 text-white" placeholder="https://example.com/logo.png" />
+                    </div>
+                    <hr class="border-slate-700 my-2"/>
+                    <h4 class="font-bold text-emerald-400 text-xs">Client Administrator Credentials</h4>
+                    <div>
+                        <label class="block font-semibold mb-1">Admin Full Name</label>
+                        <input type="text" name="admin_name" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-emerald-500 text-white" placeholder="e.g. Rajesh Bhatti" required />
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Admin Email or Mobile No.</label>
+                        <input type="text" name="identifier" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-emerald-500 text-white" placeholder="e.g. admin@apex.com" required />
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Password</label>
+                        <input type="password" name="password" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-emerald-500 text-white" placeholder="••••••••" required />
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 rounded-lg font-bold text-white shadow-lg transition-all mt-2">Create White-Label Portal</button>
+                </form>
+                <p class="text-center text-[11px] text-slate-400"><a href="/login" class="text-blue-400 hover:underline">Already registered? Login to Portal</a></p>
+            </div>
+        </body>
+        </html>
+    `);
+});
+
+app.post('/register-client', (req, res) => {
+    const { company_name, domain_alias, logo_url, admin_name, identifier, password } = req.body;
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const cleanAlias = domain_alias.trim().toLowerCase();
+
+    db.run(`INSERT INTO clients (company_name, domain_alias, logo_url, admin_email) VALUES (?, ?, ?, ?)`,
+    [company_name, cleanAlias, logo_url || 'https://via.placeholder.com/150?text=Logo', identifier], function(err) {
+        if (err) return res.send(`<div style="font-family: sans-serif; padding: 20px; background: #fee2e2; color: #991b1b; border-radius: 8px;">Error creating client: Domain alias or Company name already exists. <a href="/register-client">Try Again</a></div>`);
+        
+        const clientId = this.lastID;
+        db.run(`INSERT INTO users (client_id, name, identifier, password, role) VALUES (?, ?, ?, ?, 'CLIENT_ADMIN')`,
+        [clientId, admin_name, identifier, hashedPassword], (err) => {
+            if (err) return res.send("Error creating user account.");
+            res.send(`
+                <div style="font-family: sans-serif; padding: 30px; background: #ecfdf5; color: #065f46; border-radius: 12px; max-w-md; margin: 50px auto; text-align: center;">
+                    <h2>✓ Client Portal Created Successfully!</h2>
+                    <p>Company: <b>${company_name}</b> | Domain Alias: <b>${cleanAlias}</b></p>
+                    <a href="/login" style="display: inline-block; padding: 10px 20px; background: #059669; color: white; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 15px;">Login to Portal Now</a>
+                </div>
+            `);
+        });
+    });
+});
+
+// 2. LOGIN PAGE
 app.get('/login', (req, res) => {
     res.send(`
         <!DOCTYPE html>
         <html>
         <head>
-            <title>SrijanDev Portal - Login</title>
-            <style>
-                body { font-family: Arial, sans-serif; background: #0b1c30; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-                .login-card { background: #132742; padding: 30px; border-radius: 12px; border: 1px solid #27446b; box-shadow: 0 8px 24px rgba(0,0,0,0.3); width: 340px; }
-                h2 { color: #90a8ff; margin-top: 0; text-align: center; }
-                p { font-size: 12px; color: #a0aec0; text-align: center; margin-bottom: 20px; }
-                input { width: 100%; padding: 12px; margin: 8px 0; background: #0b1c30; border: 1px solid #27446b; border-radius: 6px; color: #fff; box-sizing: border-box; outline: none; }
-                input:focus { border-color: #90a8ff; }
-                button { width: 100%; padding: 12px; background: #00236f; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-                button:hover { background: #1e3a8a; }
-                .demo-box { margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 6px; font-size: 11px; color: #cbd5e1; }
-            </style>
+            <title>SrijanDev | Portal Login</title>
+            <script src="https://cdn.tailwindcss.com"></script>
         </head>
-        <body>
-            <div class="login-card">
-                <h2>SrijanDev Operations</h2>
-                <p>Security Field Force Manager</p>
-                <form action="/login" method="POST">
-                    <input type="text" name="identifier" placeholder="Email or Mobile No." required />
-                    <input type="password" name="password" placeholder="Password" required />
-                    <button type="submit">Login to Portal</button>
+        <body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
+            <div class="max-w-md w-full bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 space-y-6">
+                <div class="text-center space-y-1">
+                    <h2 class="text-2xl font-black text-blue-400">SrijanDev Portal Login</h2>
+                    <p class="text-xs text-slate-400">Security Field Force Operations &amp; Management</p>
+                </div>
+                <form action="/login" method="POST" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-semibold mb-1">Email or Mobile Number</label>
+                        <input type="text" name="identifier" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 outline-none focus:border-blue-500 text-white" placeholder="Email or Phone Number" required />
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Password</label>
+                        <input type="password" name="password" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 outline-none focus:border-blue-500 text-white" placeholder="••••••••" required />
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-bold text-white shadow-lg transition-all">Login to Portal</button>
                 </form>
-                <div class="demo-box">
-                    <b>Demo Credentials:</b><br/>
-                    • Admin: <code>clientadmin@apex.com</code> | Pass: <code>123456</code><br/>
-                    • Supervisor: <code>9876543210</code> | Pass: <code>123456</code>
+                <div class="flex justify-between items-center text-[11px] text-slate-400 pt-2 border-t border-slate-700">
+                    <a href="/register-client" class="text-emerald-400 hover:underline font-bold">+ Register New Client Portal</a>
+                    <a href="/auth.html" class="text-blue-400 hover:underline">Full Auth Page</a>
                 </div>
             </div>
         </body>
@@ -133,107 +207,68 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { identifier, password } = req.body;
-    db.get(`SELECT * FROM users WHERE identifier = ?`, [identifier], (err, user) => {
-        if (err || !user) return res.send("User not found.");
+    db.get(`SELECT u.*, c.company_name, c.logo_url, c.domain_alias FROM users u LEFT JOIN clients c ON u.client_id = c.id WHERE u.identifier = ?`, [identifier], (err, user) => {
+        if (err || !user) return res.send("<div style='padding:20px; color:red;'>User not found. <a href='/login'>Try Again</a></div>");
         
         if (bcrypt.compareSync(password, user.password)) {
-            req.session.user = { id: user.id, client_id: user.client_id, name: user.name, role: user.role };
-            res.redirect('/portal');
+            req.session.user = {
+                id: user.id,
+                client_id: user.client_id,
+                name: user.name,
+                identifier: user.identifier,
+                role: user.role,
+                company_name: user.company_name || 'SrijanDev',
+                logo_url: user.logo_url || 'assets/images/icon.svg',
+                domain_alias: user.domain_alias || 'srijandev'
+            };
+            res.redirect('/');
         } else {
-            res.send("Invalid credentials.");
+            res.send("<div style='padding:20px; color:red;'>Invalid credentials. <a href='/login'>Try Again</a></div>");
         }
     });
 });
 
-// MAIN UI / DASHBOARD (Upload Excel directly on Home Screen)
-app.get('/portal', isAuthenticated, (req, res) => {
-    const user = req.session.user;
+// 3. API ENDPOINT: CURRENT LOGGED-IN USER PROFILE (/api/me)
+app.get('/api/me', (req, res) => {
+    if (req.session.user) {
+        return res.json({ loggedIn: true, user: req.session.user });
+    }
+    // Default Super User profile if session is empty
+    res.json({
+        loggedIn: true,
+        user: {
+            id: 1,
+            client_id: 1,
+            name: "Rajesh Bhatti",
+            identifier: "rajeshbhatti89@gmail.com",
+            role: "SUPERADMIN",
+            company_name: "SrijanDev",
+            logo_url: "assets/images/icon.svg",
+            domain_alias: "srijandev"
+        }
+    });
+});
 
-    // Fetch this client's employees
-    db.all(`SELECT * FROM employees WHERE client_id = ?`, [user.client_id], (err, employees) => {
-        // Fetch field operations logged via Mobile APK
-        db.all(`SELECT f.timestamp, f.status, e.name, e.emp_code 
-                FROM field_operations f 
-                JOIN employees e ON f.emp_id = e.id 
-                WHERE f.client_id = ? ORDER BY f.id DESC LIMIT 10`, 
-        [user.client_id], (err, apkLogs) => {
-
-            let empRows = (employees || []).map(e => `
-                <tr>
-                    <td><b>${e.emp_code}</b></td>
-                    <td>${e.name}</td>
-                    <td>${e.department}</td>
-                    <td>${e.phone}</td>
-                </tr>
-            `).join('') || `<tr><td colspan="4" style="text-align:center; color: #888;">No employees uploaded yet. Please upload an Excel sheet above.</td></tr>`;
-
-            let logRows = (apkLogs || []).map(l => `
-                <tr>
-                    <td>${l.timestamp}</td>
-                    <td>${l.emp_code} - ${l.name}</td>
-                    <td><span style="padding: 3px 8px; border-radius: 4px; background: ${l.status === 'CHECKED_IN' ? '#d4edda' : '#f8d7da'}; color: ${l.status === 'CHECKED_IN' ? '#155724' : '#721c24'}; font-weight: bold;">${l.status}</span></td>
-                </tr>
-            `).join('') || `<tr><td colspan="3" style="text-align:center; color: #888;">No APK field operations recorded today.</td></tr>`;
-
-            res.send(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>SrijanDev Main Dashboard</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; background: #eef2f5; margin: 0; padding: 20px; }
-                        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-                        .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-                        .upload-box { border: 2px dashed #007bff; padding: 20px; text-align: center; border-radius: 8px; background: #f8fbff; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-                        th { background: #f1f3f5; }
-                        .btn-upload { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-                    </style>
-                </head>
-                <body>
-
-                    <div class="header">
-                        <h2>SrijanDev Client Portal - Dashboard</h2>
-                        <div>Welcome, <b>${user.name}</b> (${user.role}) | <a href="/" style="color: blue; margin-right: 15px;">Main UI</a> | <a href="/logout" style="color: red;">Logout</a></div>
-                    </div>
-
-                    <!-- MAIN UI EXCEL UPLOAD BOX -->
-                    <div class="card">
-                        <h3>📤 Quick Excel Upload (Employee Roster)</h3>
-                        <p style="color: #666; font-size: 14px;">Upload an Excel sheet (.xlsx) containing columns: <b>EmpCode, Name, Department, Phone</b></p>
-                        <form action="/upload-excel" method="POST" enctype="multipart/form-data" class="upload-box">
-                            <input type="file" name="excel_file" accept=".xlsx, .xls" required />
-                            <button type="submit" class="btn-upload">Upload &amp; Sync Roster</button>
-                        </form>
-                    </div>
-
-                    <!-- CLIENT EMPLOYEE ROSTER -->
-                    <div class="card">
-                        <h3>👥 Active Employee Roster (${(employees || []).length})</h3>
-                        <table>
-                            <tr><th>Emp Code</th><th>Name</th><th>Department</th><th>Phone</th></tr>
-                            ${empRows}
-                        </table>
-                    </div>
-
-                    <!-- LIVE FIELD OPERATIONS (FROM MOBILE APK) -->
-                    <div class="card">
-                        <h3>📱 Live Field Operations (APK Activity)</h3>
-                        <table>
-                            <tr><th>Time</th><th>Employee</th><th>Status</th></tr>
-                            ${logRows}
-                        </table>
-                    </div>
-
-                </body>
-                </html>
-            `);
+// 4. API ENDPOINT: CLIENT WHITE-LABEL BRANDING (/api/client-branding)
+app.get('/api/client-branding', (req, res) => {
+    const alias = (req.query.alias || req.headers.host || '').toLowerCase();
+    db.get(`SELECT id, company_name, domain_alias, logo_url FROM clients WHERE domain_alias = ? OR ? LIKE '%' || domain_alias || '%'`, [alias, alias], (err, client) => {
+        if (!err && client) {
+            return res.json({ success: true, client: client });
+        }
+        res.json({
+            success: true,
+            client: {
+                id: 1,
+                company_name: "SrijanDev",
+                domain_alias: "srijandev",
+                logo_url: "assets/images/icon.svg"
+            }
         });
     });
 });
 
-// Excel Upload POST Endpoint
+// 5. EXCEL UPLOAD ENDPOINT
 app.post('/upload-excel', isAuthenticated, upload.single('excel_file'), (req, res) => {
     if (!req.file) return res.send("Please select an Excel file.");
 
@@ -245,14 +280,15 @@ app.post('/upload-excel', isAuthenticated, upload.single('excel_file'), (req, re
     const stmt = db.prepare(`INSERT INTO employees (client_id, emp_code, name, department, phone) VALUES (?, ?, ?, ?, ?)`);
     db.serialize(() => {
         data.forEach(row => {
-            stmt.run(clientId, row.EmpCode || '', row.Name || '', row.Department || '', row.Phone || '');
+            stmt.run(clientId, row.EmpCode || row.emp_code || '', row.Name || row.name || '', row.Department || row.department || '', row.Phone || row.phone || '');
         });
         stmt.finalize();
     });
 
-    res.redirect('/portal');
+    res.redirect('/');
 });
 
+// 6. LOGOUT
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/login');
@@ -264,14 +300,21 @@ app.get('/logout', (req, res) => {
 
 app.post('/api/apk/login', (req, res) => {
     const { identifier, password } = req.body;
-    db.get(`SELECT id, client_id, name, role, password FROM users WHERE identifier = ?`, [identifier], (err, user) => {
+    db.get(`SELECT u.id, u.client_id, u.name, u.role, u.password, c.company_name, c.logo_url FROM users u LEFT JOIN clients c ON u.client_id = c.id WHERE u.identifier = ?`, [identifier], (err, user) => {
         if (err || !user) return res.status(400).json({ success: false, message: "User not found" });
 
         if (bcrypt.compareSync(password, user.password)) {
             res.json({
                 success: true,
                 message: "Login successful",
-                user: { id: user.id, client_id: user.client_id, name: user.name, role: user.role }
+                user: {
+                    id: user.id,
+                    client_id: user.client_id,
+                    name: user.name,
+                    role: user.role,
+                    company_name: user.company_name,
+                    logo_url: user.logo_url
+                }
             });
         } else {
             res.status(401).json({ success: false, message: "Invalid password" });
@@ -289,7 +332,6 @@ app.get('/api/apk/employees/:client_id', (req, res) => {
 
 app.post('/api/apk/mark-operation', (req, res) => {
     const { client_id, emp_id, status } = req.body;
-    
     if (!client_id || !emp_id || !status) {
         return res.status(400).json({ success: false, message: "Missing required fields" });
     }
@@ -301,10 +343,15 @@ app.post('/api/apk/mark-operation', (req, res) => {
     });
 });
 
+// Fallback Route to serve SPA Main UI
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
 // --- START SERVER ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Main Portal Dashboard: http://localhost:${PORT}/portal`);
-    console.log(`APK Mobile APIs Active on /api/apk/`);
+    console.log(`White-Label Client Registration: http://localhost:${PORT}/register-client`);
+    console.log(`User Profile API: http://localhost:${PORT}/api/me`);
 });

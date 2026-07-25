@@ -10,6 +10,7 @@ if ('serviceWorker' in navigator) {
 
 document.addEventListener('DOMContentLoaded', () => {
   initSubscriptionGuard();
+  initUserProfile();
   initClock();
   initRouter();
   initSidebarToggle();
@@ -18,6 +19,35 @@ document.addEventListener('DOMContentLoaded', () => {
   initSettingsTabs();
   initMapPlayback();
 });
+
+async function initUserProfile() {
+  try {
+    const res = await fetch('/api/me');
+    const data = await res.json();
+    if (data && data.user) {
+      const u = data.user;
+      const nameEl = document.getElementById('user-profile-name');
+      const roleEl = document.getElementById('user-profile-role');
+      const initialsEl = document.getElementById('user-avatar-initials');
+      const badgeEl = document.getElementById('user-profile-badge');
+
+      if (nameEl) nameEl.innerText = u.name || u.identifier || 'User';
+      if (roleEl) roleEl.innerText = (u.role || 'USER') + ' • ' + (u.company_name || 'SrijanDev');
+      
+      if (initialsEl) {
+        const parts = (u.name || u.identifier || 'U').trim().split(' ');
+        const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+        initialsEl.innerText = initials;
+      }
+
+      if (badgeEl && (u.role === 'SUPERADMIN' || u.identifier === 'rajeshbhatti89@gmail.com')) {
+        badgeEl.classList.remove('hidden');
+      }
+    }
+  } catch (err) {
+    console.warn('[SrijanDev Profile] API fetch notice:', err);
+  }
+}
 
 function initSubscriptionGuard() {
   const isSuperUser = true; // rajeshbhatti89@gmail.com (Super User & Owner)
