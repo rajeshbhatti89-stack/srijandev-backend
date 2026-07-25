@@ -524,7 +524,7 @@
       }
     }
 
-    // Mock API Endpoint Handlers
+    // Production API Endpoint Handlers
     async function handleLoginSubmit(e) {
       e.preventDefault();
       const email = document.getElementById('signin-email').value.trim();
@@ -532,7 +532,7 @@
       const submitBtn = document.getElementById('btn-signin-submit');
 
       if (!email || !password) {
-        showToast('Please enter email and password', 'error');
+        showToast('Please enter both email and password', 'error');
         return;
       }
 
@@ -540,41 +540,36 @@
       setButtonLoading(submitBtn, true, 'Authenticating...');
 
       try {
-        let response;
-        try {
-          const res = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password, identifier: email })
-          });
-          response = await res.json();
-        } catch (err1) {
-          const res = await fetch('https://srijandev-backend.onrender.com/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password, identifier: email })
-          });
-          response = await res.json();
-        }
+        const res = await fetch('https://srijandev-backend.onrender.com/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, identifier: email })
+        });
 
+        const data = await res.json();
         setButtonLoading(submitBtn, false, 'Sign In to SrijanDev');
 
-        if (response && response.success) {
+        if (res.ok && data && data.success && data.token) {
           showToast('Authentication Successful! Redirecting...', 'success');
-          localStorage.setItem("token", response.token || ("srijandev_jwt_" + Date.now()));
-          localStorage.setItem("user", JSON.stringify(response.user));
-          localStorage.setItem("srijandev_user", JSON.stringify(response.user));
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('srijandev_user', JSON.stringify(data.user));
+          
           setTimeout(() => {
-            window.location.href = "index.html";
-          }, 600);
+            window.location.href = 'index.html';
+          }, 500);
         } else {
-          showAlertBox('error', 'Authentication Failed', response.message || 'Invalid email or password.');
-          showToast(response.message || 'Invalid credentials', 'error');
+          const errorMsg = (data && data.message) ? data.message : 'Invalid Email or Password';
+          showAlertBox('error', 'Authentication Failed', errorMsg);
+          showToast(errorMsg, 'error');
+          // STOP EXECUTION STRICTLY - DO NOT REDIRECT
+          return false;
         }
       } catch (err) {
         setButtonLoading(submitBtn, false, 'Sign In to SrijanDev');
-        showAlertBox('error', 'Authentication Failed', 'Unable to reach SrijanDev Cloud API endpoint.');
-        showToast('Network error during authentication', 'error');
+        showAlertBox('error', 'Connection Error', 'Unable to reach authentication endpoint https://srijandev-backend.onrender.com.');
+        showToast('Backend API unreachable', 'error');
+        return false;
       }
     }
 
@@ -594,47 +589,17 @@
       setButtonLoading(submitBtn, true, 'Creating Account...');
 
       try {
-        const response = await mockAuthApiCall('/api/auth/register', { name, email, password });
+        const res = await fetch('https://srijandev-backend.onrender.com/register-client', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
         setButtonLoading(submitBtn, false, 'Create SrijanDev Account');
-
-        if (response.status === 201) {
-          showToast('Account created successfully!', 'success');
-          showAlertBox('info', 'Account Created Successfully', 'Verification email sent to ' + email + '. You can now sign in.');
-          setTimeout(() => switchAuthMode('signin'), 1500);
-        } else {
-          showToast(response.message || 'Registration failed', 'error');
-        }
+        showToast('Account registration request dispatched', 'info');
       } catch (err) {
         setButtonLoading(submitBtn, false, 'Create SrijanDev Account');
         showToast('Network error during registration', 'error');
       }
-    }
-
-    // Mock API Interceptor Implementation
-    function mockAuthApiCall(endpoint, data) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          if (endpoint === '/api/auth/login') {
-            if (data.scenario === 'invalid') {
-              resolve({ status: 401, message: 'Invalid credentials provided.' });
-            } else if (data.scenario === 'unverified') {
-              resolve({ status: 403, code: 'UNVERIFIED_EMAIL', message: 'Email address unverified.' });
-            } else if (data.scenario === 'disabled') {
-              resolve({ status: 403, code: 'ACCOUNT_DISABLED', message: 'Account is disabled.' });
-            } else {
-              resolve({ status: 200, message: '2FA required', requires2Fa: true });
-            }
-          } else if (endpoint === '/api/auth/register') {
-            resolve({ status: 201, message: 'User created' });
-          } else if (endpoint === '/api/auth/verify-2fa') {
-            if (data.code === '123456' || data.code.length === 6) {
-              resolve({ status: 200, token: 'mock_jwt_srijandev_' + Date.now() });
-            } else {
-              resolve({ status: 400, message: 'Invalid 2FA security code.' });
-            }
-          }
-        }, 800);
-      });
     }
 
     // 2FA Modal & OTP Handling

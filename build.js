@@ -553,12 +553,7 @@ const API_BASE_URL = "https://srijandev-backend.onrender.com";
 
 // Application State Management
 const appState = {
-  currentUser: {
-    name: "Rajesh Bhatti",
-    email: "rajeshbhatti89@gmail.com",
-    role: "SUPERADMIN",
-    company: "SrijanDev"
-  },
+  currentUser: null,
   activeTab: 'dashboard',
   isChatbotOpen: false
 };
@@ -590,12 +585,20 @@ function initEngine() {
 
 // 1. DYNAMIC SESSION & AUTH VERIFICATION
 async function checkSession() {
-  const userDataStr = localStorage.getItem("srijandev_user") || localStorage.getItem("user");
+  const token = localStorage.getItem("token");
+  const userDataStr = localStorage.getItem("user") || localStorage.getItem("srijandev_user");
+
   if (userDataStr) {
     try {
       appState.currentUser = JSON.parse(userDataStr);
       renderUserProfile(appState.currentUser);
+      renderSidebar();
     } catch (err) {}
+  } else {
+    if (!window.location.pathname.includes("auth") && !window.location.pathname.includes("login")) {
+      window.location.href = "/auth.html";
+      return;
+    }
   }
 
   try {
@@ -603,35 +606,40 @@ async function checkSession() {
     const data = await res.json();
     if (data && data.user) {
       appState.currentUser = data.user;
+      localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("srijandev_user", JSON.stringify(data.user));
       renderUserProfile(appState.currentUser);
       renderSidebar();
     }
   } catch (err) {
-    console.warn('[SrijanDev Engine] Session check notice:', err);
+    console.warn('[SrijanDev Engine] Session sync notice:', err);
   }
 }
 
 function renderUserProfile(user) {
-  if (!user) return;
-  const name = user.name || user.email || user.identifier || 'Rajesh Bhatti';
-  const role = (user.role || 'SUPERADMIN').toUpperCase();
-  const company = user.company || user.company_name || 'SrijanDev';
-  const initials = name.trim().split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'RB';
+  let u = user;
+  if (!u) {
+    try {
+      const rawUser = localStorage.getItem('user') || localStorage.getItem('srijandev_user');
+      if (rawUser) u = JSON.parse(rawUser);
+    } catch (e) {}
+  }
+  if (!u) return;
+
+  const name = u.name || u.email || u.identifier || 'User';
+  const role = (u.role || 'CLIENT').toUpperCase();
+  const company = u.company || u.company_name || 'SrijanDev';
+  const initials = name.trim().split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
 
   const widget = document.getElementById("user-profile-widget");
   if (widget) {
-    widget.innerHTML = \`
-      <div class="flex items-center space-x-2">
-        <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow">
-          \${initials}
-        </div>
-        <div class="text-left">
-          <div class="font-bold text-xs text-slate-900 truncate">\${name}</div>
-          <div class="text-[10px] text-slate-500 font-semibold uppercase">\${role}</div>
-        </div>
-      </div>
-    \`;
+    widget.innerHTML = '<div class="flex items-center space-x-2">' +
+        '<div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow">' + initials + '</div>' +
+        '<div class="text-left">' +
+          '<div class="font-bold text-xs text-slate-900 truncate">' + name + '</div>' +
+          '<div class="text-[10px] text-slate-500 font-semibold uppercase">' + role + '</div>' +
+        '</div>' +
+      '</div>';
   }
 
   const nameEl = document.getElementById('user-profile-name');
@@ -652,12 +660,12 @@ function renderUserProfile(user) {
 
   if (mName) mName.innerText = name;
   if (mRole) mRole.innerText = role + ' • ' + company;
-  if (mEmail) mEmail.innerText = user.email || user.identifier || 'rajeshbhatti89@gmail.com';
+  if (mEmail) mEmail.innerText = u.email || u.identifier || '';
   if (mCompany) mCompany.innerText = company;
   if (mSysRole) mSysRole.innerText = role;
   if (mInitials) mInitials.innerText = initials;
 
-  const isOwner = (role === 'SUPERADMIN' || role === 'OWNER' || role === 'SUPER_ADMIN' || user.email === 'rajeshbhatti89@gmail.com');
+  const isOwner = (role === 'SUPERADMIN' || role === 'OWNER' || role === 'SUPER_ADMIN' || u.email === 'rajeshbhatti89@gmail.com');
   if (badgeEl) {
     if (isOwner) badgeEl.classList.remove('hidden');
     else badgeEl.classList.add('hidden');
