@@ -4,4 +4,7 @@ yarn-debug.log*
 yarn-error.log*
 uploads/
 app_data.db
+app_data.db-shm
+app_data.db-wal
 .DS_Store
+
