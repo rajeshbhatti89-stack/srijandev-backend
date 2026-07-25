@@ -1,5 +1,23 @@
-/* SrijanDev Application & PWA Controller */
+/**
+ * SRIJANDEV UNIFIED ENTERPRISE ENGINE (Unolo + Techpurple Hybrid)
+ * Production-Ready Clean SPA Engine
+ */
 
+const API_BASE_URL = "https://srijandev-backend.onrender.com";
+
+// Application State Management
+const appState = {
+  currentUser: {
+    name: "Rajesh Bhatti",
+    email: "rajeshbhatti89@gmail.com",
+    role: "SUPERADMIN",
+    company: "SrijanDev"
+  },
+  activeTab: 'dashboard',
+  isChatbotOpen: false
+};
+
+// PWA Service Worker Registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
@@ -8,152 +26,76 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  initSubscriptionGuard();
-  initUserProfile();
-  initNotificationsSystem();
-  initDashboardMetrics();
+// Initialize Application Engine
+document.addEventListener("DOMContentLoaded", () => {
+  initEngine();
+});
+
+function initEngine() {
+  checkSession();
+  bindGlobalListeners();
+  renderSidebar();
   initClock();
   initRouter();
   initSidebarToggle();
   initModals();
   initDutyPunch();
-  initSettingsTabs();
-  initMapPlayback();
-});
+}
 
-async function initDashboardMetrics() {
+// 1. DYNAMIC SESSION & AUTH VERIFICATION
+async function checkSession() {
+  const userDataStr = localStorage.getItem("srijandev_user") || localStorage.getItem("user");
+  if (userDataStr) {
+    try {
+      appState.currentUser = JSON.parse(userDataStr);
+      renderUserProfile(appState.currentUser);
+    } catch (err) {}
+  }
+
   try {
-    const res = await fetch('/api/dashboard-metrics');
+    let res = await fetch('/api/user/profile').catch(() => fetch(`${API_BASE_URL}/api/user/profile`));
     const data = await res.json();
-    if (data && data.success) {
-      const activeSitesEl = document.getElementById('metric-active-sites');
-      const guardsDutyEl = document.getElementById('metric-guards-duty');
-      const totalRosteredEl = document.getElementById('metric-total-rostered');
-      const criticalAlertsEl = document.getElementById('metric-critical-alerts');
-      const missedCheckpointsEl = document.getElementById('metric-missed-checkpoints');
-      const shiftCompEl = document.getElementById('metric-shift-completion');
-      const shiftBarEl = document.getElementById('metric-shift-bar');
-      const tableBody = document.getElementById('live-site-status-body');
-
-      if (activeSitesEl) activeSitesEl.innerText = data.active_sites || 0;
-      if (guardsDutyEl) guardsDutyEl.innerText = data.guards_on_duty || 0;
-      if (totalRosteredEl) totalRosteredEl.innerText = 'of ' + (data.total_rostered || 0) + ' rostered';
-      if (criticalAlertsEl) criticalAlertsEl.innerText = String(data.critical_alerts || 0).padStart(2, '0');
-      if (missedCheckpointsEl) missedCheckpointsEl.innerText = String(data.missed_checkpoints || 0).padStart(2, '0');
-      if (shiftCompEl) shiftCompEl.innerText = (data.shift_completion || 0) + '%';
-      if (shiftBarEl) shiftBarEl.style.width = (data.shift_completion || 0) + '%';
-
-      if (tableBody) {
-        if (data.sites && data.sites.length > 0) {
-          let html = '';
-          data.sites.forEach(s => {
-            html += '<tr class="hover:bg-surface-container-low transition-colors">' +
-                '<td class="px-5 py-3.5"><div class="font-semibold text-on-surface text-sm">' + (s.department || 'Field Unit') + '</div></td>' +
-                '<td class="px-5 py-3.5"><span class="px-2 py-0.5 bg-secondary-container/30 text-on-secondary-container rounded-full text-[10px] font-bold">' + (s.status || 'ACTIVE') + '</span></td>' +
-                '<td class="px-5 py-3.5 text-xs text-on-surface font-medium">' + (s.name || 'Guard') + '</td>' +
-                '<td class="px-5 py-3.5"><span class="font-mono text-xs font-bold">100%</span></td>' +
-                '<td class="px-5 py-3.5 text-right"><button class="text-primary text-xs font-bold">View Trail</button></td>' +
-              '</tr>';
-          });
-          tableBody.innerHTML = html;
-        } else {
-          tableBody.innerHTML = '<tr><td colspan="5" class="px-5 py-8 text-center text-on-surface-variant text-xs font-medium">' +
-            '<span class="material-symbols-outlined text-3xl mb-1 text-outline block">badge</span>' +
-            'No active site roster data. Upload an Excel spreadsheet to sync your personnel.' +
-          '</td></tr>';
-        }
-      }
+    if (data && data.user) {
+      appState.currentUser = data.user;
+      localStorage.setItem("srijandev_user", JSON.stringify(data.user));
+      renderUserProfile(appState.currentUser);
+      renderSidebar();
     }
   } catch (err) {
-    console.warn('[SrijanDev Metrics] API fetch notice:', err);
+    console.warn('[SrijanDev Engine] Session check notice:', err);
   }
 }
 
-async function initNotificationsSystem() {
-  const panel = document.getElementById('notification-panel');
-  if (!panel) return;
+function renderUserProfile(user) {
+  if (!user) return;
+  const name = user.name || user.email || user.identifier || 'Rajesh Bhatti';
+  const role = (user.role || 'SUPERADMIN').toUpperCase();
+  const company = user.company || user.company_name || 'SrijanDev';
+  const initials = name.trim().split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'RB';
 
-  try {
-    const res = await fetch('/api/notifications');
-    const data = await res.json();
-    const clientNotifications = (data && data.notifications) ? data.notifications : [];
-
-    if (clientNotifications.length === 0) {
-      panel.innerHTML = '<div class="welcome-card" style="padding: 20px; background: #eff6ff; border-radius: 8px; border: 1px solid #bfdbfe;">' +
-            '<h3 style="color: #1e40af; margin-top: 0; font-weight: bold; font-size: 15px;">🎉 Welcome to Your Portal!</h3>' +
-            '<p style="color: #1e3a8a; font-size: 12px; margin-top: 6px; line-height: 1.4;">Your operational workspace is ready. You can now upload your employee roster via Excel or connect your field team's APK.</p>' +
-            '<button onclick="startPortalTour()" style="background: #2563eb; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 12px; font-size: 12px; transition: 0.2s;">' +
-                '🚀 Take a Quick Product Tour' +
-            '</button>' +
-        '</div>';
-    } else {
-      let html = '';
-      clientNotifications.forEach(n => {
-        const time = new Date(n.timestamp || Date.now()).toLocaleTimeString();
-        html += '<div class="p-3 border border-outline-variant bg-surface-container-low rounded-lg shadow-sm">' +
-            '<div class="flex justify-between items-start mb-1">' +
-              '<span class="text-primary font-bold text-[9px] uppercase tracking-wider">' + (n.status || 'FIELD OPERATION') + '</span>' +
-              '<span class="text-on-surface-variant font-mono text-[9px]">' + time + '</span>' +
-            '</div>' +
-            '<p class="text-on-surface font-bold text-xs mb-1">' + (n.emp_name || 'Personnel') + ' (' + (n.department || 'Field Ops') + ')</p>' +
-            '<p class="text-on-surface-variant text-[11px] mb-2 leading-tight">Field status updated via Mobile APK.</p>' +
-          '</div>';
-      });
-      panel.innerHTML = html;
-    }
-  } catch (err) {
-    console.warn('[SrijanDev Notifications] API notice:', err);
+  const widget = document.getElementById("user-profile-widget");
+  if (widget) {
+    widget.innerHTML = `
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow">
+          ${initials}
+        </div>
+        <div class="text-left">
+          <div class="font-bold text-xs text-slate-900 truncate">${name}</div>
+          <div class="text-[10px] text-slate-500 font-semibold uppercase">${role}</div>
+        </div>
+      </div>
+    `;
   }
-}
 
-window.startPortalTour = function() {
-  alert("🎉 Welcome to SrijanDev Operations Portal Tour!\n\n1. Use 'Quick Excel Roster Upload' to import personnel.\n2. Access SaaS Pricing & Plans via top menu.\n3. Connect field guards using the Mobile APK app.");
-};
-
-window.toggleSupportBot = function() {
-  const card = document.getElementById('ai-bot-card');
-  if (card) card.classList.toggle('hidden');
-};
-
-window.sendSupportMessage = async function() {
-  const input = document.getElementById('ai-bot-input');
-  const messages = document.getElementById('ai-bot-messages');
-  if (!input || !messages || !input.value.trim()) return;
-
-  const userText = input.value.trim();
-  input.value = '';
-
-  messages.innerHTML += '<div class="p-2.5 bg-primary text-white rounded-xl ml-auto max-w-[80%] text-right font-medium mb-2">' + userText + '</div>';
-  messages.scrollTop = messages.scrollHeight;
-
-  try {
-    const res = await fetch('/api/ai-support', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: userText })
-    });
-    const data = await res.json();
-    
-    messages.innerHTML += '<div class="p-3 bg-primary/10 border border-primary/20 rounded-xl text-on-surface max-w-[90%] mb-2">' +
-        '<p class="font-bold text-primary mb-1">🤖 AI Support Assistant</p>' +
-        '<p class="text-on-surface-variant text-[11px]">' + (data.reply || 'All services operational.') + '</p>' +
-      '</div>';
-    messages.scrollTop = messages.scrollHeight;
-  } catch (err) {
-    messages.innerHTML += '<div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-[11px] mb-2">' +
-        'System Diagnostic Check: All Services Operational (WAL Mode Active).' +
-      '</div>';
-    messages.scrollTop = messages.scrollHeight;
-  }
-};
-
-async function initUserProfile() {
   const nameEl = document.getElementById('user-profile-name');
   const roleEl = document.getElementById('user-profile-role');
   const initialsEl = document.getElementById('user-avatar-initials');
   const badgeEl = document.getElementById('user-profile-badge');
-  const ownerNav = document.getElementById('nav-owner-portal');
+
+  if (nameEl) nameEl.innerText = name;
+  if (roleEl) roleEl.innerText = role + ' • ' + company;
+  if (initialsEl) initialsEl.innerText = initials;
 
   const mName = document.getElementById('modal-profile-name');
   const mRole = document.getElementById('modal-profile-role');
@@ -162,128 +104,44 @@ async function initUserProfile() {
   const mSysRole = document.getElementById('modal-profile-system-role');
   const mInitials = document.getElementById('modal-profile-initials');
 
-  function renderUserData(u) {
-    if (!u) return;
-    const fullName = u.name || u.email || u.identifier || 'Rajesh Bhatti';
-    const userRole = (u.role || 'SUPERADMIN').toUpperCase();
-    const userEmail = u.email || u.identifier || 'rajeshbhatti89@gmail.com';
-    const companyName = u.company || u.company_name || 'SrijanDev';
+  if (mName) mName.innerText = name;
+  if (mRole) mRole.innerText = role + ' • ' + company;
+  if (mEmail) mEmail.innerText = user.email || user.identifier || 'rajeshbhatti89@gmail.com';
+  if (mCompany) mCompany.innerText = company;
+  if (mSysRole) mSysRole.innerText = role;
+  if (mInitials) mInitials.innerText = initials;
 
-    const parts = fullName.trim().split(' ');
-    const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
-
-    if (nameEl) nameEl.innerText = fullName;
-    if (roleEl) roleEl.innerText = userRole + ' • ' + companyName;
-    if (initialsEl) initialsEl.innerText = initials;
-
-    if (mName) mName.innerText = fullName;
-    if (mRole) mRole.innerText = userRole + ' • ' + companyName;
-    if (mEmail) mEmail.innerText = userEmail;
-    if (mCompany) mCompany.innerText = companyName;
-    if (mSysRole) mSysRole.innerText = userRole;
-    if (mInitials) mInitials.innerText = initials;
-
-    const isOwnerOrAdmin = (userRole === 'SUPERADMIN' || userRole === 'OWNER' || userEmail === 'rajeshbhatti89@gmail.com');
-
-    if (badgeEl) {
-      if (isOwnerOrAdmin) badgeEl.classList.remove('hidden');
-      else badgeEl.classList.add('hidden');
-    }
-
-    if (ownerNav) {
-      if (isOwnerOrAdmin) {
-        ownerNav.classList.remove('hidden');
-        ownerNav.style.display = 'flex';
-      } else {
-        ownerNav.classList.add('hidden');
-        ownerNav.style.display = 'none';
-      }
-    }
+  const isOwner = (role === 'SUPERADMIN' || role === 'OWNER' || role === 'SUPER_ADMIN' || user.email === 'rajeshbhatti89@gmail.com');
+  if (badgeEl) {
+    if (isOwner) badgeEl.classList.remove('hidden');
+    else badgeEl.classList.add('hidden');
   }
+}
 
-  // 1. Try local storage cache first
-  try {
-    const cachedUser = localStorage.getItem('srijandev_user');
-    if (cachedUser) {
-      renderUserData(JSON.parse(cachedUser));
-    }
-  } catch (e) {}
+// 2. SIDEBAR & ROLE-BASED NAVIGATION (RBAC)
+function renderSidebar() {
+  const ownerNav = document.getElementById("nav-owner-portal");
+  const role = (appState.currentUser?.role || '').toUpperCase();
+  const email = appState.currentUser?.email || appState.currentUser?.identifier || '';
+  const isOwner = (role === 'OWNER' || role === 'SUPERADMIN' || role === 'SUPER_ADMIN' || email === 'rajeshbhatti89@gmail.com');
 
-  // 2. Fetch live session from API
-  try {
-    let res = await fetch('/api/user/profile').catch(() => fetch('https://srijandev-backend.onrender.com/api/user/profile'));
-    const data = await res.json();
-    if (data && data.user) {
-      renderUserData(data.user);
-      localStorage.setItem('srijandev_user', JSON.stringify(data.user));
+  if (ownerNav) {
+    if (isOwner) {
+      ownerNav.classList.remove('hidden');
+      ownerNav.style.display = 'flex';
     } else {
-      renderUserData({ name: 'Rajesh Bhatti', email: 'rajeshbhatti89@gmail.com', role: 'SUPERADMIN', company: 'SrijanDev' });
+      ownerNav.classList.add('hidden');
+      ownerNav.style.display = 'none';
     }
-  } catch (err) {
-    console.warn('[SrijanDev Profile] Fallback active:', err);
-    renderUserData({ name: 'Rajesh Bhatti', email: 'rajeshbhatti89@gmail.com', role: 'SUPERADMIN', company: 'SrijanDev' });
   }
 }
 
-function initSubscriptionGuard() {
-  const isSuperUser = true; // rajeshbhatti89@gmail.com (Super User & Owner)
-  const isSubscriptionActive = localStorage.getItem('srijandev_subscription_active') === 'true' || isSuperUser;
-  
-  const lockoutBanner = document.getElementById('subscription-lockout-banner');
-  if (!isSubscriptionActive && lockoutBanner) {
-    lockoutBanner.classList.remove('hidden');
-  }
-
-  // Intercept Admin Buttons for RBAC enforcement
-  document.querySelectorAll('[data-admin-action]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      if (!isSuperUser) {
-        e.preventDefault();
-        e.stopPropagation();
-        alert('403 Forbidden: Administrative privileges required (/api/admin/*)');
-      }
-    });
-  });
+function switchTab(tabName) {
+  appState.activeTab = tabName;
+  window.location.hash = '#' + tabName;
 }
 
-function initPricingToggle() {
-  const toggle = document.getElementById('pricing-billing-toggle');
-  if (!toggle) return;
-
-  toggle.addEventListener('change', (e) => {
-    window.isSpaAnnual = e.target.checked;
-    updateSpaPrices();
-  });
-}
-
-function updateSpaPrices() {
-  document.querySelectorAll('.spa-billing-period').forEach(el => {
-    el.innerText = window.isSpaAnnual ? '/year' : '/month';
-  });
-
-  document.querySelectorAll('.spa-price-display').forEach(el => {
-    el.innerText = window.isSpaAnnual ? el.getAttribute('data-annual') : el.getAttribute('data-monthly');
-  });
-}
-
-function initiateSpaCheckout(planName, price) {
-  window.location.href = 'paywall.html';
-}
-
-function initClock() {
-  function update() {
-    const clockEls = document.querySelectorAll('.live-clock');
-    const now = new Date();
-    const timeString = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    const dateString = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-    clockEls.forEach(el => {
-      el.innerHTML = `<span class="material-symbols-outlined text-sm mr-1">schedule</span> Live Feed: ${dateString} • ${timeString}`;
-    });
-  }
-  update();
-  setInterval(update, 1000);
-}
-
+// 3. MAIN CONTENT VIEW SWITCHER & ROUTER
 function initRouter() {
   function handleRoute() {
     const rawHash = window.location.hash || '#dashboard';
@@ -327,16 +185,82 @@ function initRouter() {
   handleRoute();
 }
 
+// 4. CHATBOT EVENT LISTENER FIX
+function bindGlobalListeners() {
+  const chatbotBtn = document.getElementById("ai-bot-toggle-btn") || document.getElementById("floating-chatbot-btn") || document.querySelector(".chat-widget-trigger");
+  const chatbotCard = document.getElementById("ai-bot-card") || document.getElementById("chatbot-drawer") || document.querySelector(".chatbot-container");
+
+  window.toggleSupportBot = function() {
+    if (chatbotCard) {
+      appState.isChatbotOpen = !appState.isChatbotOpen;
+      chatbotCard.classList.toggle('hidden');
+      chatbotCard.style.display = chatbotCard.classList.contains('hidden') ? 'none' : 'flex';
+    }
+  };
+
+  if (chatbotBtn) {
+    chatbotBtn.onclick = window.toggleSupportBot;
+  }
+}
+
+window.sendSupportMessage = async function() {
+  const input = document.getElementById('ai-bot-input');
+  const messages = document.getElementById('ai-bot-messages');
+  if (!input || !messages || !input.value.trim()) return;
+
+  const userText = input.value.trim();
+  input.value = '';
+
+  messages.innerHTML += `<div class="p-2.5 bg-primary text-white rounded-xl ml-auto max-w-[80%] text-right font-medium mb-2">${userText}</div>`;
+  messages.scrollTop = messages.scrollHeight;
+
+  try {
+    let res = await fetch('/api/ai-support', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: userText })
+    }).catch(() => fetch(`${API_BASE_URL}/api/ai-support`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: userText })
+    }));
+    const data = await res.json();
+    
+    messages.innerHTML += `<div class="p-3 bg-primary/10 border border-primary/20 rounded-xl text-on-surface max-w-[90%] mb-2">
+      <p class="font-bold text-primary mb-1">🤖 AI Support Assistant</p>
+      <p class="text-on-surface-variant text-[11px]">${data.reply || 'All services operational.'}</p>
+    </div>`;
+    messages.scrollTop = messages.scrollHeight;
+  } catch (err) {
+    messages.innerHTML += `<div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-[11px] mb-2">
+      System Diagnostics: Render Cloud Backend Active.
+    </div>`;
+    messages.scrollTop = messages.scrollHeight;
+  }
+};
+
+function initClock() {
+  function update() {
+    const clockEls = document.querySelectorAll('.live-clock');
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const dateString = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    clockEls.forEach(el => {
+      el.innerHTML = `<span class="material-symbols-outlined text-sm mr-1">schedule</span> Live Feed: ${dateString} • ${timeString}`;
+    });
+  }
+  update();
+  setInterval(update, 1000);
+}
+
 function initSidebarToggle() {
   const toggleBtn = document.getElementById('mobile-drawer-toggle');
   const overlay = document.querySelector('.sidebar-overlay');
-
   if (toggleBtn) {
     toggleBtn.addEventListener('click', () => {
       document.body.classList.toggle('sidebar-open');
     });
   }
-
   if (overlay) {
     overlay.addEventListener('click', () => {
       document.body.classList.remove('sidebar-open');
@@ -347,8 +271,8 @@ function initSidebarToggle() {
 function initModals() {
   document.querySelectorAll('[data-modal-target]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const modalId = btn.getAttribute('data-modal-target');
-      const modal = document.getElementById(modalId);
+      const targetId = btn.getAttribute('data-modal-target');
+      const modal = document.getElementById(targetId);
       if (modal) modal.classList.add('active');
     });
   });
