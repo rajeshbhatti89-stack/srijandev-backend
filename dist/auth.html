@@ -527,36 +527,54 @@
     // Mock API Endpoint Handlers
     async function handleLoginSubmit(e) {
       e.preventDefault();
-      const email = document.getElementById('signin-email').value;
-      const password = document.getElementById('signin-password').value;
-      const scenario = document.getElementById('scenario-selector').value;
+      const email = document.getElementById('signin-email').value.trim();
+      const password = document.getElementById('signin-password').value.trim();
       const submitBtn = document.getElementById('btn-signin-submit');
+
+      if (!email || !password) {
+        showToast('Please enter email and password', 'error');
+        return;
+      }
 
       hideAlertBox();
       setButtonLoading(submitBtn, true, 'Authenticating...');
 
       try {
-        // Intercept & Send to /api/auth/login
-        const response = await mockAuthApiCall('/api/auth/login', { email, password, scenario });
+        let response;
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, identifier: email })
+          });
+          response = await res.json();
+        } catch (err1) {
+          const res = await fetch('https://srijandev-backend.onrender.com/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, identifier: email })
+          });
+          response = await res.json();
+        }
 
         setButtonLoading(submitBtn, false, 'Sign In to SrijanDev');
 
-        if (response.status === 200) {
-          showToast('Credentials verified! Require 2FA code.', 'info');
-          open2FaModal();
-        } else if (response.status === 403 && response.code === 'UNVERIFIED_EMAIL') {
-          showAlertBox('error', 'Unverified Email Address', 'Your email address has not been verified yet. Please check your inbox.', 'Resend Verification Link', () => {
-            showToast('Verification email dispatched to ' + email, 'success');
-          });
-        } else if (response.status === 403 && response.code === 'ACCOUNT_DISABLED') {
-          showAlertBox('error', 'Account Disabled', 'This account has been administratively disabled. Contact security support.');
+        if (response && response.success) {
+          showToast('Authentication Successful! Redirecting...', 'success');
+          localStorage.setItem("token", response.token || ("srijandev_jwt_" + Date.now()));
+          localStorage.setItem("user", JSON.stringify(response.user));
+          localStorage.setItem("srijandev_user", JSON.stringify(response.user));
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 600);
         } else {
           showAlertBox('error', 'Authentication Failed', response.message || 'Invalid email or password.');
-          showToast('Invalid credentials provided', 'error');
+          showToast(response.message || 'Invalid credentials', 'error');
         }
       } catch (err) {
         setButtonLoading(submitBtn, false, 'Sign In to SrijanDev');
-        showAlertBox('error', 'System Error', 'Unable to reach authentication endpoint.');
+        showAlertBox('error', 'Authentication Failed', 'Unable to reach SrijanDev Cloud API endpoint.');
+        showToast('Network error during authentication', 'error');
       }
     }
 
