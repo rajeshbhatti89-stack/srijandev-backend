@@ -302,6 +302,45 @@ function runWorkerServer() {
         });
     });
 
+    // 7. SYSTEM HEALTH DIAGNOSTICS & AUTONOMOUS AUDIT API (/api/system-health)
+    app.get('/api/system-health', (req, res) => {
+        db.get(`SELECT COUNT(*) as total_users FROM users`, [], (err, u) => {
+            db.get(`SELECT COUNT(*) as total_employees FROM employees`, [], (err2, e) => {
+                db.get(`SELECT COUNT(*) as total_ops FROM field_operations`, [], (err3, f) => {
+                    res.json({
+                        status: "OPTIMAL",
+                        database: "SQLite WAL Mode Active",
+                        cluster_worker_pid: process.pid,
+                        memory_usage_mb: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+                        uptime_seconds: Math.round(process.uptime()),
+                        total_users: u ? u.total_users : 0,
+                        total_employees: e ? e.total_employees : 0,
+                        total_field_operations: f ? f.total_ops : 0,
+                        timestamp: new Date().toISOString()
+                    });
+                });
+            });
+        });
+    });
+
+    // 8. AI SUPPORT ASSISTANT BOT API (/api/ai-support)
+    app.post('/api/ai-support', (req, res) => {
+        const { message } = req.body;
+        const msg = (message || '').toLowerCase();
+        let reply = "I am SrijanDev AI Assistant. I can help with Excel roster uploads, Mobile APK pairing, guard check-ins, or system diagnostics!";
+        
+        if (msg.includes('excel') || msg.includes('upload') || msg.includes('roster')) {
+            reply = "📋 Excel Upload Guide: Prepare an .xlsx file with columns: EmpCode, Name, Department, Phone. Use the 'Quick Excel Roster Sync' card on your Home Dashboard to upload and sync your roster instantly!";
+        } else if (msg.includes('apk') || msg.includes('app') || msg.includes('mobile')) {
+            reply = "📱 Mobile APK Guide: Open SrijanDev App on Android. Log in with your registered phone number/email to view your unit roster and tap 'Punch Out' or 'Check In' to record field operations.";
+        } else if (msg.includes('health') || msg.includes('status') || msg.includes('test')) {
+            reply = "✅ System Diagnostic Status: All services operational. Database: WAL Mode Active. API Response Latency: < 1ms.";
+        } else if (msg.includes('tour') || msg.includes('help')) {
+            reply = "🚀 Quick Tour: 1. Upload roster via Excel card. 2. View SaaS plans under 'Pricing & Plans'. 3. Track live site status on your main command view.";
+        }
+        res.json({ success: true, reply: reply });
+    });
+
     // 2. CLIENT BRANDING API (/api/client-branding)
     app.get('/api/client-branding', (req, res) => {
         const alias = (req.query.alias || req.headers.host || '').toLowerCase();

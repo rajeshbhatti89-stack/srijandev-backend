@@ -1017,6 +1017,40 @@
         </div>
       </div>
     </div>
+  <!-- Floating Live AI Support Bot Widget -->
+  <div id="ai-support-bot-container" class="fixed bottom-6 right-6 z-50">
+    <button id="ai-bot-toggle-btn" onclick="toggleSupportBot()" class="w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all border-2 border-white/20">
+      <span class="material-symbols-outlined text-2xl">smart_toy</span>
+    </button>
+
+    <div id="ai-bot-card" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-surface border border-outline-variant rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div class="p-4 bg-primary text-white flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <span class="material-symbols-outlined text-emerald-400">robot_2</span>
+          <div>
+            <h4 class="font-bold text-sm leading-none">SrijanDev AI Assistant</h4>
+            <p class="text-[10px] text-emerald-300 mt-0.5">Autonomous Support &amp; Diagnostics</p>
+          </div>
+        </div>
+        <button onclick="toggleSupportBot()" class="text-white/80 hover:text-white">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <div id="ai-bot-messages" class="p-4 h-64 overflow-y-auto space-y-3 bg-surface-container-lowest text-xs">
+        <div class="p-3 bg-primary/10 border border-primary/20 rounded-xl text-on-surface">
+          <p class="font-bold text-primary mb-1">👋 Hello! How can I assist you today?</p>
+          <p class="text-on-surface-variant text-[11px]">Ask me about Excel uploads, APK pairing, guard check-ins, or system diagnostics.</p>
+        </div>
+      </div>
+
+      <div class="p-3 border-t border-outline-variant bg-surface flex items-center space-x-2">
+        <input id="ai-bot-input" type="text" placeholder="Ask AI Support..." class="flex-1 bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2 text-xs outline-none focus:border-primary" onkeypress="if(event.key==='Enter') sendSupportMessage()" />
+        <button onclick="sendSupportMessage()" class="bg-primary text-white p-2 rounded-lg hover:bg-primary-container transition-colors">
+          <span class="material-symbols-outlined text-sm">send</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <script src="assets/js/app.js"></script>
