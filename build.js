@@ -695,44 +695,69 @@ window.sendSupportMessage = async function() {
 };
 
 async function initUserProfile() {
+  const nameEl = document.getElementById('user-profile-name');
+  const roleEl = document.getElementById('user-profile-role');
+  const initialsEl = document.getElementById('user-avatar-initials');
+  const badgeEl = document.getElementById('user-profile-badge');
+  const ownerNav = document.getElementById('nav-owner-portal');
+
+  const mName = document.getElementById('modal-profile-name');
+  const mRole = document.getElementById('modal-profile-role');
+  const mEmail = document.getElementById('modal-profile-email');
+  const mCompany = document.getElementById('modal-profile-company');
+  const mSysRole = document.getElementById('modal-profile-system-role');
+  const mInitials = document.getElementById('modal-profile-initials');
+
   try {
     let res = await fetch('/api/user/profile').catch(() => fetch('https://srijandev-backend.onrender.com/api/user/profile'));
     const data = await res.json();
     if (data && data.user) {
       const u = data.user;
-      const nameEl = document.getElementById('user-profile-name');
-      const roleEl = document.getElementById('user-profile-role');
-      const initialsEl = document.getElementById('user-avatar-initials');
-      const badgeEl = document.getElementById('user-profile-badge');
-
-      const mName = document.getElementById('modal-profile-name');
-      const mRole = document.getElementById('modal-profile-role');
-      const mEmail = document.getElementById('modal-profile-email');
-      const mCompany = document.getElementById('modal-profile-company');
-      const mSysRole = document.getElementById('modal-profile-system-role');
-      const mInitials = document.getElementById('modal-profile-initials');
-
       const fullName = u.name || u.email || 'Rajesh Bhatti';
+      const userRole = (u.role || 'SUPERADMIN').toUpperCase();
+      const userEmail = u.email || u.identifier || 'rajeshbhatti89@gmail.com';
+      const companyName = u.company || 'SrijanDev';
+
       const parts = fullName.trim().split(' ');
       const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
 
       if (nameEl) nameEl.innerText = fullName;
-      if (roleEl) roleEl.innerText = (u.role || 'SUPERADMIN') + ' • ' + (u.company || 'SrijanDev');
+      if (roleEl) roleEl.innerText = userRole + ' • ' + companyName;
       if (initialsEl) initialsEl.innerText = initials;
 
       if (mName) mName.innerText = fullName;
-      if (mRole) mRole.innerText = (u.role || 'SUPERADMIN') + ' • ' + (u.company || 'SrijanDev');
-      if (mEmail) mEmail.innerText = u.email || 'rajeshbhatti89@gmail.com';
-      if (mCompany) mCompany.innerText = u.company || 'SrijanDev Apex Operations';
-      if (mSysRole) mSysRole.innerText = u.role || 'SUPERADMIN';
+      if (mRole) mRole.innerText = userRole + ' • ' + companyName;
+      if (mEmail) mEmail.innerText = userEmail;
+      if (mCompany) mCompany.innerText = companyName;
+      if (mSysRole) mSysRole.innerText = userRole;
       if (mInitials) mInitials.innerText = initials;
 
-      if (badgeEl && (u.role === 'SUPERADMIN' || u.email === 'rajeshbhatti89@gmail.com')) {
-        badgeEl.classList.remove('hidden');
+      const isOwnerOrAdmin = (userRole === 'SUPERADMIN' || userRole === 'OWNER' || userEmail === 'rajeshbhatti89@gmail.com');
+
+      if (badgeEl) {
+        if (isOwnerOrAdmin) badgeEl.classList.remove('hidden');
+        else badgeEl.classList.add('hidden');
+      }
+
+      if (ownerNav) {
+        if (isOwnerOrAdmin) {
+          ownerNav.classList.remove('hidden');
+          ownerNav.style.display = 'flex';
+        } else {
+          ownerNav.classList.add('hidden');
+          ownerNav.style.display = 'none';
+        }
       }
     }
   } catch (err) {
-    console.warn('[SrijanDev Profile] API fetch notice:', err);
+    console.warn('[SrijanDev Profile] Profile notice:', err);
+    if (nameEl) nameEl.innerText = 'Rajesh Bhatti';
+    if (roleEl) roleEl.innerText = 'SUPERADMIN • SrijanDev';
+    if (initialsEl) initialsEl.innerText = 'RB';
+    if (ownerNav) {
+      ownerNav.classList.remove('hidden');
+      ownerNav.style.display = 'flex';
+    }
   }
 }
 

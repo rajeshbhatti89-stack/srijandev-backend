@@ -122,7 +122,7 @@
         <span class="material-symbols-outlined mr-3 text-amber-600">stars</span>
         <span class="font-semibold text-sm">Pricing &amp; Plans</span>
       </a>
-      <a class="sidebar-nav-link flex items-center px-6 py-3 text-emerald-800 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors font-bold border-t border-b border-emerald-500/20" href="owner.html">
+      <a id="nav-owner-portal" class="hidden sidebar-nav-link flex items-center px-6 py-3 text-emerald-800 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors font-bold border-t border-b border-emerald-500/20" href="owner.html">
         <span class="material-symbols-outlined mr-3 text-emerald-600">admin_panel_settings</span>
         <span class="text-sm">Owner Control Panel</span>
       </a>
@@ -133,16 +133,16 @@
     </nav>
 
     <div class="px-6 pt-4 border-t border-outline-variant">
-      <div class="flex items-center p-2.5 bg-primary/10 rounded-lg border border-primary/20">
+      <div id="user-profile-card" class="flex items-center p-2.5 bg-primary/10 rounded-lg border border-primary/20 cursor-pointer hover:bg-primary/20 transition-colors" data-modal-target="modal-profile">
         <div id="user-avatar-initials" class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs mr-3 shadow-sm flex-shrink-0">
-          U
+          RB
         </div>
         <div class="overflow-hidden flex-1">
           <p class="font-bold text-xs text-primary truncate flex items-center">
-            <span id="user-profile-name">Loading...</span>
-            <span id="user-profile-badge" class="material-symbols-outlined text-xs ml-1 text-amber-600 hidden" style="font-variation-settings: 'FILL' 1;">verified</span>
+            <span id="user-profile-name">Rajesh Bhatti</span>
+            <span id="user-profile-badge" class="material-symbols-outlined text-xs ml-1 text-amber-600" style="font-variation-settings: 'FILL' 1;">verified</span>
           </p>
-          <p id="user-profile-role" class="text-[10px] text-secondary font-bold uppercase tracking-tighter truncate">AUTHENTICATED USER</p>
+          <p id="user-profile-role" class="text-[10px] text-secondary font-bold uppercase tracking-tighter truncate">SUPERADMIN • SrijanDev</p>
         </div>
       </div>
     </div>
@@ -195,7 +195,7 @@
   <main class="main-content">
     
     <!-- 1. UNIFIED OPERATIONS COMMAND VIEW (#dashboard) -->
-    <div id="view-dashboard" class="app-view space-y-6">
+    <div id="view-dashboard" class="app-view active space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h2 class="text-2xl font-bold text-primary">Unified Operations Command</h2>
