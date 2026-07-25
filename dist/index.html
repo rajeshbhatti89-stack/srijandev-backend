@@ -122,6 +122,10 @@
         <span class="material-symbols-outlined mr-3 text-amber-600">stars</span>
         <span class="font-semibold text-sm">Pricing &amp; Plans</span>
       </a>
+      <a class="sidebar-nav-link flex items-center px-6 py-3 text-emerald-800 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors font-bold border-t border-b border-emerald-500/20" href="owner.html">
+        <span class="material-symbols-outlined mr-3 text-emerald-600">admin_panel_settings</span>
+        <span class="text-sm">Owner Control Panel</span>
+      </a>
       <a class="sidebar-nav-link flex items-center px-6 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors" href="auth.html">
         <span class="material-symbols-outlined mr-3 text-secondary">lock</span>
         <span class="font-semibold text-sm">Auth Portal</span>
@@ -1017,6 +1021,55 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- User Profile Modal -->
+  <div id="modal-profile" class="modal-backdrop">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-outline-variant space-y-4">
+      <div class="flex justify-between items-center border-b border-outline-variant pb-3">
+        <h3 class="font-bold text-primary text-base flex items-center">
+          <span class="material-symbols-outlined mr-2">account_circle</span> User Profile Details
+        </h3>
+        <button class="modal-close-btn text-on-surface-variant hover:text-on-surface">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="flex items-center space-x-3 p-3 bg-surface-container-low rounded-xl border border-outline-variant">
+          <div id="modal-profile-initials" class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-base">RB</div>
+          <div>
+            <h4 id="modal-profile-name" class="font-bold text-sm text-on-surface">Rajesh Bhatti</h4>
+            <p id="modal-profile-role" class="text-on-surface-variant text-[11px]">SUPERADMIN • SrijanDev</p>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex justify-between py-1.5 border-b border-outline-variant">
+            <span class="text-on-surface-variant">Email / Account</span>
+            <span id="modal-profile-email" class="font-bold text-on-surface">rajeshbhatti89@gmail.com</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-outline-variant">
+            <span class="text-on-surface-variant">Organization / Client</span>
+            <span id="modal-profile-company" class="font-bold text-primary">SrijanDev Apex Operations</span>
+          </div>
+          <div class="flex justify-between py-1.5 border-b border-outline-variant">
+            <span class="text-on-surface-variant">System Role</span>
+            <span id="modal-profile-system-role" class="font-bold text-emerald-700">SUPERADMIN</span>
+          </div>
+          <div class="flex justify-between py-1.5">
+            <span class="text-on-surface-variant">Session Status</span>
+            <span class="font-bold text-emerald-600 flex items-center"><span class="w-2 h-2 bg-emerald-500 rounded-full mr-1.5"></span> Active 24/7 Session</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-between items-center">
+        <a href="owner.html" class="text-xs font-bold text-emerald-700 hover:underline">Open Owner Portal →</a>
+        <button class="modal-close-btn bg-primary text-white px-4 py-2 rounded-xl text-xs font-bold shadow">Close Profile</button>
+      </div>
+    </div>
+  </div>
   <!-- Floating Live AI Support Bot Widget -->
   <div id="ai-support-bot-container" class="fixed bottom-6 right-6 z-50">
     <button id="ai-bot-toggle-btn" onclick="toggleSupportBot()" class="w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all border-2 border-white/20">

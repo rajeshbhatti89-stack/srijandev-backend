@@ -91,7 +91,9 @@ function runWorkerServer() {
             company_name TEXT UNIQUE,
             domain_alias TEXT UNIQUE,
             logo_url TEXT,
-            admin_email TEXT
+            admin_email TEXT,
+            max_guards INTEGER DEFAULT 100,
+            status TEXT DEFAULT 'ACTIVE'
         )`);
 
         // Users Table
@@ -344,6 +346,100 @@ function runWorkerServer() {
             reply = "🚀 Quick Tour: 1. Upload roster via Excel card. 2. View SaaS plans under 'Pricing & Plans'. 3. Track live site status on your main command view.";
         }
         res.json({ success: true, reply: reply });
+    });
+
+    // 9. USER PROFILE API (/api/user/profile)
+    app.get('/api/user/profile', (req, res) => {
+        const user = req.session.user || {
+            id: 1,
+            client_id: 1,
+            name: "Rajesh Bhatti",
+            identifier: "rajeshbhatti89@gmail.com",
+            role: "SUPERADMIN",
+            company_name: "SrijanDev",
+            logo_url: "assets/images/icon.svg",
+            domain_alias: "srijandev"
+        };
+        res.json({
+            success: true,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.identifier,
+                role: user.role,
+                company: user.company_name,
+                logo: user.logo_url,
+                domain: user.domain_alias,
+                status: "ACTIVE"
+            }
+        });
+    });
+
+    // 10. SUPER ADMIN: LIST ALL ORGANISATIONS (/api/super-admin/organisations)
+    app.get('/api/super-admin/organisations', (req, res) => {
+        db.all(`SELECT c.*, COUNT(e.id) as total_guards, COUNT(DISTINCT u.id) as total_users 
+                FROM clients c 
+                LEFT JOIN employees e ON c.id = e.client_id 
+                LEFT JOIN users u ON c.id = u.client_id 
+                GROUP BY c.id ORDER BY c.id DESC`, [], (err, rows) => {
+            if (err) return res.status(500).json({ success: false, error: err.message });
+            
+            db.get(`SELECT COUNT(*) as total_clients FROM clients`, [], (err2, cRow) => {
+                db.get(`SELECT COUNT(*) as total_guards FROM employees`, [], (err3, gRow) => {
+                    res.json({
+                        success: true,
+                        metrics: {
+                            total_clients: cRow ? cRow.total_clients : 0,
+                            total_guards: gRow ? gRow.total_guards : 0,
+                            api_health: "OPTIMAL"
+                        },
+                        organisations: rows || []
+                    });
+                });
+            });
+        });
+    });
+
+    // 11. SUPER ADMIN: ADD NEW ORGANISATION (/api/super-admin/organisations)
+    app.post('/api/super-admin/organisations', (req, res) => {
+        const { company_name, domain_alias, admin_name, admin_email, password, max_guards, logo_url } = req.body;
+        if (!company_name || !domain_alias || !admin_email || !password) {
+            return res.status(400).json({ success: false, message: "Missing required fields" });
+        }
+
+        const hashedPassword = bcrypt.hashSync(password, 10);
+        const cleanAlias = domain_alias.trim().toLowerCase();
+        const guardLimit = parseInt(max_guards) || 100;
+
+        db.run(`INSERT INTO clients (company_name, domain_alias, logo_url, admin_email, max_guards, status) VALUES (?, ?, ?, ?, ?, 'ACTIVE')`,
+        [company_name, cleanAlias, logo_url || 'https://via.placeholder.com/150?text=Logo', admin_email, guardLimit], function(err) {
+            if (err) return res.status(400).json({ success: false, message: "Client organization or alias already exists." });
+
+            const clientId = this.lastID;
+            db.run(`INSERT INTO users (client_id, name, identifier, password, role) VALUES (?, ?, ?, ?, 'CLIENT_ADMIN')`,
+            [clientId, admin_name || company_name + ' Admin', admin_email, hashedPassword], (err2) => {
+                if (err2) return res.status(500).json({ success: false, message: "Error creating client admin user." });
+                
+                clearCachePattern('branding_');
+                clearCachePattern('metrics_');
+                res.json({ success: true, message: "Organisation registered successfully!", client_id: clientId });
+            });
+        });
+    });
+
+    // 12. SUPER ADMIN: TOGGLE ORGANISATION STATUS (/api/super-admin/organisations/:id/toggle)
+    app.post('/api/super-admin/organisations/:id/toggle', (req, res) => {
+        const clientId = req.params.id;
+        db.get(`SELECT status FROM clients WHERE id = ?`, [clientId], (err, row) => {
+            if (err || !row) return res.status(404).json({ success: false, message: "Organisation not found" });
+            
+            const newStatus = row.status === 'INACTIVE' ? 'ACTIVE' : 'INACTIVE';
+            db.run(`UPDATE clients SET status = ? WHERE id = ?`, [newStatus, clientId], (err2) => {
+                if (err2) return res.status(500).json({ success: false, error: err2.message });
+                clearCachePattern('branding_');
+                res.json({ success: true, new_status: newStatus });
+            });
+        });
     });
 
     // 2. CLIENT BRANDING API (/api/client-branding)

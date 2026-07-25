@@ -696,7 +696,7 @@ window.sendSupportMessage = async function() {
 
 async function initUserProfile() {
   try {
-    const res = await fetch('/api/me');
+    let res = await fetch('/api/user/profile').catch(() => fetch('https://srijandev-backend.onrender.com/api/user/profile'));
     const data = await res.json();
     if (data && data.user) {
       const u = data.user;
@@ -705,16 +705,29 @@ async function initUserProfile() {
       const initialsEl = document.getElementById('user-avatar-initials');
       const badgeEl = document.getElementById('user-profile-badge');
 
-      if (nameEl) nameEl.innerText = u.name || u.identifier || 'User';
-      if (roleEl) roleEl.innerText = (u.role || 'USER') + ' • ' + (u.company_name || 'SrijanDev');
-      
-      if (initialsEl) {
-        const parts = (u.name || u.identifier || 'U').trim().split(' ');
-        const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
-        initialsEl.innerText = initials;
-      }
+      const mName = document.getElementById('modal-profile-name');
+      const mRole = document.getElementById('modal-profile-role');
+      const mEmail = document.getElementById('modal-profile-email');
+      const mCompany = document.getElementById('modal-profile-company');
+      const mSysRole = document.getElementById('modal-profile-system-role');
+      const mInitials = document.getElementById('modal-profile-initials');
 
-      if (badgeEl && (u.role === 'SUPERADMIN' || u.identifier === 'rajeshbhatti89@gmail.com')) {
+      const fullName = u.name || u.email || 'Rajesh Bhatti';
+      const parts = fullName.trim().split(' ');
+      const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+
+      if (nameEl) nameEl.innerText = fullName;
+      if (roleEl) roleEl.innerText = (u.role || 'SUPERADMIN') + ' • ' + (u.company || 'SrijanDev');
+      if (initialsEl) initialsEl.innerText = initials;
+
+      if (mName) mName.innerText = fullName;
+      if (mRole) mRole.innerText = (u.role || 'SUPERADMIN') + ' • ' + (u.company || 'SrijanDev');
+      if (mEmail) mEmail.innerText = u.email || 'rajeshbhatti89@gmail.com';
+      if (mCompany) mCompany.innerText = u.company || 'SrijanDev Apex Operations';
+      if (mSysRole) mSysRole.innerText = u.role || 'SUPERADMIN';
+      if (mInitials) mInitials.innerText = initials;
+
+      if (badgeEl && (u.role === 'SUPERADMIN' || u.email === 'rajeshbhatti89@gmail.com')) {
         badgeEl.classList.remove('hidden');
       }
     }

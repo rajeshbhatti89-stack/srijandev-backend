@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SrijanDev | Super Admin Owner Control Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+  <!-- Top Navigation Header -->
+  <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex flex-wrap justify-between items-center sticky top-0 z-40 gap-4">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center">
+        <span class="material-symbols-outlined text-emerald-400 text-2xl">admin_panel_settings</span>
+      </div>
+      <div>
+        <h1 class="text-lg font-black text-white leading-none">SrijanDev <span class="text-emerald-400 text-xs px-2 py-0.5 bg-emerald-500/10 rounded-full border border-emerald-500/20 font-bold ml-1">OWNER PORTAL</span></h1>
+        <p class="text-[11px] text-slate-400">Super Admin &amp; Multi-Tenant Client Operations Control Center</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl">
+        <div class="w-7 h-7 bg-emerald-600 rounded-full flex items-center justify-center font-bold text-xs">RB</div>
+        <div class="text-left text-xs">
+          <div class="font-bold text-slate-200">Rajesh Bhatti (Super Admin)</div>
+          <div class="text-[10px] text-emerald-400 font-mono">rajeshbhatti89@gmail.com</div>
+        </div>
+      </div>
+      <a href="index.html" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 rounded-xl border border-slate-700 transition-colors">
+        Go to Main Portal →
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-6 space-y-8">
+    <!-- Global System Metrics -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+        <span class="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Total Active Clients</span>
+        <div class="text-3xl font-black text-white" id="owner-total-clients">0</div>
+        <span class="text-emerald-400 text-[11px] font-semibold">Registered Client Portals</span>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+        <span class="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Total Guards Managed</span>
+        <div class="text-3xl font-black text-white" id="owner-total-guards">0</div>
+        <span class="text-blue-400 text-[11px] font-semibold">Active Roster Across Tenants</span>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl border-l-4 border-l-emerald-500">
+        <span class="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">API Health Status</span>
+        <div class="text-3xl font-black text-emerald-400" id="owner-api-health">OPTIMAL</div>
+        <span class="text-slate-400 text-[11px]">Render Cloud Backend</span>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+        <span class="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-1">Database Engine</span>
+        <div class="text-xl font-bold text-slate-200 mt-1">SQLite WAL Mode</div>
+        <span class="text-slate-400 text-[11px]">High-Throughput Concurrency</span>
+      </div>
+    </div>
+
+    <!-- Grid: Add Client Form & Organisations List -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Left Column: Add New Organisation Form -->
+      <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl space-y-4">
+        <div class="flex items-center space-x-2 border-b border-slate-800 pb-3">
+          <span class="material-symbols-outlined text-emerald-400 text-xl">add_business</span>
+          <h2 class="font-bold text-white text-base">Add New Organisation</h2>
+        </div>
+
+        <form id="form-add-org" onsubmit="handleAddOrganisation(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Company / Client Name</label>
+            <input type="text" id="org-company-name" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 outline-none focus:border-emerald-500 text-white" placeholder="e.g. Apex Security Force" required />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Domain / Subdomain Alias</label>
+            <input type="text" id="org-domain-alias" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 outline-none focus:border-emerald-500 text-white" placeholder="e.g. apex" required />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Admin Email Address</label>
+            <input type="email" id="org-admin-email" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 outline-none focus:border-emerald-500 text-white" placeholder="e.g. admin@apex.com" required />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Admin Initial Password</label>
+            <input type="password" id="org-password" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 outline-none focus:border-emerald-500 text-white" placeholder="••••••••" required />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Max Guards Limit</label>
+              <input type="number" id="org-max-guards" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 outline-none focus:border-emerald-500 text-white" value="100" required />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Brand Logo URL</label>
+              <input type="text" id="org-logo-url" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 outline-none focus:border-emerald-500 text-white" placeholder="https://..." />
+            </div>
+          </div>
+          <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all mt-2 flex items-center justify-center space-x-2">
+            <span class="material-symbols-outlined text-sm">domain_add</span>
+            <span>Provision Client Organisation</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Right 2 Columns: Client Organisations Table -->
+      <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden flex flex-col">
+        <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+          <div class="flex items-center space-x-2">
+            <span class="material-symbols-outlined text-blue-400 text-xl">corporate_fare</span>
+            <h2 class="font-bold text-white text-base">Registered Client Organisations</h2>
+          </div>
+          <button onclick="loadOwnerOrganisations()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 rounded-lg border border-slate-700 transition-colors flex items-center space-x-1">
+            <span class="material-symbols-outlined text-sm">refresh</span>
+            <span>Refresh List</span>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead class="bg-slate-950/80 border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
+              <tr>
+                <th class="px-5 py-3 font-semibold">Organisation Name</th>
+                <th class="px-5 py-3 font-semibold">Domain Alias</th>
+                <th class="px-5 py-3 font-semibold">Admin Email</th>
+                <th class="px-5 py-3 font-semibold">Guards / Max</th>
+                <th class="px-5 py-3 font-semibold">Status</th>
+                <th class="px-5 py-3 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="owner-orgs-table-body" class="divide-y divide-slate-800 text-slate-300">
+              <tr>
+                <td colspan="6" class="px-5 py-8 text-center text-slate-500">Loading client organisations...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Floating Live AI Support Bot Widget -->
+  <div id="ai-support-bot-container" class="fixed bottom-6 right-6 z-50">
+    <button id="ai-bot-toggle-btn" onclick="toggleSupportBot()" class="w-14 h-14 bg-emerald-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all border-2 border-white/20">
+      <span class="material-symbols-outlined text-2xl">smart_toy</span>
+    </button>
+    <div id="ai-bot-card" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div class="p-4 bg-emerald-700 text-white flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <span class="material-symbols-outlined text-emerald-300">robot_2</span>
+          <div>
+            <h4 class="font-bold text-sm leading-none">SrijanDev Super Admin AI</h4>
+            <p class="text-[10px] text-emerald-200 mt-0.5">Owner Support &amp; System Health</p>
+          </div>
+        </div>
+        <button onclick="toggleSupportBot()" class="text-white/80 hover:text-white">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+      <div id="ai-bot-messages" class="p-4 h-64 overflow-y-auto space-y-3 bg-slate-950 text-xs">
+        <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-slate-200">
+          <p class="font-bold text-emerald-400 mb-1">👋 Welcome Super Admin Rajesh Bhatti!</p>
+          <p class="text-slate-400 text-[11px]">Ask me about provisioning client organisations, system health, or database status.</p>
+        </div>
+      </div>
+      <div class="p-3 border-t border-slate-800 bg-slate-900 flex items-center space-x-2">
+        <input id="ai-bot-input" type="text" placeholder="Ask Super Admin AI..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-emerald-500" onkeypress="if(event.key==='Enter') sendSupportMessage()" />
+        <button onclick="sendSupportMessage()" class="bg-emerald-600 text-white p-2 rounded-lg hover:bg-emerald-500 transition-colors">
+          <span class="material-symbols-outlined text-sm">send</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://srijandev-backend.onrender.com';
+
+    async function loadOwnerOrganisations() {
+      try {
+        let res = await fetch(`${API_BASE}/api/super-admin/organisations`).catch(() => fetch('/api/super-admin/organisations'));
+        const data = await res.json();
+        
+        if (data && data.success) {
+          const metrics = data.metrics || {};
+          document.getElementById('owner-total-clients').innerText = metrics.total_clients || 0;
+          document.getElementById('owner-total-guards').innerText = metrics.total_guards || 0;
+          document.getElementById('owner-api-health').innerText = metrics.api_health || 'OPTIMAL';
+
+          const tbody = document.getElementById('owner-orgs-table-body');
+          if (tbody) {
+            if (data.organisations && data.organisations.length > 0) {
+              let html = '';
+              data.organisations.forEach(org => {
+                const isActive = org.status !== 'INACTIVE';
+                html += `
+                  <tr class="hover:bg-slate-800/50 transition-colors">
+                    <td class="px-5 py-3.5 font-bold text-white flex items-center space-x-2">
+                      <img src="${org.logo_url || 'assets/images/icon.svg'}" class="w-6 h-6 rounded object-cover" onerror="this.src='assets/images/icon.svg'" />
+                      <span>${org.company_name || 'Client Org'}</span>
+                    </td>
+                    <td class="px-5 py-3.5 font-mono text-emerald-400">${org.domain_alias || '-'}</td>
+                    <td class="px-5 py-3.5 text-slate-300">${org.admin_email || '-'}</td>
+                    <td class="px-5 py-3.5 font-semibold text-slate-200">${org.total_guards || 0} / ${org.max_guards || 100}</td>
+                    <td class="px-5 py-3.5">
+                      <span class="px-2 py-0.5 text-[10px] font-bold rounded-full border ${isActive ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}">
+                        ${isActive ? '● ACTIVE' : '○ INACTIVE'}
+                      </span>
+                    </td>
+                    <td class="px-5 py-3.5 text-right">
+                      <button onclick="toggleOrgStatus(${org.id})" class="px-2.5 py-1 text-[11px] font-bold rounded-lg border transition-colors ${isActive ? 'bg-rose-500/10 text-rose-300 border-rose-500/30 hover:bg-rose-500/20' : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/20'}">
+                        ${isActive ? 'Deactivate' : 'Activate'}
+                      </button>
+                    </td>
+                  </tr>
+                `;
+              });
+              tbody.innerHTML = html;
+            } else {
+              tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-500">No client organisations registered yet. Use the form on the left to provision your first client.</td></tr>`;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('[Owner Portal] API Error:', err);
+      }
+    }
+
+    async function handleAddOrganisation(e) {
+      e.preventDefault();
+      const payload = {
+        company_name: document.getElementById('org-company-name').value,
+        domain_alias: document.getElementById('org-domain-alias').value,
+        admin_email: document.getElementById('org-admin-email').value,
+        password: document.getElementById('org-password').value,
+        max_guards: document.getElementById('org-max-guards').value,
+        logo_url: document.getElementById('org-logo-url').value
+      };
+
+      try {
+        let res = await fetch(`${API_BASE}/api/super-admin/organisations`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).catch(() => fetch('/api/super-admin/organisations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }));
+        
+        const data = await res.json();
+        if (data && data.success) {
+          alert("✓ Organisation Provisioned Successfully!");
+          document.getElementById('form-add-org').reset();
+          loadOwnerOrganisations();
+        } else {
+          alert("Error: " + (data.message || 'Failed to add organisation.'));
+        }
+      } catch (err) {
+        alert("Error connecting to backend API.");
+      }
+    }
+
+    async function toggleOrgStatus(id) {
+      try {
+        let res = await fetch(`${API_BASE}/api/super-admin/organisations/${id}/toggle`, { method: 'POST' })
+          .catch(() => fetch(`/api/super-admin/organisations/${id}/toggle`, { method: 'POST' }));
+        const data = await res.json();
+        if (data && data.success) {
+          loadOwnerOrganisations();
+        }
+      } catch (err) {
+        console.warn('Status toggle error:', err);
+      }
+    }
+
+    function toggleSupportBot() {
+      const card = document.getElementById('ai-bot-card');
+      if (card) card.classList.toggle('hidden');
+    }
+
+    async function sendSupportMessage() {
+      const input = document.getElementById('ai-bot-input');
+      const messages = document.getElementById('ai-bot-messages');
+      if (!input || !messages || !input.value.trim()) return;
+
+      const userText = input.value.trim();
+      input.value = '';
+
+      messages.innerHTML += `<div class="p-2.5 bg-emerald-600 text-white rounded-xl ml-auto max-w-[80%] text-right font-medium mb-2">${userText}</div>`;
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+        let res = await fetch(`${API_BASE}/api/ai-support`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userText })
+        }).catch(() => fetch('/api/ai-support', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userText })
+        }));
+        const data = await res.json();
+        
+        messages.innerHTML += `<div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-slate-200 max-w-[90%] mb-2">
+          <p class="font-bold text-emerald-400 mb-1">🤖 AI Support Assistant</p>
+          <p class="text-slate-400 text-[11px]">${data.reply || 'System operational.'}</p>
+        </div>`;
+        messages.scrollTop = messages.scrollHeight;
+      } catch (err) {
+        messages.innerHTML += `<div class="p-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-300 text-[11px] mb-2">System Diagnostics: Render Cloud Backend Active.</div>`;
+        messages.scrollTop = messages.scrollHeight;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadOwnerOrganisations);
+  </script>
+</body>
+</html>
