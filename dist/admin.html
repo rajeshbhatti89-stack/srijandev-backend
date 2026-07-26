@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super-Admin Panel | SrijanDev Operations & Management</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-section">
+        <div class="brand-logo">S</div>
+        <div class="brand-title-group">
+          <div class="brand-name">SrijanDev Super-Admin</div>
+          <div class="brand-subtitle">OPERATIONS & MANAGEMENT PORTAL</div>
+        </div>
+      </div>
+
+      <div class="header-nav" id="headerNav">
+        <!-- Rendered by app.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="content-area">
+    <div id="alertContainer"></div>
+
+    <div id="superAdminView">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h2>Super-Admin Provisioning Command Center</h2>
+          <p style="color: var(--text-muted);">Restricted Super-Admin Portal | Managed by <strong>SrijanDev Team</strong> (<a href="mailto:contact@srijandev.in" style="color:var(--accent-cyan);">contact@srijandev.in</a>)</p>
+        </div>
+        <span class="badge badge-rose">SUPER-ADMIN PRIVILEGES</span>
+      </div>
+
+      <!-- Stats Cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+        <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+          <div style="color: var(--text-muted); font-size: 0.85rem;">ACTIVE TENANTS</div>
+          <div id="statTenants" style="font-size: 2rem; font-weight: 800; color: var(--accent-cyan);">0</div>
+        </div>
+        <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+          <div style="color: var(--text-muted); font-size: 0.85rem;">INBOUND LEADS</div>
+          <div id="statLeads" style="font-size: 2rem; font-weight: 800; color: var(--accent-amber);">0</div>
+        </div>
+        <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+          <div style="color: var(--text-muted); font-size: 0.85rem;">SYSTEM STATUS</div>
+          <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent-emerald);">WAL Mode Operational</div>
+        </div>
+      </div>
+
+      <!-- Admin Navigation Tabs -->
+      <div class="tabs-container">
+        <button class="tab-btn active" id="tabBtnProvision" onclick="switchAdminTab('provision')">➕ Manual Client Provisioner</button>
+        <button class="tab-btn" id="tabBtnLeads" onclick="switchAdminTab('leads')">📥 Inbound Lead Inquiries</button>
+        <button class="tab-btn" id="tabBtnTenants" onclick="switchAdminTab('tenants')">🏢 Active Client Portals</button>
+      </div>
+
+      <!-- Admin Tab 1: Tenant Provisioner Form -->
+      <div id="adminTabProvision" class="tab-content active">
+        <div style="background: var(--bg-card); padding: 2rem; border-radius: 14px; border: 1px solid var(--border-color); max-width: 720px;">
+          <h3 style="margin-bottom: 1.5rem;">Manual Client Provisioner Form</h3>
+          <form id="provisionForm" onsubmit="handleProvisionTenant(event)">
+            <input type="hidden" id="provLeadId" value="">
+            <div class="form-group">
+              <label class="form-label">Client / Company Name</label>
+              <input type="text" id="provName" class="form-input" placeholder="Apex Security & Field Solutions" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Assigned Subdomain Prefix</label>
+              <div class="subdomain-input-group">
+                <input type="text" id="provSubdomain" class="form-input" placeholder="apex" required pattern="[a-zA-Z0-9]+" title="Alpha-numeric characters only">
+                <span class="subdomain-suffix">.srijandev.in</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Client Admin Registered Email</label>
+              <input type="email" id="provEmail" class="form-input" placeholder="admin@apex.com" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Client Admin Full Name</label>
+              <input type="text" id="provAdminName" class="form-input" placeholder="Client Administrator Name" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Initial Admin Password</label>
+              <input type="password" id="provPassword" class="form-input" placeholder="Default: WelcomeSrijan123!">
+            </div>
+
+            <!-- Feature Suite Toggle Switches -->
+            <div style="background: var(--bg-primary); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+              <label class="form-label" style="margin-bottom: 0.75rem; color: var(--accent-cyan);">Feature Suite Authorizations</label>
+              
+              <label style="display: flex; align-items: center; gap: 12px; margin-bottom: 0.85rem; cursor: pointer;">
+                <input type="checkbox" id="provEnableWorkforce" checked style="width: 20px; height: 20px; accent-color: var(--accent-blue);">
+                <div>
+                  <strong>Enable Smart Field Workforce Suite</strong>
+                  <div style="font-size: 0.8rem; color: var(--text-muted);">Live GPS Attendance, Geofencing, Automated Roster Scheduling & Leaves</div>
+                </div>
+              </label>
+
+              <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                <input type="checkbox" id="provEnablePatrol" checked style="width: 20px; height: 20px; accent-color: var(--accent-indigo);">
+                <div>
+                  <strong>Enable Security & Patrol Operations Suite</strong>
+                  <div style="font-size: 0.8rem; color: var(--text-muted);">QR Checkpoint Scanning, Live Patrol Radar, Incident Logging & Instant SOS</div>
+                </div>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+        <div class="stat-card">
+          <div class="stat-label">Total Leads Captured</div>
+          <div class="stat-value" id="statLeads">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Client Portals</div>
+          <div class="stat-value" id="statTenants">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">System Security Tier</div>
+          <div class="stat-value" style="font-size: 1.5rem; color: var(--accent-emerald);">Enterprise WAL</div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="tab-navigation">
+        <button class="tab-btn active" onclick="switchAdminTab('leads')">📋 Incoming Quotation Leads</button>
+        <button class="tab-btn" onclick="switchAdminTab('provision')">⚡ Provision New Client</button>
+        <button class="tab-btn" onclick="switchAdminTab('tenants')">🏢 Active Client Portals</button>
+      </div>
+
+      <!-- Admin Tab 1: Leads -->
+      <div id="adminTabLeads" class="tab-content active">
+        <h3 style="margin-bottom: 1rem;">Incoming Lead Requests</h3>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Company Name</th>
+                <th>Contact Person</th>
+                <th>Email & Phone</th>
+                <th>Desired Subdomain</th>
+                <th>Required Suites</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin Tab 2: Provision Form -->
+      <div id="adminTabProvision" class="tab-content">
+        <h3 style="margin-bottom: 1rem;">Provision New Client Portal Tier</h3>
+        <div class="card" style="max-width: 650px;">
+          <form onsubmit="handleProvisionSubmit(event)">
+            <input type="hidden" id="provLeadId">
+            <div class="form-group">
+              <label class="form-label">Client Company Name</label>
+              <input type="text" id="provName" class="form-input" placeholder="Apex Security Solutions" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Client Subdomain Prefix</label>
+              <div class="subdomain-input-group">
+                <input type="text" id="provSubdomain" class="form-input" placeholder="apex" required pattern="[a-zA-Z0-9]+" title="Letters and numbers only">
+                <span class="subdomain-suffix">.srijandev.in</span>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Client Admin Contact Person</label>
+                <input type="text" id="provAdminName" class="form-input" placeholder="Apex Admin" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Client Admin Registered Email</label>
+                <input type="email" id="provEmail" class="form-input" placeholder="admin@apex.com" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Initial Password (Default: WelcomeSrijan123!)</label>
+              <input type="password" id="provPassword" class="form-input" placeholder="Leave empty for default">
+            </div>
+            
+            <label class="form-label" style="margin-bottom: 0.5rem; display: block;">Authorize Platform Feature Suites</label>
+            <div style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="provWorkforce" checked style="width: 18px; height: 18px;">
+                <span>Smart Field Workforce Suite</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="provPatrol" checked style="width: 18px; height: 18px;">
+                <span>Security & Patrol Operations Suite</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-emerald" style="width: 100%;">⚡ Provision Tenant & Dispatch Onboarding Email</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Admin Tab 3: Active Tenants -->
+      <div id="adminTabTenants" class="tab-content">
+        <h3 style="margin-bottom: 1rem;">Provisioned Client Portals</h3>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tenant Name</th>
+                <th>Subdomain URL</th>
+                <th>Contact Email</th>
+                <th>Authorized Feature Suites</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tenantsTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- MODAL: Super Admin Login Modal -->
+  <div id="loginModal" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3>Super-Admin Authentication</h3>
+      </div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Super-Admin Email</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="admin@srijandev.in" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPassword" class="form-input" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Authenticate</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div><strong>SrijanDev Operations & Management Portal</strong></div>
+    <div style="margin-top: 4px;">Powered by <strong>SrijanDev Team</strong> | <a href="mailto:contact@srijandev.in" style="color:var(--accent-cyan); text-decoration:none;">contact@srijandev.in</a></div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+[debug] [2026-07-26T13:19:47.047Z] ----------------------------------------------------------------------
+[debug] [2026-07-26T13:19:47.049Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\rajes\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2026-07-26T13:19:47.050Z] CLI Version:   15.24.0
+[debug] [2026-07-26T13:19:47.050Z] Platform:      win32
+[debug] [2026-07-26T13:19:47.050Z] Node Version:  v26.4.0
+[debug] [2026-07-26T13:19:47.050Z] Detected Agent: antigravity
+[debug] [2026-07-26T13:19:47.050Z] Time:          Sun Jul 26 2026 18:49:47 GMT+0530 (India Standard Time)
+[debug] [2026-07-26T13:19:47.050Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-07-26T13:19:48.849Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]

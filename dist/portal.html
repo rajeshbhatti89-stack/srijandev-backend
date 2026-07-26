@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Portal | SrijanDev Operations & Management</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-section">
+        <div class="brand-logo">S</div>
+        <div class="brand-title-group">
+          <div class="brand-name" id="portalHeaderTitle">SrijanDev Portal</div>
+          <div class="brand-subtitle">OPERATIONS & MANAGEMENT PORTAL</div>
+        </div>
+      </div>
+
+      <div class="header-nav" id="headerNav">
+        <!-- Rendered by app.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="content-area">
+    <div id="alertContainer"></div>
+
+    <div id="tenantPortalView">
+      <!-- Tenant Welcome Banner -->
+      <div style="background: var(--bg-card); padding: 2rem; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; flex-wrap: wrap;">
+            <h1 id="tenantTitle" style="font-size: 1.8rem; font-weight: 800;">Apex Field & Security</h1>
+            <span id="tenantSubdomainBadge" class="badge badge-cyan">apex.srijandev.in</span>
+          </div>
+          <p style="color: var(--text-muted);">SrijanDev Isolated Operations & Management Portal</p>
+        </div>
+        
+        <div id="tenantSuitesBadges" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <!-- Feature badges rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Client Portal Navigation Tabs -->
+      <div class="tabs-container" id="clientTabsContainer">
+        <!-- Rendered dynamically by JS depending on enable_workforce & enable_patrol -->
+      </div>
+
+      <!-- Client Tab: Smart Field Workforce Suite -->
+      <div id="clientTabWorkforce" class="tab-content">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+          <!-- GPS Clock Card -->
+          <div style="background: var(--bg-card); padding: 1.75rem; border-radius: 14px; border: 1px solid var(--border-color);">
+            <h3>📍 GPS Location Attendance</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0.5rem 0 1.25rem;">
+              Geofenced location-verified attendance logging for active field workforce.
+            </p>
+            <div style="display: flex; gap: 1rem;">
+              <button class="btn btn-emerald" onclick="handleClockAttendance('clock_in')">⚡ Clock In</button>
+              <button class="btn btn-secondary" onclick="handleClockAttendance('clock_out')">🚪 Clock Out</button>
+            </div>
+            <div id="clockStatusMsg" style="margin-top: 1rem; font-size: 0.85rem;"></div>
+          </div>
+
+          <!-- Leave Request Card -->
+          <div style="background: var(--bg-card); padding: 1.75rem; border-radius: 14px; border: 1px solid var(--border-color);">
+            <h3>📝 File Leave Request</h3>
+            <form onsubmit="handleLeaveSubmit(event)" style="margin-top: 1rem;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <div>
+                  <label class="form-label">Leave Type</label>
+                  <select id="leaveType" class="form-select">
+                    <option value="casual">Casual Leave</option>
+                    <option value="sick">Sick Leave</option>
+                    <option value="earned">Earned Leave</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label">Start Date</label>
+                  <input type="date" id="leaveStart" class="form-input" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">End Date</label>
+                <input type="date" id="leaveEnd" class="form-input" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm">Submit Leave Request</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Attendance Logs Table -->
+        <h3 style="margin-bottom: 1rem;">Attendance Logs</h3>
+        <div class="table-container" style="margin-bottom: 2rem;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Clock Type</th>
+                <th>Coordinates (Lat / Long)</th>
+                <th>Location Name</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Leaves Table -->
+        <h3 style="margin-bottom: 1rem;">Leave Requests</h3>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Leave Type</th>
+                <th>Duration</th>
+                <th>Reason</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="leavesTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Client Tab: Security & Patrol Operations Suite -->
+      <div id="clientTabPatrol" class="tab-content">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+          <!-- QR Scanner Simulator Card -->
+          <div style="background: var(--bg-card); padding: 1.75rem; border-radius: 14px; border: 1px solid var(--border-color);">
+            <h3>📷 QR Checkpoint Patrol Scanner</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0.5rem 0 1rem;">
+              Simulate high-frequency QR code scans at physical patrol checkpoints.
+            </p>
+            <div class="form-group">
+              <label class="form-label">Target Checkpoint</label>
+              <select id="scanCheckpointSelect" class="form-select">
+                <!-- Populated via JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Patrol Guard Observations</label>
+              <input type="text" id="scanNotes" class="form-input" placeholder="Area clear, perimeter secured.">
+            </div>
+            <button class="btn btn-emerald" onclick="handleScanSubmit()">🔍 Verify QR Checkpoint Scan</button>
+          </div>
+
+          <!-- Submit Incident Report Card -->
+          <div style="background: var(--bg-card); padding: 1.75rem; border-radius: 14px; border: 1px solid var(--border-color);">
+            <h3>⚠️ Incident & SOS Report Log</h3>
+            <form onsubmit="handleIncidentSubmit(event)" style="margin-top: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Incident Title</label>
+                <input type="text" id="incTitle" class="form-input" placeholder="e.g. Unattended Baggage / Gate Lock Damaged" required>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <div>
+                  <label class="form-label">Severity Level</label>
+                  <select id="incSeverity" class="form-select">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical SOS</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label">Description</label>
+                  <input type="text" id="incDesc" class="form-input" placeholder="Incident details..." required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm">Dispatch Incident</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Patrol Checkpoints & Scans Grid -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+          <div>
+            <h3 style="margin-bottom: 1rem;">Active Patrol Checkpoints</h3>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Checkpoint Name</th>
+                    <th>QR Token</th>
+                    <th>Location</th>
+                  </tr>
+                </thead>
+                <tbody id="checkpointsTableBody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="margin-bottom: 1rem;">Recent Patrol Scans</h3>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Guard</th>
+                    <th>Checkpoint</th>
+                    <th>Notes</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody id="scansTableBody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Incidents Table -->
+        <h3 style="margin-bottom: 1rem;">Security Incident Logs</h3>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Reporter</th>
+                <th>Severity</th>
+                <th>Status</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="incidentsTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Sign In Modal -->
+  <div id="loginModal" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 id="loginModalTitle">Client Sign In</h3>
+        <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+      </div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Registered Email</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="name@company.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPassword" class="form-input" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Log In</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div><strong>SrijanDev Operations & Management Portal</strong></div>
+    <div style="margin-top: 4px;">Powered by <strong>SrijanDev Team</strong> | <a href="mailto:contact@srijandev.in" style="color:var(--accent-cyan); text-decoration:none;">contact@srijandev.in</a></div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

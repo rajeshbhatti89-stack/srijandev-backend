@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SrijanDev Operations & Management Dashboard UI Preview</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --bg-card: rgba(31, 41, 55, 0.65);
+      --bg-card-hover: rgba(31, 41, 55, 0.85);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --accent-cyan: #06b6d4;
+      --accent-indigo: #6366f1;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .top-header {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);
+    }
+
+    .dashboard-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .page-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(6, 182, 212, 0.3);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-color, var(--accent-cyan));
+    }
+
+    .kpi-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin: 0.5rem 0;
+    }
+
+    .kpi-subtext {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-emerald);
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 1.6s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .radar-visualizer {
+      height: 220px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, rgba(15, 23, 42, 0.9) 70%);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .map-pin {
+      position: absolute;
+      padding: 6px 12px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--accent-cyan);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .avatar-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid var(--accent-indigo);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--accent-indigo);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <div class="brand-group">
+      <div class="brand-logo">S</div>
+      <div>
+        <div style="font-weight: 800; font-size: 1.1rem; letter-spacing: -0.5px;">SrijanDev</div>
+        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Operations & Management</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 1.5rem;">
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+        <span class="pulse-dot"></span>
+        <span>Client Tenant: <strong>Apex Field & Security Solutions</strong></span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="avatar-circle">AD</div>
+        <div style="text-align: right;">
+          <div style="font-size: 0.85rem; font-weight: 700;">Apex Operations Admin</div>
+          <div style="font-size: 0.75rem; color: var(--accent-cyan);">Client Administrator</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Area -->
+  <div class="dashboard-container">
+    
+    <!-- Title Row -->
+    <div class="page-title-row">
+      <div>
+        <h1 style="margin: 0; font-size: 1.8rem; font-weight: 800;">Real-Time Operations Command Center</h1>
+        <p style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.9rem;">Live status overview of Smart Field Workforce & Security Patrol Operations.</p>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-secondary btn-sm" onclick="alert('UI Preview Mode: Data refreshed')">🔄 Refresh Live Feed</button>
+        <button class="btn btn-emerald btn-sm" onclick="alert('UI Preview Mode: Exporting PDF report...')">📥 Export Operational Report</button>
+      </div>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <div class="kpi-grid">
+      <div class="kpi-card" style="--accent-color: var(--accent-cyan);">
+        <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Active Field Staff</div>
+        <div class="kpi-value" style="color: var(--accent-cyan);">48 / 52</div>
+        <div class="kpi-subtext">
+          <span style="color: var(--accent-emerald);">▲ 92% Present</span> &bull; 4 On Leave
+        </div>
+      </div>
+
+      <div class="kpi-card" style="--accent-color: var(--accent-indigo);">
+        <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">QR Patrol Scans Today</div>
+        <div class="kpi-value" style="color: var(--accent-indigo);">184</div>
+        <div class="kpi-subtext">
+          <span style="color: var(--accent-emerald);">✓ 100% Verified Checkpoints</span>
+        </div>
+      </div>
+
+      <div class="kpi-card" style="--accent-color: var(--accent-rose);">
+        <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Open SOS / Incidents</div>
+        <div class="kpi-value" style="color: var(--accent-rose);">1 Active</div>
+        <div class="kpi-subtext">
+          <span style="color: var(--accent-rose);">🚨 Perimeter Gate 2 Alert</span>
+        </div>
+      </div>
+
+      <div class="kpi-card" style="--accent-color: var(--accent-amber);">
+        <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Conveyance Distance</div>
+        <div class="kpi-value" style="color: var(--accent-amber);">342.5 km</div>
+        <div class="kpi-subtext">
+          <span>GPS Tracked Movement Today</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Grid Layout -->
+    <div class="grid-layout">
+      
+      <!-- Left Column: Tables & Feeds -->
+      <div>
+        
+        <!-- Field Workforce Attendance Log -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div>
+              <h3 style="margin: 0; font-weight: 700;">Smart Field Workforce Attendance</h3>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">GPS Clock-In & Location Verifications</div>
+            </div>
+            <span class="badge badge-emerald">Live Updates</span>
+          </div>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Employee / Guard</th>
+                <th>Clock In Time</th>
+                <th>GPS Location</th>
+                <th>Battery / Signal</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div style="font-weight: 700;">Vikram Singh</div>
+                  <small style="color: var(--text-muted);">EMP-4012 &bull; Security Guard</small>
+                </td>
+                <td>08:00 AM</td>
+                <td>Main Entrance Gate &bull; GPS Verified</td>
+                <td><span style="color: var(--accent-emerald);">94% ⚡</span></td>
+                <td><span class="badge badge-emerald">Checked In</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="font-weight: 700;">Rajesh Kumar</div>
+                  <small style="color: var(--text-muted);">EMP-4088 &bull; Field Supervisor</small>
+                </td>
+                <td>08:15 AM</td>
+                <td>North Warehouse Sector B</td>
+                <td><span style="color: var(--accent-emerald);">88% ⚡</span></td>
+                <td><span class="badge badge-emerald">Checked In</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="font-weight: 700;">Amit Sharma</div>
+                  <small style="color: var(--text-muted);">EMP-3044 &bull; Patrol Marshal</small>
+                </td>
+                <td>09:02 AM</td>
+                <td>East Facility Compound</td>
+                <td><span style="color: var(--accent-amber);">42% ⚠️</span></td>
+                <td><span class="badge badge-amber">Late Arrival</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="font-weight: 700;">Suresh Verma</div>
+                  <small style="color: var(--text-muted);">EMP-2091 &bull; Patrol Officer</small>
+                </td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td><span class="badge badge-rose" style="background: rgba(244,63,94,0.15); color: var(--accent-rose);">On Approved Leave</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Checkpoint Scan Feed -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div>
+              <h3 style="margin: 0; font-weight: 700;">Security Patrol Checkpoint Activity Stream</h3>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">QR Code Scan Confirmations</div>
+            </div>
+            <span class="badge badge-cyan">Real-Time</span>
+          </div>
+
+          <div class="activity-item">
+            <div class="avatar-circle">VS</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; font-size: 0.9rem;">Vikram Singh scanned <strong>Checkpoint #4 (North Vault Gate)</strong></div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Notes: All seals intact &bull; Perimeter clear</div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 700;">2 mins ago</div>
+          </div>
+
+          <div class="activity-item">
+            <div class="avatar-circle" style="background: rgba(6,182,212,0.2); border-color: var(--accent-cyan); color: var(--accent-cyan);">RK</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; font-size: 0.9rem;">Rajesh Kumar scanned <strong>Checkpoint #2 (Substation Perimeter)</strong></div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Notes: Scheduled patrol sweep complete</div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">14 mins ago</div>
+          </div>
+
+          <div class="activity-item">
+            <div class="avatar-circle" style="background: rgba(244,63,94,0.2); border-color: var(--accent-rose); color: var(--accent-rose);">AS</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; font-size: 0.9rem; color: var(--accent-rose);">Amit Sharma reported <strong>Incident: Gate 2 Latch Damaged</strong></div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Severity: HIGH &bull; Photo evidence attached</div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--accent-rose); font-weight: 700;">28 mins ago</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Live GPS Visualizer & Fast Actions -->
+      <div>
+        
+        <!-- Live GPS Radar Map Visualizer -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <h3 style="margin: 0; font-weight: 700; font-size: 1rem;">GPS Live Location Radar</h3>
+            <span style="font-size: 0.75rem; color: var(--accent-emerald);">● 4 ACTIVE PINS</span>
+          </div>
+
+          <div class="radar-visualizer">
+            <div class="map-pin" style="top: 25%; left: 20%;">
+              <span class="pulse-dot"></span> Gate 1 (Vikram)
+            </div>
+            <div class="map-pin" style="top: 60%; left: 55%;">
+              <span class="pulse-dot"></span> Warehouse (Rajesh)
+            </div>
+            <div class="map-pin" style="top: 40%; left: 75%;">
+              <span class="pulse-dot" style="background-color: var(--accent-amber);"></span> East Post (Amit)
+            </div>
+
+            <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+              <div>🛰️ SrijanDev GPS Geofence Monitor Active</div>
+              <small>Latitude / Longitude Auto Syncing</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fast Actions Panel -->
+        <div class="panel-card">
+          <h3 style="margin: 0 0 1rem 0; font-weight: 700; font-size: 1rem;">Quick Operations Actions</h3>
+
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <button class="btn btn-primary" style="width: 100%; justify-content: flex-start;" onclick="alert('UI Preview: Broadcast SOS Dispatch to all guards')">
+              🚨 Trigger Emergency SOS Dispatch
+            </button>
+            <button class="btn btn-secondary" style="width: 100%; justify-content: flex-start;" onclick="alert('UI Preview: Create Checkpoint QR')">
+              ➕ Add Patrol Checkpoint QR Code
+            </button>
+            <button class="btn btn-secondary" style="width: 100%; justify-content: flex-start;" onclick="alert('UI Preview: Generate Attendance Timesheet')">
+              📅 Download Monthly Timesheet
+            </button>
+          </div>
+        </div>
+
+        <!-- System Information -->
+        <div class="panel-card" style="background: rgba(15, 23, 42, 0.4);">
+          <div style="font-weight: 700; font-size: 0.85rem; color: var(--accent-cyan); margin-bottom: 0.5rem;">SrijanDev Platform Info</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
+            <div>&bull; <strong>Storage Architecture:</strong> SQLite WAL Mode</div>
+            <div>&bull; <strong>Security Tier:</strong> Session Cookie Guardrails</div>
+            <div>&bull; <strong>Isolation:</strong> Wildcard Subdomain Router</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer class="app-footer" style="text-align: center; padding: 2rem; border-top: 1px solid var(--border-color); color: var(--text-muted); margin-top: 3rem;">
+    <div><strong>SrijanDev Operations & Management Portal</strong> UI Preview Document</div>
+    <div style="margin-top: 4px; font-size: 0.85rem;">Local Preview Link (Internal UI Verification Only)</div>
+  </footer>
+
+</body>
+</html>
