@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SrijanDev | Operations & Management Portal</title>
+  <title>SrijanDev | Enterprise Operations & Management Hub</title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -30,208 +30,325 @@
 
   <!-- Main Content Area -->
   <main class="content-area">
-    <div id="alertContainer"></div>
+    <div id="alertContainer" style="max-width: 1280px; margin: 1rem auto; padding: 0 1.5rem;"></div>
 
-    <!-- Marketing Hero -->
+    <!-- CRED Hero Section -->
     <section class="hero-section">
-      <span class="badge badge-cyan">SrijanDev SaaS Operations & Field Management Hub</span>
-      <h1 class="hero-title">Enterprise Field Workforce & Guard Patrol Operations</h1>
+      <div class="hero-badge">
+        <span style="width: 8px; height: 8px; background: var(--accent-cyan); border-radius: 50%; display: inline-block; box-shadow: 0 0 10px var(--accent-cyan);"></span>
+        <span>SrijanDev Operational OS &bull; Multi-Tenant Platform</span>
+      </div>
+
+      <h1 class="hero-title">
+        Next-Gen Operational Precision for <span class="text-neon-cyan">Field Force</span> & <span class="text-neon-emerald">Security Patrols</span>
+      </h1>
+
       <p class="hero-desc">
-        Empower your organization with isolated, high-performance client portals combining GPS Location Attendance, Automated Leave Management, QR Patrol Checkpoint Verification, and Live Incident Tracking.
+        Empower your enterprise with ultra-secure, isolated client portals combining GPS Geofence Attendance, Automated Leave Workflows, QR Checkpoint Verifications, and Live Incident Command.
       </p>
+
       <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <button class="btn btn-primary" onclick="openLeadModal()">
-          ⚡ Request Quotation
+        <button class="btn btn-primary" onclick="scrollToQuotationForm()">
+          ⚡ Request Custom Proposal
         </button>
-        <a href="#features" class="btn btn-secondary">
-          🔍 Explore Features
-        </a>
+        <button class="btn btn-secondary" onclick="openLoginModal('Client Sign In')">
+          🔐 Client Portal Sign In
+        </button>
+      </div>
+
+      <!-- Live Telemetry Bar -->
+      <div class="telemetry-ticker">
+        <div class="ticker-item">
+          <div class="ticker-val text-neon-cyan">99.98%</div>
+          <div class="ticker-lbl">GPS Geofence Precision</div>
+        </div>
+        <div class="ticker-item" style="border-left: 1px solid var(--border-color); padding-left: 1.5rem;">
+          <div class="ticker-val text-neon-emerald">&lt; 1ms</div>
+          <div class="ticker-lbl">WAL DB Engine Latency</div>
+        </div>
+        <div class="ticker-item" style="border-left: 1px solid var(--border-color); padding-left: 1.5rem;">
+          <div class="ticker-val" style="color: var(--accent-purple);">100%</div>
+          <div class="ticker-lbl">Isolated Client Architecture</div>
+        </div>
+        <div class="ticker-item" style="border-left: 1px solid var(--border-color); padding-left: 1.5rem;">
+          <div class="ticker-val" style="color: var(--accent-amber);">2FA & Cookies</div>
+          <div class="ticker-lbl">Enterprise Security Tier</div>
+        </div>
       </div>
     </section>
 
-    <!-- Strict Administrative Notice -->
-    <div class="alert-banner">
-      <div style="font-size: 1.5rem;">🔒</div>
-      <div>
-        <strong style="color: var(--accent-amber);">Strict Administrative Provisioning Notice:</strong>
-        <span style="color: var(--text-muted);">
-          SrijanDev maintains zero automated public self-registration. Client portals (<code style="color: var(--accent-cyan);">*.srijandev.in</code>) are provisioned exclusively by the <strong>SrijanDev Administration Team</strong> post-verification.
-        </span>
-      </div>
-    </div>
+    <div style="max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;">
 
-    <!-- Feature Suites Showcase -->
-    <div id="features" class="section-title-group">
-      <h2 class="section-title">Integrated SrijanDev Platform Suites</h2>
-      <p class="section-subtitle">Modular workforce management and patrol security suites tailored to your operations.</p>
-    </div>
+      <!-- Interactive Suite Tabs & Showcase -->
+      <section style="text-align: center; margin-bottom: 4rem;">
+        <div style="font-size: 0.8rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem;">Operational Suite Architecture</div>
+        <h2 class="text-metallic" style="font-size: 2.2rem; font-weight: 900; margin-bottom: 1.5rem;">Two Specialized Suites. One Unified Platform.</h2>
 
-    <div class="features-grid">
-      <!-- Smart Field Workforce Suite -->
-      <div class="feature-card">
-        <div class="feature-card-header">
-          <div class="feature-icon-wrapper icon-workforce">📍</div>
-          <span class="badge badge-cyan">Workforce Module</span>
+        <div class="tab-switcher">
+          <button class="tab-btn active" id="tabWorkforce" onclick="switchSuiteTab('workforce')">👥 Smart Field Workforce Suite</button>
+          <button class="tab-btn" id="tabSecurity" onclick="switchSuiteTab('security')">🛡️ Security Patrol Operations Suite</button>
         </div>
-        <h3 class="feature-card-title">Smart Field Workforce Suite</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">
-          Complete location-verified field workforce tracking, leave automation, and roster management.
-        </p>
-        <ul class="feature-list">
-          <li><strong>Live GPS Attendance:</strong> Geofenced location-verified clock in & clock out.</li>
-          <li><strong>Leave Management:</strong> Automated casual, sick & earned leave approval workflows.</li>
-          <li><strong>Conveyance & Travel Tracker:</strong> Kilometer tracking and automated allowance calculation.</li>
-          <li><strong>Automated Roster Scheduling:</strong> Multi-shift assignment and duty roster management.</li>
-        </ul>
-      </div>
 
-      <!-- Security & Patrol Operations Suite -->
-      <div class="feature-card">
-        <div class="feature-card-header">
-          <div class="feature-icon-wrapper icon-patrol">🛡️</div>
-          <span class="badge badge-indigo" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-indigo); border: 1px solid rgba(99, 102, 241, 0.3);">Security Patrol Module</span>
+        <!-- Suite Cards Container -->
+        <div class="card-grid" id="suiteContainer">
+          <!-- Rendered dynamically by app.js / inline switch -->
         </div>
-        <h3 class="feature-card-title">Security & Patrol Operations Suite</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">
-          Real-time physical security guard inspection, QR checkpoint verification, and incident management.
-        </p>
-        <ul class="feature-list">
-          <li><strong>QR Checkpoint Scanning:</strong> Instant mobile/web QR checkpoint verification logging.</li>
-          <li><strong>Live Patrol Radar:</strong> Real-time guard route tracking and checkpoint verification.</li>
-          <li><strong>Incident Reporting:</strong> Instant security risk logging, severity tags & dispatch.</li>
-          <li><strong>Instant SOS Alerts:</strong> Real-time emergency escalation notifications to security leads.</li>
-        </ul>
-      </div>
-    </div>
+      </section>
 
-    <!-- Pricing Tiers Matrix -->
-    <div class="section-title-group">
-      <h2 class="section-title">Transparent Pricing Matrix</h2>
-      <p class="section-subtitle">Scalable multi-tenant portal subscriptions for businesses of any size.</p>
-    </div>
+      <!-- CRED Interactive ROI Calculator -->
+      <section class="roi-container">
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 2.5rem; align-items: center;">
+          <div>
+            <span class="hero-badge" style="margin-bottom: 1rem;">Dynamic ROI Calculator</span>
+            <h2 class="text-metallic" style="font-size: 2rem; font-weight: 900; margin-bottom: 1rem;">Estimate Your Monthly Operational Savings</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Drag the slider to match your active field staff size and see live efficiency gains.</p>
 
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <span class="badge badge-cyan" style="width: max-content;">Workforce Starter</span>
-        <div class="price">₹4,999 <span>/month</span></div>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Ideal for field teams requiring location attendance & leaves.</p>
-        <ul class="feature-list" style="margin-bottom: 2rem;">
-          <li>Dedicated Subdomain (<code style="color:var(--accent-cyan);">company.srijandev.in</code>)</li>
-          <li>Smart Field Workforce Suite Enabled</li>
-          <li>Up to 25 Field Employees</li>
-          <li>Strict Email Verification Guardrails</li>
-        </ul>
-        <button class="btn btn-secondary" onclick="openLeadModal('Workforce Starter')">Request Quotation</button>
-      </div>
+            <div style="margin-top: 2rem;">
+              <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.1rem;">
+                <span>Active Field Workforce Size:</span>
+                <span id="workforceValDisplay" class="text-neon-cyan" style="font-size: 1.4rem;">50 Personnel</span>
+              </div>
+              <input type="range" min="10" max="500" value="50" class="roi-slider" id="roiSlider" oninput="updateRoiCalc(this.value)">
+            </div>
+          </div>
 
-      <div class="pricing-card featured">
-        <span class="badge badge-emerald" style="width: max-content;">Enterprise Dual Suite</span>
-        <div class="price">₹11,999 <span>/month</span></div>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Complete combined Workforce + Guard Patrol Operations.</p>
-        <ul class="feature-list" style="margin-bottom: 2rem;">
-          <li>Dedicated Subdomain</li>
-          <li>Smart Field Workforce Suite Enabled</li>
-          <li>Security & Patrol Operations Suite Enabled</li>
-          <li>Unlimited Guards & Field Workers</li>
-          <li>Super-Admin 24/7 SLA Support</li>
-        </ul>
-        <button class="btn btn-primary" onclick="openLeadModal('Enterprise Dual Suite')">Request Quotation</button>
-      </div>
+          <div style="background: rgba(5, 7, 12, 0.8); border: 1px solid var(--border-glow); border-radius: 20px; padding: 2rem; text-align: center;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Estimated Monthly Savings</div>
+            <div id="roiSavingsDisplay" class="text-neon-emerald" style="font-size: 2.8rem; font-weight: 900; margin: 0.5rem 0;">₹ 1,75,000</div>
 
-      <div class="pricing-card">
-        <span class="badge badge-amber" style="width: max-content;">Security Patrol Only</span>
-        <div class="price">₹6,499 <span>/month</span></div>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Dedicated security patrol & QR checkpoint scanning suite.</p>
-        <ul class="feature-list" style="margin-bottom: 2rem;">
-          <li>Dedicated Subdomain</li>
-          <li>Security & Patrol Operations Suite Enabled</li>
-          <li>QR Checkpoints & Live Patrol Tracking</li>
-          <li>Incident Management & Severity Tags</li>
-        </ul>
-        <button class="btn btn-secondary" onclick="openLeadModal('Security Patrol Only')">Request Quotation</button>
-      </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Admin Hours Saved</div>
+                <div id="roiHoursDisplay" style="font-weight: 800; font-size: 1.2rem; color: var(--accent-cyan);">140 hrs / mo</div>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Patrol Compliance</div>
+                <div style="font-weight: 800; font-size: 1.2rem; color: var(--accent-emerald);">99.8% Verified</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quotation Form Section -->
+      <section id="quotationSection" style="margin-bottom: 5rem;">
+        <div style="text-align: center; max-width: 700px; margin: 0 auto 3rem auto;">
+          <span class="hero-badge">Enterprise Quotation</span>
+          <h2 class="text-metallic" style="font-size: 2.3rem; font-weight: 900; margin-bottom: 0.8rem;">Get Your Customized Enterprise Proposal</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Fill in your organization details. Our team will provision your dedicated isolated client portal within 24 hours.</p>
+        </div>
+
+        <div style="max-width: 680px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 2.5rem; backdrop-filter: blur(16px);">
+          <form id="leadQuoteForm" onsubmit="handleLeadSubmission(event)">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
+              <div class="form-group">
+                <label class="form-label">Organization / Client Name</label>
+                <input type="text" id="quoteCompany" class="form-input" placeholder="e.g. Apex Security Solutions" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Contact Person Name</label>
+                <input type="text" id="quoteContact" class="form-input" placeholder="e.g. Rajesh Kumar" required>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
+              <div class="form-group">
+                <label class="form-label">Work Email Address</label>
+                <input type="email" id="quoteEmail" class="form-input" placeholder="name@company.com" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" id="quotePhone" class="form-input" placeholder="+91 98765 43210" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Select Desired Suite(s)</label>
+              <select id="quoteSuites" class="form-select">
+                <option value="Both Field Workforce & Security Patrol Suites">Both Suites (Workforce + Patrol - Recommended)</option>
+                <option value="Smart Field Workforce Suite Only">Smart Field Workforce Suite Only</option>
+                <option value="Security Patrol Operations Suite Only">Security Patrol Operations Suite Only</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Special Requirements / Notes</label>
+              <textarea id="quoteNotes" class="form-input" rows="3" placeholder="Specify personnel count, multi-location requirements, or custom integrations..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-emerald" style="width: 100%; font-size: 1rem; padding: 0.9rem;">
+              🚀 Submit Quotation Request
+            </button>
+          </form>
+        </div>
+      </section>
+
     </div>
   </main>
 
-  <!-- MODAL: "Get Quotation" Lead Modal Form -->
-  <div id="leadModal" class="modal-backdrop">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3>Get Quotation & Request Portal</h3>
-        <button class="modal-close" onclick="closeLeadModal()">&times;</button>
+  <!-- Login Modal Dialog -->
+  <div class="modal-backdrop" id="loginModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+      <div style="text-align: center; margin-bottom: 1.8rem;">
+        <div class="brand-logo" style="margin: 0 auto 1rem auto;">S</div>
+        <h3 id="modalTitle" class="text-metallic" style="font-size: 1.5rem; font-weight: 800;">SrijanDev Portal Login</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">Enter your credentials to access your portal</p>
       </div>
-      <form id="leadForm" onsubmit="handleLeadSubmit(event)">
-        <div class="form-group">
-          <label class="form-label">Full Name</label>
-          <input type="text" id="leadFullName" class="form-input" placeholder="Alex Morgan" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Company / Organization Name</label>
-          <input type="text" id="leadCompany" class="form-input" placeholder="Apex Security Solutions" required>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-          <div class="form-group">
-            <label class="form-label">Work Email Address</label>
-            <input type="email" id="leadEmail" class="form-input" placeholder="contact@srijandev.in" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Phone Number</label>
-            <input type="tel" id="leadPhone" class="form-input" placeholder="+91 98765 43210" required>
-          </div>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-          <div class="form-group">
-            <label class="form-label">Employee / Guard Count</label>
-            <input type="number" id="leadEmpCount" class="form-input" value="25" min="1" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Required Suite(s)</label>
-            <select id="leadSuites" class="form-select">
-              <option value="Workforce & Patrol Suites">Both Workforce & Patrol Suites</option>
-              <option value="Workforce Suite Only">Workforce Suite Only</option>
-              <option value="Security Patrol Suite Only">Security Patrol Suite Only</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Preferred Portal Subdomain Prefix</label>
-          <div class="subdomain-input-group">
-            <input type="text" id="leadSubdomain" class="form-input" placeholder="apex" required pattern="[a-zA-Z0-9]+" title="Letters and numbers only">
-            <span class="subdomain-suffix">.srijandev.in</span>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Quotation Request</button>
-      </form>
-    </div>
-  </div>
 
-  <!-- MODAL: Sign In Modal -->
-  <div id="loginModal" class="modal-backdrop">
-    <div class="modal-box" style="max-width: 420px;">
-      <div class="modal-header">
-        <h3 id="loginModalTitle">Client Sign In</h3>
-        <button class="modal-close" onclick="closeLoginModal()">&times;</button>
-      </div>
-      <form onsubmit="handleLogin(event)">
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)">
         <div class="form-group">
-          <label class="form-label">Registered Email</label>
-          <input type="email" id="loginEmail" class="form-input" placeholder="name@company.com" required>
+          <label class="form-label">Email Address</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="admin@company.com" required>
         </div>
+
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input type="password" id="loginPassword" class="form-input" required>
+          <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Log In</button>
+
+        <div class="form-group">
+          <label class="form-label">Tenant Subdomain (Optional for Super-Admin)</label>
+          <input type="text" id="loginTenant" class="form-input" placeholder="e.g. apex (leave blank for Super-Admin)">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; margin-top: 0.5rem;">
+          Sign In to SrijanDev
+        </button>
       </form>
     </div>
   </div>
 
-  <!-- App Footer -->
+  <!-- Footer -->
   <footer class="app-footer">
-    <div><strong>SrijanDev Operations & Management Portal</strong></div>
-    <div style="margin-top: 4px;">Powered by <strong>SrijanDev Team</strong> | <a href="mailto:contact@srijandev.in" style="color:var(--accent-cyan); text-decoration:none;">contact@srijandev.in</a></div>
+    <div class="footer-content">
+      <div class="brand-section">
+        <div class="brand-logo">S</div>
+        <div class="brand-title-group" style="text-align: left;">
+          <div class="brand-name">SrijanDev</div>
+          <div class="brand-subtitle">OPERATIONS & MANAGEMENT PORTAL</div>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <a href="#quotationSection" onclick="scrollToQuotationForm()">Get Proposal</a>
+        <a href="javascript:void(0)" onclick="openLoginModal('Client Sign In')">Client Portal</a>
+        <a href="javascript:void(0)" onclick="openLoginModal('Super-Admin Login')">Super-Admin Panel</a>
+      </div>
+
+      <div style="color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; width: 100%;">
+        <div>&copy; 2026 <strong>SrijanDev Team</strong>. All rights reserved. Enterprise Operational OS.</div>
+        <div style="margin-top: 4px;">Public Contact: <a href="mailto:contact@srijandev.in" style="color: var(--accent-cyan);">contact@srijandev.in</a></div>
+      </div>
+    </div>
   </footer>
 
   <script src="/js/app.js"></script>
+  <script>
+    // Suite Tab Handler
+    function switchSuiteTab(type) {
+      const workforceBtn = document.getElementById('tabWorkforce');
+      const securityBtn = document.getElementById('tabSecurity');
+      const container = document.getElementById('suiteContainer');
+
+      if (type === 'workforce') {
+        workforceBtn.classList.add('active');
+        securityBtn.classList.remove('active');
+        container.innerHTML = `
+          <div class="glass-card">
+            <div class="card-icon" style="color: var(--accent-cyan);">📍</div>
+            <h3 class="card-title">GPS Location Attendance</h3>
+            <p class="card-desc">Geofence-bound clock-in verification prevents proxy attendance with precise latitude & longitude coordinates.</p>
+            <ul class="feature-list">
+              <li>Real-time Geofence Radius Verification</li>
+              <li>Automated Late Clock-in Flags & Notifications</li>
+              <li>Device Signal & Battery Status Monitoring</li>
+            </ul>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-icon" style="color: var(--accent-emerald);">📅</div>
+            <h3 class="card-title">Automated Leave System</h3>
+            <p class="card-desc">Streamlined digital leave requests, supervisor approvals, and quota balancing without manual paperwork.</p>
+            <ul class="feature-list">
+              <li>One-click Leave Application & Approval</li>
+              <li>Casual, Sick, & Earned Leave Balance Tracking</li>
+              <li>Automated Monthly Timesheet Compilation</li>
+            </ul>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-icon" style="color: var(--accent-amber);">🚗</div>
+            <h3 class="card-title">Conveyance Tracking</h3>
+            <p class="card-desc">Verified distance logging and travel expense claims backed by live GPS route tracking.</p>
+            <ul class="feature-list">
+              <li>Live Traveled Distance Metering</li>
+              <li>Automated Fuel Reimbursement Calculation</li>
+              <li>Exportable Conveyance Audit Reports</li>
+            </ul>
+          </div>
+        `;
+      } else {
+        securityBtn.classList.add('active');
+        workforceBtn.classList.remove('active');
+        container.innerHTML = `
+          <div class="glass-card">
+            <div class="card-icon" style="color: var(--accent-purple);">🔳</div>
+            <h3 class="card-title">QR Checkpoint Scans</h3>
+            <p class="card-desc">Instant QR code scanning at security posts ensures guards complete scheduled patrol rounds.</p>
+            <ul class="feature-list">
+              <li>Tamper-proof Encrypted QR Patrol Checkpoints</li>
+              <li>Timestamped Inspection Scan Activity Stream</li>
+              <li>Missed Patrol Alert Triggers</li>
+            </ul>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-icon" style="color: var(--accent-rose);">🚨</div>
+            <h3 class="card-title">Real-Time Incident SOS</h3>
+            <p class="card-desc">Immediate incident reporting with photo attachments and severity classification for swift response.</p>
+            <ul class="feature-list">
+              <li>One-tap Emergency Panic SOS Broadcasting</li>
+              <li>Severity Rating (Low, High, Critical) & Resolution Workflow</li>
+              <li>Photo & Note Evidence Logging</li>
+            </ul>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-icon" style="color: var(--accent-cyan);">🛡️</div>
+            <h3 class="card-title">Sentinel Command Overview</h3>
+            <p class="card-desc">Centralized command center dashboard for security supervisors to monitor all active field posts live.</p>
+            <ul class="feature-list">
+              <li>Live Operational Status Dashboard</li>
+              <li>Guard Shift Allocation & Duty Rosters</li>
+              <li>Instant Emergency Broadcast Dispatch</li>
+            </ul>
+          </div>
+        `;
+      }
+    }
+
+    // ROI Calculator Handler
+    function updateRoiCalc(val) {
+      document.getElementById('workforceValDisplay').textContent = `${val} Personnel`;
+      const num = parseInt(val, 10);
+      const hoursSaved = Math.round(num * 2.8);
+      const rupeesSaved = (num * 3500).toLocaleString('en-IN');
+      document.getElementById('roiHoursDisplay').textContent = `${hoursSaved} hrs / mo`;
+      document.getElementById('roiSavingsDisplay').textContent = `₹ ${rupeesSaved}`;
+    }
+
+    // Scroll Helper
+    function scrollToQuotationForm() {
+      const section = document.getElementById('quotationSection');
+      if (section) section.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Initial Suite Tab Render
+    document.addEventListener('DOMContentLoaded', () => {
+      switchSuiteTab('workforce');
+      updateRoiCalc(50);
+    });
+  </script>
 </body>
 </html>

@@ -8,18 +8,6 @@
     ],
     "rewrites": [
       {
-        "source": "/auth",
-        "destination": "/auth.html"
-      },
-      {
-        "source": "/login",
-        "destination": "/auth.html"
-      },
-      {
-        "source": "/owner",
-        "destination": "/owner.html"
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }
