@@ -49,10 +49,7 @@ async function checkSession() {
       renderSidebar();
     } catch (err) {}
   } else {
-    if (!window.location.pathname.includes("auth") && !window.location.pathname.includes("login")) {
-      window.location.href = "/auth.html";
-      return;
-    }
+    // Unauthenticated visitor on root landing page stay on index.html
   }
 
   try {

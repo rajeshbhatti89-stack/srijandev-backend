@@ -53,8 +53,17 @@ function runWorkerServer() {
         cookie: { maxAge: 24 * 60 * 60 * 1000, httpOnly: true, secure: process.env.NODE_ENV === 'production' ? false : false }
     }));
 
+    // Explicit Root Route BEFORE express.static
+    app.get('/', (req, res) => {
+        res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    });
+
+    app.get('/auth.html', (req, res) => {
+        res.redirect(301, '/');
+    });
+
     // Serve Static Frontend Assets
-    app.use(express.static(path.join(__dirname, 'dist'), { maxAge: '1d' }));
+    app.use(express.static(path.join(__dirname, 'dist'), { maxAge: '1d', index: false }));
 
     // --- IN-MEMORY CACHE FOR < 1ms API RESPONSES ---
     const RAM_CACHE = new Map();

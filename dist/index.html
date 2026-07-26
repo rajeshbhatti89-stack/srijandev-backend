@@ -82,24 +82,21 @@
     function initApp() { verifyUserSession(); renderNavigation(); loadActiveTab(); setupGlobalEvents(); }
     function verifyUserSession() {
       const token = localStorage.getItem("token");
-      const userDataStr = localStorage.getItem("user") || localStorage.getItem("srijandev_user");
+      const userDataStr = localStorage.getItem("user");
       if (!token || !userDataStr) {
-        if (!window.location.pathname.includes("login") && !window.location.pathname.includes("auth")) { window.location.href = "/auth.html"; }
         return;
       }
       try {
         state.currentUser = JSON.parse(userDataStr);
-        document.getElementById("user-name-display").textContent = state.currentUser.name || state.currentUser.email || "Active User";
-        document.getElementById("user-role-display").textContent = (state.currentUser.role || "Client").toUpperCase();
-        document.getElementById("user-avatar").textContent = (state.currentUser.name || state.currentUser.email || "U").charAt(0).toUpperCase();
+        document.getElementById("user-name-display").textContent = state.currentUser.name || "Active User";
+        document.getElementById("user-role-display").textContent = state.currentUser.role || "Client";
+        document.getElementById("user-avatar").textContent = (state.currentUser.name || "U").charAt(0).toUpperCase();
       } catch (err) { logout(); }
     }
     function logout() { localStorage.clear(); window.location.href = "/auth.html"; }
     function renderNavigation() {
       const navContainer = document.getElementById("nav-container");
-      const role = (state.currentUser?.role || '').toLowerCase();
-      const email = (state.currentUser?.email || state.currentUser?.identifier || '').toLowerCase();
-      const isOwner = role === 'owner' || role === 'superadmin' || role === 'super_admin' || email === 'rajeshbhatti89@gmail.com';
+      const isOwner = state.currentUser?.role === 'owner' || state.currentUser?.role === 'superadmin';
       let navHTML = `
         <li class="nav-item ${state.activeTab === 'dashboard' ? 'active' : ''}" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-line"></i> <span>Dashboard</span></li>
         <li class="nav-item ${state.activeTab === 'roster' ? 'active' : ''}" onclick="switchTab('roster')"><i class="fa-solid fa-calendar-days"></i> <span>Roster & Attendance</span></li>
