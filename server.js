@@ -53,17 +53,34 @@ function runWorkerServer() {
         cookie: { maxAge: 24 * 60 * 60 * 1000, httpOnly: true, secure: process.env.NODE_ENV === 'production' ? false : false }
     }));
 
+    // Cache Buster for Service Worker
+    app.get('/sw.js', (req, res) => {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(`
+            self.addEventListener('install', () => self.skipWaiting());
+            self.addEventListener('activate', (event) => {
+                event.waitUntil(
+                    caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
+                        .then(() => self.registration.unregister())
+                );
+            });
+        `);
+    });
+
     // Explicit Root Route BEFORE express.static
     app.get('/', (req, res) => {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
         res.sendFile(path.join(__dirname, 'dist', 'index.html'));
     });
 
     app.get('/auth.html', (req, res) => {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
         res.redirect(301, '/');
     });
 
     // Serve Static Frontend Assets
-    app.use(express.static(path.join(__dirname, 'dist'), { maxAge: '1d', index: false }));
+    app.use(express.static(path.join(__dirname, 'dist'), { index: false }));
 
     // --- IN-MEMORY CACHE FOR < 1ms API RESPONSES ---
     const RAM_CACHE = new Map();
